@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Hero from "./Hero";
 import EditHero from "./EditHero";
+import heroesApi from "../api";
 
 class Heroes extends Component {
   state = {
@@ -9,13 +10,9 @@ class Heroes extends Component {
   };
 
   componentDidMount() {
-    fetch("/api/heroes")
-      .then(result => result.json())
-      .then(json => {
-        this.setState({
-          heroes: json
-        });
-      });
+    heroesApi.get().then(heroes => {
+      this.setState({ heroes });
+    });
   }
 
   handleSelect = hero => {
@@ -26,9 +23,11 @@ class Heroes extends Component {
     event.preventDefault();
     event.stopPropagation();
 
-    this.setState(prevState => ({
-      heroes: prevState.heroes.filter(item => item !== hero)
-    }));
+    heroesApi.destroy(hero.id).then(() => {
+      this.setState(prevState => ({
+        heroes: prevState.heroes.filter(item => item !== hero)
+      }));
+    });
   };
 
   handleChange = event => {
@@ -50,11 +49,19 @@ class Heroes extends Component {
   };
 
   handleSave = () => {
-    this.setState(prevState => ({
-      heroes: [...prevState.heroes, prevState.selectedHero],
-      addingHero: false,
-      selectedHero: undefined
-    }));
+    if (this.state.addingHero) {
+      heroesApi.create(this.state.selectedHero).then(hero => {
+        this.setState(prevState => ({
+          heroes: [...prevState.heroes, hero],
+          addingHero: false,
+          selectedHero: undefined
+        }));
+      });
+    } else {
+      heroesApi.update(this.state.selectedHero).then(() => {
+        this.setState({ selectedHero: undefined });
+      });
+    }
   };
 
   handleAdd = () => {

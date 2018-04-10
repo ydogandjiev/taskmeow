@@ -4,7 +4,7 @@ const ReadPreference = require("mongodb").ReadPreference;
 require("./mongo").connect();
 
 function get(req, res) {
-  const docquery = Hero.find({});
+  const docquery = Hero.find({}).read(ReadPreference.NEAREST);
   docquery
     .exec()
     .then(heroes => {
@@ -49,9 +49,10 @@ function update(req, res) {
 
 function remove(req, res) {
   const { id } = req.params;
+
   Hero.findOneAndRemove({ id })
-    .then(() => {
-      res.status(204);
+    .then(hero => {
+      res.status(204).send(hero);
     })
     .catch(err => {
       res.status(500).send(err);
