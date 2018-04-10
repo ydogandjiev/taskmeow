@@ -3,12 +3,21 @@ const env = require("./environment/environment");
 
 mongoose.Promise = global.Promise;
 
-const mongoUri = `mongodb://${env.dbName}:${env.key}@${env.dbName}.azure.com:${
+const mongoUri = `mongodb://${env.user}.documents.azure.com:${
   env.port
 }/?ssl=true`;
 
 function connect() {
-  return mongoose.connect(mongoUri, { useMongoClient: true });
+  return mongoose
+    .connect(mongoUri, {
+      auth: {
+        user: env.user,
+        password: env.password
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    });
 }
 
 module.exports = {

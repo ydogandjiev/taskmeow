@@ -1,16 +1,22 @@
 var express = require("express");
 var router = express.Router();
 
-router.get("/heroes", function(req, res, next) {
-  const heroes = [
-    {
-      id: 0,
-      name: "The Tick",
-      saying: "Spoooon!"
-    }
-  ];
+var heroService = require("../hero-service");
 
-  res.json(heroes);
+router.get("/heroes", function(req, res, next) {
+  heroService.get(req, res);
+});
+
+router.post("/hero", function(req, res, next) {
+  heroService.create(req, res);
+});
+
+router.put("/hero", function(req, res, next) {
+  heroService.update(req, res);
+});
+
+router.delete("/hero/:id", function(req, res, next) {
+  heroService.remove(req, res);
 });
 
 module.exports = router;
