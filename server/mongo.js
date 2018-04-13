@@ -13,6 +13,9 @@ function connect() {
       auth: {
         user: env.user,
         password: env.password
+      },
+      config: {
+        autoIndex: false
       }
     })
     .catch(err => {
