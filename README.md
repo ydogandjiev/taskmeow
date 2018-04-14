@@ -1,12 +1,12 @@
-# React CosmosDB Serverless
+# React CosmosDB
 
-This is a work in progress project to convert Burke Holland's great React CosmoDB sample into a serverless app using Azure Cloud Functions.
+This is my implementation of Burke Holland's great React CosmoDB sample.
 
 ## Installing
 
 ```bash
-git clone https://github.com/ydogandjiev/react-cosmosdb-serverless.git
-cd react-cosmosdb-serverless
+git clone https://github.com/ydogandjiev/react-cosmosdb.git
+cd react-cosmosdb
 yarn install
 ```
 
