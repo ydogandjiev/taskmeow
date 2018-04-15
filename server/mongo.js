@@ -1,18 +1,19 @@
 const mongoose = require("mongoose");
-const env = require("./environment/environment");
+
+const username = process.env.SQLCONNSTR_CosmosUsername || require("./environment/environment").user;
+const password = process.env.SQLCONNSTR_CosmosPassword || require("./environment/environment").password;
+const port = process.env.SQLCONNSTR_CosmosPort || require("./environment/environment").port;
 
 mongoose.Promise = global.Promise;
 
-const mongoUri = `mongodb://${env.user}.documents.azure.com:${
-  env.port
-}/?ssl=true`;
+const mongoUri = `mongodb://${username}.documents.azure.com:${port}/?ssl=true`;
 
 function connect() {
   return mongoose
     .connect(mongoUri, {
       auth: {
-        user: env.user,
-        password: env.password
+        user: username,
+        password: password
       },
       config: {
         autoIndex: false
