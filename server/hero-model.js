@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
-const Schema = mongoose.Schema;
-const heroSchema = new Schema({
+const heroSchema = new mongoose.Schema({
   id: { type: Number, required: true, unique: true },
   name: String,
   saying: String

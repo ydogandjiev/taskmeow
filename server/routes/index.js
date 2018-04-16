@@ -1,7 +1,7 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
 
-var heroService = require("../hero-service");
+const heroService = require("../hero-service");
 
 router.get("/heroes", function(req, res, next) {
   heroService.get(req, res);

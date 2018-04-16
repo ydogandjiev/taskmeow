@@ -1,9 +1,13 @@
+import { adalApiFetch } from "./adalConfig";
+
 const heroesApi = {
   get() {
-    return fetch("/api/heroes").then(result => result.json());
+    return adalApiFetch(fetch, "/api/heroes", { method: "GET" }).then(result =>
+      result.json()
+    );
   },
   create(hero) {
-    return fetch("/api/hero", {
+    return adalApiFetch(fetch, "/api/hero", {
       method: "POST",
       body: JSON.stringify(hero),
       headers: {
@@ -13,7 +17,7 @@ const heroesApi = {
     }).then(result => result.json());
   },
   update(hero) {
-    return fetch("/api/hero", {
+    return adalApiFetch(fetch, "/api/hero", {
       method: "PUT",
       body: JSON.stringify(hero),
       headers: {
@@ -23,7 +27,7 @@ const heroesApi = {
     }).then(result => result.json());
   },
   destroy(id) {
-    return fetch(`/api/hero/${id}`, {
+    return adalApiFetch(fetch, `/api/hero/${id}`, {
       method: "DELETE"
     });
   }
