@@ -34,19 +34,19 @@ passport.use(
             return done(null, user, token);
           }
 
-          const user = new User();
+          const newUser = new User();
           const account = { uid: token.oid, provider: "aad" };
-          user.accounts.push(account);
-          user.firstname = token.name;
-          user.lastname = token.name;
-          user.email = token.upn;
+          newUser.accounts.push(account);
+          newUser.firstname = token.name;
+          newUser.lastname = token.name;
+          newUser.email = token.upn;
 
-          user.save(function(err) {
+          newUser.save(function(err) {
             if (err) {
               return done(err);
             }
 
-            return done(null, user, token);
+            return done(null, newUser, token);
           });
         }
       );
