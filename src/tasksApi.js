@@ -1,25 +1,25 @@
 import { adalApiFetch } from "./adalConfig";
 
-const heroesApi = {
+const tasksApi = {
   get() {
-    return adalApiFetch(fetch, "/api/heroes", { method: "GET" }).then(result =>
+    return adalApiFetch(fetch, "/api/tasks", { method: "GET" }).then(result =>
       result.json()
     );
   },
-  create(hero) {
-    return adalApiFetch(fetch, "/api/heroes", {
+  create(task) {
+    return adalApiFetch(fetch, "/api/tasks", {
       method: "POST",
-      body: JSON.stringify(hero),
+      body: JSON.stringify(task),
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json"
       }
     }).then(result => result.json());
   },
-  update(hero) {
-    return adalApiFetch(fetch, `/api/heroes/${hero.id}`, {
+  update(task) {
+    return adalApiFetch(fetch, `/api/tasks/${id}`, {
       method: "PUT",
-      body: JSON.stringify(hero),
+      body: JSON.stringify(task),
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json"
@@ -27,10 +27,10 @@ const heroesApi = {
     }).then(result => result.json());
   },
   destroy(id) {
-    return adalApiFetch(fetch, `/api/heroes/${id}`, {
+    return adalApiFetch(fetch, `/api/tasks/${id}`, {
       method: "DELETE"
     });
   }
 };
 
-export default heroesApi;
+export default tasksApi;

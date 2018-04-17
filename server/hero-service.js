@@ -16,9 +16,11 @@ function get(req, res) {
 }
 
 function create(req, res) {
-  const { id, name, saying } = req.body;
-
-  const hero = new Hero({ id, name, saying });
+  const hero = new Hero({
+    id: req.body.id,
+    name: req.body.name,
+    saying: req.body.saying
+  });
 
   hero
     .save()
@@ -31,12 +33,10 @@ function create(req, res) {
 }
 
 function update(req, res) {
-  const { id, name, saying } = req.body;
-
-  Hero.findOne({ id })
+  Hero.findOne({ id: req.params.id })
     .then(hero => {
-      hero.name = name;
-      hero.saying = saying;
+      hero.name = req.body.name;
+      hero.saying = req.body.saying;
       return hero.save();
     })
     .then(hero => {
@@ -48,9 +48,7 @@ function update(req, res) {
 }
 
 function remove(req, res) {
-  const { id } = req.params;
-
-  Hero.findOneAndRemove({ id })
+  Hero.findOneAndRemove({ id: req.body.params })
     .then(hero => {
       res.status(204).send(hero);
     })

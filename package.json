@@ -12,6 +12,7 @@
     "mongodb": "^3.0.5",
     "mongoose": "^5.0.13",
     "morgan": "^1.8.2",
+    "office-ui-fabric-react": "^5.82.1",
     "react": "^15.6.1",
     "react-adal": "^0.3.15",
     "react-dom": "^15.6.1"

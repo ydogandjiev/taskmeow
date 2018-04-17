@@ -2,6 +2,40 @@
 # yarn lockfile v1
 
 
+"@microsoft/load-themed-styles@^1.7.13":
+  version "1.7.50"
+  resolved "https://registry.yarnpkg.com/@microsoft/load-themed-styles/-/load-themed-styles-1.7.50.tgz#0c79530152f797ce5df313a80117732b620802a6"
+
+"@uifabric/icons@>=5.7.1 <6.0.0":
+  version "5.7.1"
+  resolved "https://registry.yarnpkg.com/@uifabric/icons/-/icons-5.7.1.tgz#31e0552586213267b3a5871426297795cdb77726"
+  dependencies:
+    "@uifabric/styling" ">=5.23.1 <6.0.0"
+    tslib "^1.7.1"
+
+"@uifabric/merge-styles@>=5.15.1 <6.0.0":
+  version "5.15.1"
+  resolved "https://registry.yarnpkg.com/@uifabric/merge-styles/-/merge-styles-5.15.1.tgz#98ac25cf086504c8c820a0d1dc19f3f0a723b698"
+  dependencies:
+    tslib "^1.7.1"
+
+"@uifabric/styling@>=5.23.1 <6.0.0":
+  version "5.23.1"
+  resolved "https://registry.yarnpkg.com/@uifabric/styling/-/styling-5.23.1.tgz#375eb891bb1071562297736b7630ca3e272e1cca"
+  dependencies:
+    "@microsoft/load-themed-styles" "^1.7.13"
+    "@uifabric/merge-styles" ">=5.15.1 <6.0.0"
+    "@uifabric/utilities" ">=5.24.0 <6.0.0"
+    tslib "^1.7.1"
+
+"@uifabric/utilities@>=5.24.0 <6.0.0":
+  version "5.24.0"
+  resolved "https://registry.yarnpkg.com/@uifabric/utilities/-/utilities-5.24.0.tgz#436c786e290f0456ad2534deac543b835599bd01"
+  dependencies:
+    "@uifabric/merge-styles" ">=5.15.1 <6.0.0"
+    prop-types "^15.5.10"
+    tslib "^1.7.1"
+
 abab@^1.0.3:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/abab/-/abab-1.0.4.tgz#5faad9c2c07f60dd76770f71cf025b62a63cfd4e"
@@ -5127,6 +5161,18 @@ obuf@^1.0.0, obuf@^1.1.1:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/obuf/-/obuf-1.1.2.tgz#09bea3343d41859ebd446292d11c9d4db619084e"
 
+office-ui-fabric-react@^5.82.1:
+  version "5.82.1"
+  resolved "https://registry.yarnpkg.com/office-ui-fabric-react/-/office-ui-fabric-react-5.82.1.tgz#cb9b41efb2487632163ca901fd082fcf535e6ccf"
+  dependencies:
+    "@microsoft/load-themed-styles" "^1.7.13"
+    "@uifabric/icons" ">=5.7.1 <6.0.0"
+    "@uifabric/merge-styles" ">=5.15.1 <6.0.0"
+    "@uifabric/styling" ">=5.23.1 <6.0.0"
+    "@uifabric/utilities" ">=5.24.0 <6.0.0"
+    prop-types "^15.5.10"
+    tslib "^1.7.1"
+
 on-finished@~2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/on-finished/-/on-finished-2.3.0.tgz#20f1336481b083cd75337992a16971aa2d906947"
@@ -7147,6 +7193,10 @@ trim-newlines@^1.0.0:
 trim-right@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
+
+tslib@^1.7.1:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.0.tgz#e37a86fda8cbbaf23a057f473c9f4dc64e5fc2e8"
 
 tty-browserify@0.0.0:
   version "0.0.0"
