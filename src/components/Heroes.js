@@ -77,6 +77,7 @@ class Heroes extends Component {
         <ul className="heroes">
           {this.state.heroes.map(hero => (
             <Hero
+              key={hero.id}
               hero={hero}
               selectedHero={this.state.selectedHero}
               onSelect={this.handleSelect}
