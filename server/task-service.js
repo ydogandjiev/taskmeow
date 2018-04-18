@@ -20,8 +20,7 @@ function get(req, res) {
 function create(req, res) {
   const task = new Task({
     user: req.user._id,
-    title: req.body.title,
-    category: req.body.category
+    title: req.body.title
   });
 
   task
@@ -38,7 +37,6 @@ function update(req, res) {
   Task.findOne({ _id: req.params.id })
     .then(task => {
       task.title = req.body.title;
-      task.category = req.body.category;
       task.completed = req.body.completed;
       return task.save();
     })

@@ -17,7 +17,7 @@ const tasksApi = {
     }).then(result => result.json());
   },
   update(task) {
-    return adalApiFetch(fetch, `/api/tasks/${id}`, {
+    return adalApiFetch(fetch, `/api/tasks/${task.id}`, {
       method: "PUT",
       body: JSON.stringify(task),
       headers: {
