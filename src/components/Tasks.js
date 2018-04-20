@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { TextField } from "office-ui-fabric-react";
 import Task from "./Task";
-import tasksApi from "../tasksApi";
+import tasksService from "../services/tasks.service";
 import { Icon } from "office-ui-fabric-react/lib/Icon";
 
 class Tasks extends Component {
@@ -11,14 +11,14 @@ class Tasks extends Component {
   };
 
   componentDidMount() {
-    tasksApi.get().then(tasks => {
+    tasksService.get().then(tasks => {
       this.setState({ tasks });
     });
   }
 
   handleTaskChange = (task, isChecked) => {
     if (isChecked) {
-      tasksApi.destroy(task._id).then(() => {
+      tasksService.destroy(task._id).then(() => {
         this.setState(prevState => {
           return {
             tasks: prevState.tasks.filter(item => item._id !== task._id)
@@ -34,7 +34,7 @@ class Tasks extends Component {
 
   handleKeyDown = event => {
     if (event.key === "Enter") {
-      tasksApi.create(this.state.newTask).then(task => {
+      tasksService.create(this.state.newTask).then(task => {
         this.setState(prevState => {
           return {
             newTask: { title: "" },

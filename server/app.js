@@ -3,6 +3,7 @@ const path = require("path");
 const logger = require("morgan");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
+const bearerToken = require("express-bearer-token");
 
 const authService = require("./auth-service");
 const index = require("./routes/index");
@@ -15,6 +16,7 @@ app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(bearerToken());
 app.use(express.static(path.join(__dirname, "build")));
 
 authService.initialize(app);

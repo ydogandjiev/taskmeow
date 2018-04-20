@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 
 const taskService = require("../task-service");
+const userService = require("../user-service");
+
+router.get("/user", (req, res, next) => userService.get(req, res));
 
 router.get("/tasks", (req, res, next) => taskService.get(req, res));
 

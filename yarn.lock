@@ -2747,6 +2747,10 @@ expand-tilde@^2.0.0, expand-tilde@^2.0.2:
   dependencies:
     homedir-polyfill "^1.0.1"
 
+express-bearer-token@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/express-bearer-token/-/express-bearer-token-2.1.1.tgz#c66ae99867fea56ef25760b9feda179f783e708d"
+
 express@^4.13.3, express@^4.15.3:
   version "4.16.3"
   resolved "https://registry.yarnpkg.com/express/-/express-4.16.3.tgz#6af8a502350db3246ecc4becf6b5a34d22f7ed53"
@@ -4895,6 +4899,12 @@ ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
 
+msal@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/msal/-/msal-0.1.5.tgz#e388d3c87d16cd62839d322aa5fd061b999da94c"
+  dependencies:
+    tslib "^1.7.1"
+
 multicast-dns-service-types@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/multicast-dns-service-types/-/multicast-dns-service-types-1.1.0.tgz#899f11d9686e5e05cb91b35d5f0e63b773cfc901"
@@ -4963,6 +4973,10 @@ node-fetch@^1.0.1:
   dependencies:
     encoding "^0.1.11"
     is-stream "^1.0.1"
+
+node-fetch@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.1.2.tgz#ab884e8e7e57e38a944753cec706f788d1768bb5"
 
 node-forge@0.7.1:
   version "0.7.1"
