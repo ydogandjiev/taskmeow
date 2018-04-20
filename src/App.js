@@ -45,10 +45,9 @@ class App extends Component {
         {this.state.user ? (
           <div>
             <UserTile user={this.state.user} />
-            <DefaultButton text="Logout" onClick={this.logout} />
-            <div>{JSON.stringify(this.state.user)}</div>
             <h1>Tasks</h1>
             <Tasks />
+            <DefaultButton text="Logout" onClick={this.logout} />
           </div>
         ) : (
           <DefaultButton text="Login" onClick={this.login} />

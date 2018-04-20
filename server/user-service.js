@@ -1,3 +1,5 @@
+const fetch = require("node-fetch");
+const request = require("request");
 const authService = require("./auth-service");
 
 function get(req, res) {
@@ -6,8 +8,13 @@ function get(req, res) {
       "https://graph.microsoft.com/user.read"
     ])
     .then(token => {
-      console.log("Exchanged token: " + token);
-      res.status(500).send();
+      request("https://graph.microsoft.com/v1.0/me/photo/$value", {
+        headers: { Authorization: `Bearer ${token}` }
+      }).pipe(res);
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).send(error);
     });
 }
 

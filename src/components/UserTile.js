@@ -1,29 +1,25 @@
 import React, { Component } from "react";
 import { Persona } from "office-ui-fabric-react";
+import initials from "initials";
 import authService from "../services/auth.service";
 
 class UserTile extends Component {
-  state = {};
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.user.objectId !== prevState.user.objectId) {
-      return {
-        userName: nextProps.user.profile.name,
-        userImage: null
-      };
-    }
-
-    return null;
+  constructor(props) {
+    super(props);
+    this.state = {
+      userName: props.user.name,
+      userInitials: initials(props.user.name)
+    };
   }
 
-  loadUserImage() {
-    authService.fetch("/api/user").then(result => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.setState({ userImage: reader.result });
-      };
-      reader.readAsDataURL(result.blob());
-    });
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.user.objectId !== this.state.user.objectId) {
+      this.setState({
+        userName: nextProps.user.profile.name,
+        userInitials: initials(nextProps.user.profile.name),
+        userImage: null
+      });
+    }
   }
 
   componentDidMount() {
@@ -34,6 +30,30 @@ class UserTile extends Component {
     if (prevState.userImage === null) {
       this.loadUserImage();
     }
+  }
+
+  loadUserImage() {
+    authService
+      .fetch("/api/user")
+      .then(result => {
+        if (result.status !== 200) {
+          return new Promise((resolve, reject) => {
+            result.json().then(json => reject(JSON.stringify(json)));
+          });
+        } else {
+          return result.blob();
+        }
+      })
+      .then(blob => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.setState({ userImage: reader.result });
+        };
+        reader.readAsDataURL(blob);
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }
 
   render() {
