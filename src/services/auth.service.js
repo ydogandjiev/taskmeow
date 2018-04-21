@@ -1,56 +1,33 @@
-import * as Msal from "msal";
+import AdalAuthService from "./adal.auth.service";
+import MsalAuthService from "./msal.auth.service";
 
 class AuthService {
   constructor() {
-    let redirectUri = window.location.origin;
-
-    this.applicationConfig = {
-      clientID: "ab93102c-869b-4d34-a921-a31d3e7f76ef"
-    };
-
-    this.app = new Msal.UserAgentApplication(
-      this.applicationConfig.clientID,
-      "",
-      () => {
-        // callback for login redirect
-      },
-      {
-        redirectUri
-      }
-    );
+    const url = new URL(window.location);
+    const params = new URLSearchParams(url.search);
+    this.useAdal = params.get("aadOnly") === "true";
+    this.authService = this.useAdal
+      ? new AdalAuthService()
+      : new MsalAuthService();
   }
 
+  isCallback = () => {
+    return this.authService.isCallback(window.location.hash);
+  };
+
   login = () => {
-    return this.app
-      .loginPopup([this.applicationConfig.clientID])
-      .then(idToken => {
-        return this.app.getUser();
-      })
-      .catch(error => {
-        console.error(error);
-        return null;
-      });
+    return this.authService.login();
   };
 
   logout = () => {
-    this.app.logout();
+    this.authService.logout();
   };
 
   getToken = () => {
-    return this.app
-      .acquireTokenSilent([this.applicationConfig.clientID])
-      .catch(error => {
-        return this.app
-          .acquireTokenPopup([this.applicationConfig.clientID])
-          .then(accessToken => {
-            return accessToken;
-          })
-          .catch(error => {
-            console.error(error);
-          });
-      });
+    return this.authService.getToken();
   };
 
+  // Does an authenticated fetch by acquiring and appending the Bearer token for our backend
   fetch = (url, options) => {
     return this.getToken().then(token => {
       options = options || {};

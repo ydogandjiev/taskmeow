@@ -65,20 +65,11 @@ function ensureAuthenticated() {
   return passport.authenticate("oauth-bearer", { session: false });
 }
 
-function exchangeForToken(tid, jwt, scopes = ["openid"]) {
+function exchangeForToken(endpoint, params) {
   return new Promise((resolve, reject) => {
-    const v2Params = {
-      client_id: process.env.APPSETTING_AAD_ApplicationId,
-      client_secret: process.env.APPSETTING_AAD_ApplicationSecret,
-      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
-      assertion: jwt,
-      requested_token_use: "on_behalf_of",
-      scope: scopes.join(" ")
-    };
-
-    fetch(`https://login.microsoftonline.com/${tid}/oauth2/v2.0/token`, {
+    fetch(endpoint, {
       method: "POST",
-      body: querystring.stringify(v2Params),
+      body: querystring.stringify(params),
       headers: {
         Accept: "application/json",
         "Content-Type": "application/x-www-form-urlencoded"
@@ -97,8 +88,41 @@ function exchangeForToken(tid, jwt, scopes = ["openid"]) {
   });
 }
 
+// Acquires a token for the specified resource using the v1 on-behalf-of AAD flow
+// https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-protocols-oauth-on-behalf-of
+function exchangeForTokenV1(tid, token, resource) {
+  return exchangeForToken(
+    `https://login.microsoftonline.com/${tid}/oauth2/token`,
+    {
+      client_id: process.env.APPSETTING_AAD_ApplicationId,
+      client_secret: process.env.APPSETTING_AAD_ApplicationSecret,
+      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+      assertion: jwt,
+      requested_token_use: "on_behalf_of",
+      resource: resource
+    }
+  );
+}
+
+// Acquires a token for the specified scopes using the v2 on-behalf-of AAD flow
+// https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-protocols-oauth-on-behalf-of
+function exchangeForTokenV2(tid, token, scopes) {
+  return exchangeForToken(
+    `https://login.microsoftonline.com/${tid}/oauth2/v2.0/token`,
+    {
+      client_id: process.env.APPSETTING_AAD_ApplicationId,
+      client_secret: process.env.APPSETTING_AAD_ApplicationSecret,
+      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+      assertion: jwt,
+      requested_token_use: "on_behalf_of",
+      scope: scopes.join(" ")
+    }
+  );
+}
+
 module.exports = {
   initialize,
   ensureAuthenticated,
-  exchangeForToken
+  exchangeForTokenV1,
+  exchangeForTokenV2
 };

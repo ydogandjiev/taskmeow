@@ -38,7 +38,9 @@ class UserTile extends Component {
       .then(result => {
         if (result.status !== 200) {
           return new Promise((resolve, reject) => {
-            result.json().then(json => reject(JSON.stringify(json)));
+            // TODO: Figure out how to reliably log fetch errors
+            // result.json().then(json => reject(JSON.stringify(json)));
+            reject(`Failed to fetch image; error code: ${result.status}`);
           });
         } else {
           return result.blob();

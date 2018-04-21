@@ -1,25 +1,24 @@
 import React, { Component } from "react";
-// import Persona from "office-ui-fabric-react";
 import { DefaultButton } from "office-ui-fabric-react";
 import "./App.css";
 import Tasks from "./components/Tasks";
+import UserTile from "./components/UserTile";
 import authService from "./services/auth.service";
 
 // Initialize Office Fabric icons for use throughout app
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
-import UserTile from "./components/UserTile";
 initializeIcons();
 
 class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      persona: {}
-    };
+  constructor(props) {
+    super(props);
+    this.state = {};
   }
 
   logout = () => {
-    authService.logout();
+    authService.logout().then(() => {
+      this.setState({ user: null });
+    });
   };
 
   login = () => {
@@ -40,20 +39,26 @@ class App extends Component {
   };
 
   render() {
-    return (
-      <div>
-        {this.state.user ? (
-          <div>
-            <UserTile user={this.state.user} />
-            <h1>Tasks</h1>
-            <Tasks />
-            <DefaultButton text="Logout" onClick={this.logout} />
-          </div>
-        ) : (
-          <DefaultButton text="Login" onClick={this.login} />
-        )}
-      </div>
-    );
+    if (!authService.isCallback()) {
+      return (
+        <div>
+          {this.state.user ? (
+            <div>
+              <UserTile user={this.state.user} />
+              <h1>Tasks</h1>
+              <Tasks testing={this.state.testing} />
+              <DefaultButton text="Logout" onClick={this.logout} />
+            </div>
+          ) : (
+            <div>
+              <DefaultButton text="Login" onClick={this.login} />
+            </div>
+          )}
+        </div>
+      );
+    } else {
+      return <div>Signing in...</div>;
+    }
   }
 }
 
