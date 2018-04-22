@@ -97,7 +97,7 @@ function exchangeForTokenV1(tid, token, resource) {
       client_id: process.env.APPSETTING_AAD_ApplicationId,
       client_secret: process.env.APPSETTING_AAD_ApplicationSecret,
       grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
-      assertion: jwt,
+      assertion: token,
       requested_token_use: "on_behalf_of",
       resource: resource
     }
@@ -113,7 +113,7 @@ function exchangeForTokenV2(tid, token, scopes) {
       client_id: process.env.APPSETTING_AAD_ApplicationId,
       client_secret: process.env.APPSETTING_AAD_ApplicationSecret,
       grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
-      assertion: jwt,
+      assertion: token,
       requested_token_use: "on_behalf_of",
       scope: scopes.join(" ")
     }

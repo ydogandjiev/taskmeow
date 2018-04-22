@@ -34,7 +34,7 @@ class UserTile extends Component {
 
   loadUserImage() {
     authService
-      .fetch("/api/user")
+      .fetch("/api/user/image")
       .then(result => {
         if (result.status !== 200) {
           return new Promise((resolve, reject) => {

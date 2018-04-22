@@ -10,7 +10,7 @@ function getGraphToken(tid, token, aadOnly) {
       ]);
 }
 
-function get(req, res) {
+function getImage(req, res) {
   getGraphToken(req.authInfo.tid, req.token, req.query.aadOnly === "true")
     .then(token => {
       request("https://graph.microsoft.com/v1.0/me/photo/$value", {
@@ -24,5 +24,5 @@ function get(req, res) {
 }
 
 module.exports = {
-  get
+  getImage
 };
