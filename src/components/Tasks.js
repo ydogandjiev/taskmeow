@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import { TextField } from "office-ui-fabric-react";
+import { Icon, TextField } from "office-ui-fabric-react";
 import Task from "./Task";
 import tasksService from "../services/tasks.service";
-import { Icon } from "office-ui-fabric-react/lib/Icon";
 
 class Tasks extends Component {
   state = {
@@ -16,7 +15,7 @@ class Tasks extends Component {
     });
   }
 
-  handleTaskChange = (task, isChecked) => {
+  handleTaskCheckedChange = (task, isChecked) => {
     if (isChecked) {
       tasksService.destroy(task._id).then(() => {
         this.setState(prevState => {
@@ -26,6 +25,18 @@ class Tasks extends Component {
         });
       });
     }
+  };
+
+  handleTaskStarredChange = (task, isStarred) => {
+    tasksService.update({ ...task, starred: isStarred }).then(updatedTask => {
+      this.setState(prevState => {
+        return {
+          tasks: prevState.tasks.map(
+            t => (t._id === updatedTask._id ? updatedTask : t)
+          )
+        };
+      });
+    });
   };
 
   handleTextChanged = value => {
@@ -50,9 +61,12 @@ class Tasks extends Component {
       <div className="Tasks">
         <ul className="Tasks-list">
           {this.state.tasks.map(task => (
-            <li key={task._id} className="Tasks-listitem">
-              <Task task={task} onChange={this.handleTaskChange} />
-            </li>
+            <Task
+              key={task._id}
+              task={task}
+              onCheckedChange={this.handleTaskCheckedChange}
+              onStarredChange={this.handleTaskStarredChange}
+            />
           ))}
         </ul>
         <div className="Tasks-add">

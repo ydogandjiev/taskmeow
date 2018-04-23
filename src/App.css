@@ -4,13 +4,34 @@
 }
 
 .Tasks-list {
+  width: 20rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .Tasks-add {
+  width: 20rem;
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.Tasks-add-textfield {
+  flex: 1 1 auto;
+}
+
+.Task-listitem {
+  display: flex;
+  flex-direction: row;
+}
+
+.Task-checkbox {
+  display: flex;
+  flex: 1 1 auto;
+}
+
+.Task-starlink {
+  flex: 0 0 auto;
+  justify-content: flex-end;
 }

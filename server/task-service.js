@@ -38,6 +38,7 @@ function update(req, res) {
     .then(task => {
       task.title = req.body.title;
       task.completed = req.body.completed;
+      task.starred = req.body.starred;
       return task.save();
     })
     .then(task => {

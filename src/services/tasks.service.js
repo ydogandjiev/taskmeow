@@ -22,7 +22,7 @@ class TasksService {
 
   update = task => {
     return authService
-      .fetch(`/api/tasks/${task.id}`, {
+      .fetch(`/api/tasks/${task._id}`, {
         method: "PUT",
         body: JSON.stringify(task),
         headers: {

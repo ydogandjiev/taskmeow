@@ -5,6 +5,7 @@ const taskSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User" },
   title: { type: String, required: true },
   completed: { type: Boolean, default: false },
+  starred: { type: Boolean, default: false },
   date: { type: Date, default: Date.now }
 });
 
