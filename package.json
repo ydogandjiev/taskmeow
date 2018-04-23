@@ -18,6 +18,8 @@
     "msal": "^0.1.5",
     "node-fetch": "^2.1.2",
     "office-ui-fabric-react": "^5.82.1",
+    "passport": "^0.4.0",
+    "passport-azure-ad": "^3.0.12",
     "react": "^15.6.1",
     "react-adal": "^0.3.15",
     "react-dom": "^15.6.1",
@@ -29,7 +31,8 @@
     "react-scripts": "1.0.10"
   },
   "scripts": {
-    "start": "concurrently \"react-scripts start\" \"nodemon server/server.js\"",
+    "start":
+      "concurrently \"react-scripts start\" \"nodemon server/server.js\"",
     "build": "react-scripts build && mv build server",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
