@@ -41,7 +41,7 @@ passport.use(
           newUser.accounts.push(account);
           newUser.firstname = token.name;
           newUser.lastname = token.name;
-          newUser.email = token.upn;
+          newUser.email = token.upn || token.preferred_username;
 
           newUser.save(function(err) {
             if (err) {
