@@ -50,8 +50,17 @@ class App extends Component {
               <DefaultButton text="Logout" onClick={this.logout} />
             </div>
           ) : (
-            <div>
-              <DefaultButton text="Login" onClick={this.login} />
+            <div className="App-login">
+              <div className="App-login-image-container">
+                <img className="App-login-image" src="logo.svg" />
+              </div>
+              <div className="App-login-button-container">
+                <DefaultButton
+                  text="Login"
+                  primary="true"
+                  onClick={this.login}
+                />
+              </div>
             </div>
           )}
         </div>

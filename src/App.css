@@ -1,3 +1,20 @@
+.App-login {
+  display: flex;
+  flex-direction: column;
+}
+
+.App-login-image-container,
+.App-login-button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.App-login-image {
+  width: 15rem;
+  height: 15rem;
+}
+
 .Tasks {
   display: flex;
   flex-direction: column;
