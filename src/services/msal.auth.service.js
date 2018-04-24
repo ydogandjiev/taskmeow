@@ -28,7 +28,10 @@ class MsalAuthService {
 
   login = () => {
     return this.app
-      .loginPopup([this.applicationConfig.clientID])
+      .loginPopup([
+        `api://${this.applicationConfig.clientID}/access_as_user`,
+        "https://graph.microsoft.com/user.read"
+      ])
       .then(idToken => {
         return this.app.getUser();
       });
