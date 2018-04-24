@@ -12,6 +12,7 @@
 
 .Tasks-add {
   width: 20rem;
+  margin: 1rem 0;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -21,17 +22,17 @@
   flex: 1 1 auto;
 }
 
-.Task-listitem {
+.Tasks-list .Task-listitem {
   display: flex;
   flex-direction: row;
 }
 
-.Task-checkbox {
+.Tasks-list .Task-listitem .Task-checkbox {
   display: flex;
   flex: 1 1 auto;
 }
 
-.Task-starlink {
+.Tasks-list .Task-listitem .Task-starlink {
   flex: 0 0 auto;
   justify-content: flex-end;
 }
