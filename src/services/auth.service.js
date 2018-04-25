@@ -5,10 +5,10 @@ class AuthService {
   constructor() {
     const url = new URL(window.location);
     const params = new URLSearchParams(url.search);
-    this.useAdal = params.get("aadOnly") === "true";
-    this.authService = this.useAdal
-      ? new AdalAuthService()
-      : new MsalAuthService();
+    this.useV2 = params.get("useV2") === "true";
+    this.authService = this.useV2
+      ? new MsalAuthService()
+      : new AdalAuthService();
   }
 
   isCallback = () => {
