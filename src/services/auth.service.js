@@ -5,7 +5,9 @@ class AuthService {
   constructor() {
     const url = new URL(window.location);
     const params = new URLSearchParams(url.search);
-    this.useV2 = params.get("useV2") === "true";
+    this.useV2 =
+      params.get("useV2") === "true" ||
+      url.pathname.indexOf("/callback/v2") !== -1;
     this.authService = this.useV2
       ? new MsalAuthService()
       : new AdalAuthService();

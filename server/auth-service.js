@@ -15,6 +15,8 @@ passport.deserializeUser((id, done) => {
   });
 });
 
+// For this to work with tokens acquired via the AAD v2 endpoint the identityMetadata needs to be set to:
+// https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration
 passport.use(
   new OIDCBearerStrategy(
     {
