@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { DefaultButton } from "office-ui-fabric-react";
 import "./App.css";
+import logo from "./logo.svg";
 import Tasks from "./components/Tasks";
 import UserTile from "./components/UserTile";
 import authService from "./services/auth.service";
@@ -52,7 +53,7 @@ class App extends Component {
           ) : (
             <div className="App-login">
               <div className="App-login-image-container">
-                <img className="App-login-image" src="logo.svg" />
+                <img className="App-login-image" src={logo} />
               </div>
               <div className="App-login-button-container">
                 <DefaultButton
