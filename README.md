@@ -2,7 +2,7 @@
 
 This is my implementation of Burke Holland's great React CosmoDB sample.
 
-[![Build Status](https://ydogandjiev.visualstudio.com/_apis/public/build/definitions/2706ea5e-e4e1-4b80-995d-98a4955494e0/2/badge)](https://ydogandjiev.visualstudio.com/react-cosmosdb/_build/index?definitionId=2)
+[![Build Status](https://ydogandjiev.visualstudio.com/_apis/public/build/definitions/35dab36f-5d13-406c-afa8-9b2b906763c4/3/badge)](https://ydogandjiev.visualstudio.com/taskmeow/_build/index?definitionId=3)
 
 ## Installing
 
