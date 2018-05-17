@@ -31,9 +31,8 @@ class App extends Component {
   }
 
   logout = () => {
-    authService.logout().then(() => {
-      this.setState({ user: null });
-    });
+    authService.logout();
+    this.setState({ user: null });
   };
 
   login = () => {
