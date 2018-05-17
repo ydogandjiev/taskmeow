@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Persona } from "office-ui-fabric-react";
+import { Persona, ActionButton } from "office-ui-fabric-react";
 import initials from "initials";
 import authService from "../services/auth.service";
 
@@ -60,10 +60,24 @@ class UserTile extends Component {
 
   render() {
     return (
-      <Persona
-        imageUrl={this.state.userImage}
-        primaryText={this.state.userName}
-      />
+      <ActionButton
+        className="UserTile-button"
+        menuProps={{
+          shouldFocusOnMount: true,
+          items: [
+            {
+              key: "logout",
+              name: "Logout",
+              onClick: this.props.onLogout
+            }
+          ]
+        }}
+      >
+        <Persona
+          imageUrl={this.state.userImage}
+          primaryText={this.state.userName}
+        />
+      </ActionButton>
     );
   }
 }

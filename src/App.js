@@ -59,10 +59,9 @@ class App extends Component {
         <div>
           {this.state.user ? (
             <div>
-              <UserTile user={this.state.user} />
+              <UserTile user={this.state.user} onLogout={this.logout} />
               <h1>Tasks</h1>
               <Tasks testing={this.state.testing} />
-              <DefaultButton text="Logout" onClick={this.logout} />
             </div>
           ) : (
             <div className="App-login">
