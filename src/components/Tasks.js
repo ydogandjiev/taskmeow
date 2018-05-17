@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Icon, TextField } from "office-ui-fabric-react";
+import { Icon, Spinner, TextField } from "office-ui-fabric-react";
 import Task from "./Task";
 import tasksService from "../services/tasks.service";
 
@@ -10,8 +10,9 @@ class Tasks extends Component {
   };
 
   componentDidMount() {
+    this.setState({ loading: true });
     tasksService.get().then(tasks => {
-      this.setState({ tasks });
+      this.setState({ tasks, loading: false });
     });
   }
 
@@ -59,16 +60,20 @@ class Tasks extends Component {
   render() {
     return (
       <div className="Tasks">
-        <ul className="Tasks-list">
-          {this.state.tasks.map(task => (
-            <Task
-              key={task._id}
-              task={task}
-              onCheckedChange={this.handleTaskCheckedChange}
-              onStarredChange={this.handleTaskStarredChange}
-            />
-          ))}
-        </ul>
+        {this.state.loading ? (
+          <Spinner label="Loading tasks..." />
+        ) : (
+          <ul className="Tasks-list">
+            {this.state.tasks.map(task => (
+              <Task
+                key={task._id}
+                task={task}
+                onCheckedChange={this.handleTaskCheckedChange}
+                onStarredChange={this.handleTaskStarredChange}
+              />
+            ))}
+          </ul>
+        )}
         <div className="Tasks-add">
           <div>
             <Icon className="Tasks-add-icon" iconName="Add" />

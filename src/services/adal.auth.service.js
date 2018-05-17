@@ -25,7 +25,7 @@ class AdalAuthService {
     if (this.loginPromise) {
       if (!error) {
         this.getUser()
-          .then(user => this.loginPromiseResolve(user.profile))
+          .then(user => this.loginPromiseResolve(user))
           .catch(error => {
             this.loginPromiseReject(error);
           });
@@ -57,7 +57,7 @@ class AdalAuthService {
     return new Promise((resolve, reject) => {
       this.authContext.getUser((error, user) => {
         if (!error) {
-          resolve(user);
+          resolve(user.profile);
         } else {
           reject(error);
         }
