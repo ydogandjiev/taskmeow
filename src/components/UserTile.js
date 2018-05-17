@@ -62,8 +62,11 @@ class UserTile extends Component {
     return (
       <ActionButton
         className="UserTile-button"
+        split={false}
+        onRenderMenuIcon={() => false}
         menuProps={{
           shouldFocusOnMount: true,
+          useTargetWidth: true,
           items: [
             {
               key: "logout",
