@@ -29,6 +29,10 @@ class AuthService {
     return this.authService.getToken();
   };
 
+  getUser = () => {
+    return this.authService.getUser();
+  };
+
   // Does an authenticated fetch by acquiring and appending the Bearer token for our backend
   fetch = (url, options) => {
     return this.getToken().then(token => {

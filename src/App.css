@@ -16,19 +16,18 @@
 }
 
 .Tasks {
+  width: 20rem;
   display: flex;
   flex-direction: column;
 }
 
 .Tasks-list {
-  width: 20rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .Tasks-add {
-  width: 20rem;
   margin: 1rem 0;
   display: flex;
   flex-direction: row;

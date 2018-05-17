@@ -13,7 +13,21 @@ initializeIcons();
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      loading: true
+    };
+  }
+
+  componentDidMount() {
+    Promise.all([authService.getUser(), authService.getToken()])
+      .then(([user, token]) => {
+        if (user && token) {
+          this.setState({ user, loading: false });
+        }
+      })
+      .catch(() => {
+        this.setState({ loading: false });
+      });
   }
 
   logout = () => {
@@ -23,19 +37,19 @@ class App extends Component {
   };
 
   login = () => {
-    this.setState({ loginFailed: false });
+    this.setState({ loading: true });
     authService
       .login()
       .then(user => {
         if (user) {
-          this.setState({ user });
+          this.setState({ user, loading: false });
         } else {
-          this.setState({ loginFailed: true });
+          this.setState({ loading: false });
         }
       })
       .catch(err => {
         console.error(err);
-        this.setState({ loginFailed: true });
+        this.setState({ loading: false });
       });
   };
 
@@ -53,7 +67,11 @@ class App extends Component {
           ) : (
             <div className="App-login">
               <div className="App-login-image-container">
-                <img className="App-login-image" src={logo} />
+                <img
+                  className="App-login-image"
+                  alt="Taskmeow logo"
+                  src={logo}
+                />
               </div>
               <div className="App-login-button-container">
                 <DefaultButton
