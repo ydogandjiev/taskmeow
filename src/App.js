@@ -25,7 +25,8 @@ class App extends Component {
           this.setState({ user, loading: false });
         }
       })
-      .catch(() => {
+      .catch(err => {
+        console.warn(err);
         this.setState({ loading: false });
       });
   }

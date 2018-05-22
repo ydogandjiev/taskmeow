@@ -1,43 +1,24 @@
-import authService from "./auth.service";
+import RestTasksService from "./rest.tasks.service";
+import MockTasksService from "./mock.tasks.service";
 
 class TasksService {
-  get = () => {
-    return authService
-      .fetch("/api/tasks", { method: "GET" })
-      .then(result => result.json());
-  };
+  constructor() {
+    const url = new URL(window.location);
+    const params = new URLSearchParams(url.search);
+    if (params.get("useTest")) {
+      this.tasksService = new MockTasksService();
+    } else {
+      this.tasksService = new RestTasksService();
+    }
+  }
 
-  create = task => {
-    return authService
-      .fetch("/api/tasks", {
-        method: "POST",
-        body: JSON.stringify(task),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        }
-      })
-      .then(result => result.json());
-  };
+  get = () => this.tasksService.get();
 
-  update = task => {
-    return authService
-      .fetch(`/api/tasks/${task._id}`, {
-        method: "PUT",
-        body: JSON.stringify(task),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        }
-      })
-      .then(result => result.json());
-  };
+  create = task => this.tasksService.create(task);
 
-  destroy = id => {
-    return authService.fetch(`/api/tasks/${id}`, {
-      method: "DELETE"
-    });
-  };
+  update = task => this.tasksService.update(task);
+
+  destroy = id => this.tasksService.destroy(id);
 }
 
 export default new TasksService();

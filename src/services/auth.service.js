@@ -1,16 +1,21 @@
 import AdalAuthService from "./adal.auth.service";
 import MsalAuthService from "./msal.auth.service";
+import MockAuthService from "./mock.auth.service";
 
 class AuthService {
   constructor() {
     const url = new URL(window.location);
     const params = new URLSearchParams(url.search);
-    this.useV2 =
-      params.get("useV2") === "true" ||
-      url.pathname.indexOf("/callback/v2") !== -1;
-    this.authService = this.useV2
-      ? new MsalAuthService()
-      : new AdalAuthService();
+    if (params.get("useTest")) {
+      this.authService = new MockAuthService();
+    } else if (
+      params.get("useV2") ||
+      url.pathname.indexOf("/callback/v2") !== -1
+    ) {
+      this.authService = new MsalAuthService();
+    } else {
+      this.authService = new AdalAuthService();
+    }
   }
 
   isCallback = () => {

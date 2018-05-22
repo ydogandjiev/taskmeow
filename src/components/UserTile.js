@@ -3,6 +3,12 @@ import { Persona, ActionButton } from "office-ui-fabric-react";
 import initials from "initials";
 import authService from "../services/auth.service";
 
+/**
+ * This component is responsible for:
+ * 1. Fetching the user's profile image via a call to /api/user/image
+ * 2. Rendering the user's persona with their image or initials as well as full name
+ * 3. Opening a context menu when the persona is clicked that allows the user to sign out
+ */
 class UserTile extends Component {
   constructor(props) {
     super(props);
