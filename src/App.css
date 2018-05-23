@@ -53,3 +53,17 @@
   flex: 0 0 auto;
   justify-content: flex-end;
 }
+
+.ms-Persona-initials {
+  padding-top: 2px;
+  height: 46px;
+  width: 48px;
+}
+
+.ms-Persona-details {
+  padding-top: 5px;
+}
+
+.ms-ContextualMenu-Callout {
+  background: white;
+}
