@@ -13,7 +13,7 @@ class MsalAuthService {
       "",
       null,
       {
-        redirectUri: window.location.origin + "/callback/v2"
+        redirectUri: `${window.location.origin}/callback/v2`
       }
     );
   }

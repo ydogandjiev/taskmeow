@@ -9,7 +9,7 @@ class AdalAuthService {
       endpoints: {
         api: "36b1586d-b1da-45d2-9b32-899c3757b6f8"
       },
-      redirectUri: window.location.origin + "/callback/v2",
+      redirectUri: `${window.location.origin}/callback/v1`,
       cacheLocation: "localStorage",
       callback: this.loginCallback,
       popUp: true
