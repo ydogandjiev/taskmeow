@@ -63,6 +63,18 @@ function initialize(app) {
   app.use(passport.session());
 }
 
+function authenticateUser(req, res, next) {
+  return passport.authenticate(
+    "oauth-bearer",
+    { session: false },
+    (err, user, info) => {
+      if (err) throw err;
+      req.user = user;
+      next();
+    }
+  )(req, res, next);
+}
+
 function ensureAuthenticated() {
   return passport.authenticate("oauth-bearer", { session: false });
 }
@@ -124,6 +136,7 @@ function exchangeForTokenV2(tid, token, scopes) {
 
 module.exports = {
   initialize,
+  authenticateUser,
   ensureAuthenticated,
   exchangeForTokenV1,
   exchangeForTokenV2

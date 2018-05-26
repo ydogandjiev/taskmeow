@@ -6,7 +6,8 @@ const bodyParser = require("body-parser");
 const bearerToken = require("express-bearer-token");
 
 const authService = require("./auth-service");
-const index = require("./routes/index");
+const rest = require("./routes/rest");
+const graph = require("./routes/graph");
 
 const app = express();
 
@@ -19,29 +20,35 @@ app.use(express.static(path.join(__dirname, "build")));
 
 authService.initialize(app);
 
-// view engine setup
+// Server-rendered views
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 
-app.use("/api", authService.ensureAuthenticated(), index);
+// Graph endpoint
+app.use("/graphql", authService.authenticateUser, graph);
+
+// Rest endpoints
+app.use("/api", authService.ensureAuthenticated(), rest);
+
+// React routes
 app.get("*", (req, res) => {
-  res.sendFile("build/index.html", { root: global });
+  res.sendFile("build/index.html", { root: __dirname });
 });
 
-// catch 404 and forward to error handler
+// Error handling
 app.use(function(req, res, next) {
   const err = new Error("Not Found");
   err.status = 404;
   next(err);
 });
 
-// error handler
+// Error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
+  // Set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  // render the error page
+  // Render the error page
   res.status(err.status || 500);
   res.render("error");
 });

@@ -1,0 +1,37 @@
+type Query {
+  info: String!
+  tasks(filter: String): [Task!]!
+}
+
+type Mutation {
+  createTask(title: String!): Task!
+  updateTask(id: ID!, url: String, description: String): Task
+  deleteTask(id: ID!): Task
+  signup(email: String!, password: String!, name: String!): AuthPayload
+  login(email: String!, password: String!): AuthPayload
+}
+
+type Subscription {
+  newTask: TaskSubscriptionPayload
+}
+
+type AuthPayload {
+  token: String
+  user: User
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  tasks: [Task!]!
+}
+
+type Task {
+  id: ID!
+  title: String!
+  createdAt: DateTime!
+  createdBy: User
+  completed: Boolean
+  starred: Boolean
+}
