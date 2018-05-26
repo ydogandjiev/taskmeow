@@ -16,8 +16,9 @@
 }
 
 .Tasks {
-  width: 20rem;
+  max-width: 20rem;
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
 }
 
@@ -53,11 +54,13 @@
 }
 
 .Tasks-list .Task-listitem .Task-title {
+  display: inline-flex;
   flex: 1 1 auto;
   margin: 0 0.4rem;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  align-items: center;
 }
 
 .Tasks-list .Task-listitem .Task-starlink {
