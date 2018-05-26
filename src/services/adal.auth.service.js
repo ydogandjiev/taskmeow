@@ -12,7 +12,7 @@ class AdalAuthService {
       redirectUri: `${window.location.origin}/callback/v1`,
       cacheLocation: "localStorage",
       callback: this.loginCallback,
-      popUp: true
+      popUp: !window.navigator.standalone
     };
 
     this.authContext = new AuthenticationContext(this.applicationConfig);

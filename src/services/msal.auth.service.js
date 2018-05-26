@@ -23,14 +23,17 @@ class MsalAuthService {
   };
 
   login = () => {
-    return this.app
-      .loginPopup([
-        `api://${this.applicationConfig.clientId}/access_as_user`,
-        "https://graph.microsoft.com/user.read"
-      ])
-      .then(idToken => {
-        return this.app.getUser();
-      });
+    const scopes = [
+      `api://${this.applicationConfig.clientId}/access_as_user`,
+      "https://graph.microsoft.com/user.read"
+    ];
+
+    return (window.navigator.standalone
+      ? this.app.loginRedirect(scopes)
+      : this.app.loginPopup(scopes)
+    ).then(() => {
+      return this.app.getUser();
+    });
   };
 
   logout = () => {
