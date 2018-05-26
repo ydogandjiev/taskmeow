@@ -49,7 +49,15 @@
 
 .Tasks-list .Task-listitem .Task-checkbox {
   display: flex;
+  flex: 0 1 auto;
+}
+
+.Tasks-list .Task-listitem .Task-title {
   flex: 1 1 auto;
+  margin: 0 0.4rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .Tasks-list .Task-listitem .Task-starlink {

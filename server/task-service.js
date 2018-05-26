@@ -20,7 +20,8 @@ function get(req, res) {
 function create(req, res) {
   const task = new Task({
     user: req.user._id,
-    title: req.body.title
+    title: req.body.title,
+    order: req.body.order
   });
 
   task
@@ -39,6 +40,7 @@ function update(req, res) {
       task.title = req.body.title;
       task.completed = req.body.completed;
       task.starred = req.body.starred;
+      task.order = req.body.order;
       return task.save();
     })
     .then(task => {
