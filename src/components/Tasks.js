@@ -9,7 +9,6 @@ const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
-
   return result;
 };
 
@@ -59,14 +58,20 @@ class Tasks extends Component {
 
   handleKeyDown = event => {
     if (event.key === "Enter") {
-      tasksService.create(this.state.newTask).then(task => {
-        this.setState(prevState => {
-          return {
-            newTask: { title: "" },
-            tasks: [...prevState.tasks, task]
-          };
+      const tasks = this.state.tasks;
+      tasksService
+        .create({
+          ...this.state.newTask,
+          order: tasks.length > 0 ? tasks[tasks.length - 1].order + 100 : 100
+        })
+        .then(task => {
+          this.setState(prevState => {
+            return {
+              newTask: { title: "" },
+              tasks: [...prevState.tasks, task]
+            };
+          });
         });
-      });
     }
   };
 
