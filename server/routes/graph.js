@@ -8,7 +8,6 @@ const userService = require("../user-service");
 
 const schema = buildSchema(`
   type Query {
-    info: String!
     tasks: [Task!]!
   }
 
@@ -28,10 +27,6 @@ const schema = buildSchema(`
 `);
 
 const resolvers = {
-  info: (args, request) => {
-    const name = request.user && request.user.firstname;
-    return `Hello ${name || "World"}`;
-  },
   tasks: (args, request) => {
     return taskService.get(request.user._id);
   },
