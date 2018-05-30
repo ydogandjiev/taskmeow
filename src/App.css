@@ -3,16 +3,26 @@
   flex-direction: column;
 }
 
-.App-login-image-container,
-.App-login-button-container {
+.App-login-button-container,
+.App-login-image-container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
 }
 
 .App-login-image {
   width: 15rem;
   height: 15rem;
+}
+
+.App-login-button {
+  margin-bottom: 0.5rem;
+}
+
+.App-login-button-image {
+  width: 1rem;
+  height: 1rem;
 }
 
 .Tasks {

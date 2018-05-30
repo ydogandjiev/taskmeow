@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { DefaultButton } from "office-ui-fabric-react";
 import "./App.css";
 import logo from "./logo.svg";
+import microsoftLogo from "./microsoft.png";
 import Tasks from "./components/Tasks";
 import UserTile from "./components/UserTile";
 import authService from "./services/auth.service";
@@ -74,10 +75,17 @@ class App extends Component {
               </div>
               <div className="App-login-button-container">
                 <DefaultButton
-                  text="Login"
+                  className="App-login-button"
                   primary="true"
                   onClick={this.login}
-                />
+                >
+                  <img
+                    className="App-login-button-image"
+                    alt="Microsoft logo"
+                    src={microsoftLogo}
+                  />
+                  <span className="ms-Button-label label-42">Sign in</span>
+                </DefaultButton>
               </div>
             </div>
           )}
