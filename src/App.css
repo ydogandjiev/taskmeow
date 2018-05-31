@@ -1,6 +1,23 @@
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+.App {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .App-login {
   display: flex;
   flex-direction: column;
+  padding: 1rem 2rem 2rem 2rem;
+  border-radius: 0.4rem;
+  background: #ffffff;
 }
 
 .App-login-button-container,
@@ -25,11 +42,28 @@
   height: 1rem;
 }
 
-.Tasks {
-  max-width: 20rem;
+.App-header {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.App-header .App-header-title {
   flex: 1 1 auto;
+}
+
+.App-content {
+  width: 20rem;
+  padding: 1rem 2rem 2rem 2rem;
+  border-radius: 0.4rem;
+  background: #ffffff;
+}
+
+.Tasks {
+  display: flex;
   flex-direction: column;
+  flex: 0 0 auto;
+  overflow: scroll;
 }
 
 .Tasks-list {

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { DefaultButton } from "office-ui-fabric-react";
 import "./App.css";
 import logo from "./logo.svg";
+import background from "./background.svg";
 import microsoftLogo from "./microsoft.png";
 import Tasks from "./components/Tasks";
 import UserTile from "./components/UserTile";
@@ -57,11 +58,13 @@ class App extends Component {
   render() {
     if (!authService.isCallback()) {
       return (
-        <div>
+        <div className="App" style={{ backgroundImage: `url(${background})` }}>
           {this.state.user ? (
-            <div>
-              <UserTile user={this.state.user} onLogout={this.logout} />
-              <h1>Tasks</h1>
+            <div className="App-content">
+              <div className="App-header">
+                <h1 className="App-header-title">Tasks</h1>
+                <UserTile user={this.state.user} onLogout={this.logout} />
+              </div>
               <Tasks testing={this.state.testing} />
             </div>
           ) : (

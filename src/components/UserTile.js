@@ -14,15 +14,18 @@ class UserTile extends Component {
     super(props);
     this.state = {
       userName: props.user.name,
-      userInitials: initials(props.user.name)
+      userFirstName: props.user.given_name,
+      userInitials: initials(props.user.name),
+      userObjectId: props.user.oid
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.user.objectId !== this.state.user.objectId) {
+    if (nextProps.user.oid !== this.state.userObjectId) {
       this.setState({
-        userName: nextProps.user.profile.name,
+        userName: nextProps.user.given_name,
         userInitials: initials(nextProps.user.profile.name),
+        userObjectId: nextProps.user.oid,
         userImage: null
       });
     }
@@ -82,9 +85,14 @@ class UserTile extends Component {
           ]
         }}
       >
+        <span className="ms-Persona-primaryText primaryText-54">
+          {this.state.userFirstName}
+        </span>
         <Persona
           imageUrl={this.state.userImage}
           primaryText={this.state.userName}
+          imageShouldFadeIn={true}
+          hidePersonaDetails={true}
         />
       </ActionButton>
     );

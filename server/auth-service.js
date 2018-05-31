@@ -41,8 +41,8 @@ passport.use(
           const newUser = new User();
           const account = { uid: token.oid, provider: "aad" };
           newUser.accounts.push(account);
-          newUser.firstname = token.name;
-          newUser.lastname = token.name;
+          newUser.firstname = token.given_name;
+          newUser.lastname = token.family_name;
           newUser.email = token.upn || token.preferred_username;
 
           newUser.save(function(err) {
