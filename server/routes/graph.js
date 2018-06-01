@@ -9,20 +9,27 @@ const userService = require("../user-service");
 const schema = buildSchema(`
   type Query {
     tasks: [Task!]!
+    me: User!
   }
 
   type Mutation {
-    createTask(title: String!, order: Float!, starred: Boolean!): Task!
+    createTask(title: String!, order: Float!, starred: Boolean): Task!
     updateTask(id: ID!, title: String, order: Float, starred: Boolean): Task
     deleteTask(id: ID!): Task
   }
 
   type Task {
-    id: ID!
+    _id: ID!
     title: String!
-    completed: Boolean
     starred: Boolean
     order: Float
+  }
+
+  type User {
+    _id: ID!
+    email: String!
+    firstname: String!
+    lastname: String!
   }
 `);
 
@@ -39,6 +46,14 @@ const resolvers = {
   },
   deleteTask: (args, request) => {
     return taskService.remove(args.id);
+  },
+  me: (args, request) => {
+    return {
+      _id: request.user._id,
+      email: request.user.email,
+      firstname: request.user.firstname,
+      lastname: request.user.lastname
+    };
   }
 };
 

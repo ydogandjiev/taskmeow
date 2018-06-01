@@ -1,6 +1,6 @@
-import AdalAuthService from "./adal.auth.service";
-import MsalAuthService from "./msal.auth.service";
 import MockAuthService from "./mock.auth.service";
+import MsalAuthService from "./msal.auth.service";
+import AdalAuthService from "./adal.auth.service";
 
 class AuthService {
   constructor() {
