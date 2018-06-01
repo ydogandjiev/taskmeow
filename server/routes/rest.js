@@ -20,7 +20,7 @@ router.get("/tasks", (req, res, next) => {
 router.post("/tasks", (req, res, next) => {
   taskService
     .create(req.user._id, req.body.title, req.body.order, req.body.starred)
-    .then(() => {
+    .then(task => {
       res.json(task);
     })
     .catch(err => {
