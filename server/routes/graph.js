@@ -1,37 +1,16 @@
 const graphqlHTTP = require("express-graphql");
 const { buildSchema } = require("graphql");
+const path = require("path");
+const fs = require("fs");
 const express = require("express");
 const router = express.Router();
 
 const taskService = require("../task-service");
 const userService = require("../user-service");
 
-const schema = buildSchema(`
-  type Query {
-    tasks: [Task!]!
-    me: User!
-  }
-
-  type Mutation {
-    createTask(title: String!, order: Float!, starred: Boolean): Task!
-    updateTask(id: ID!, title: String, order: Float, starred: Boolean): Task
-    deleteTask(id: ID!): Task
-  }
-
-  type Task {
-    _id: ID!
-    title: String!
-    starred: Boolean
-    order: Float
-  }
-
-  type User {
-    _id: ID!
-    email: String!
-    firstname: String!
-    lastname: String!
-  }
-`);
+const schema = buildSchema(
+  fs.readFileSync(path.join(__dirname, "schema.graphql"), { encoding: "utf-8" })
+);
 
 const resolvers = {
   tasks: (args, request) => {
