@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "adal-angular": "^1.0.17",
+    "applicationinsights": "^1.0.3",
     "body-parser": "^1.17.2",
     "cookie-parser": "^1.4.3",
     "debug": "~2.6.3",
@@ -33,8 +34,7 @@
     "react-scripts": "^2.0.0-next.66cc7a90"
   },
   "scripts": {
-    "start":
-      "concurrently \"react-scripts start\" \"nodemon server/server.js\"",
+    "start": "concurrently \"react-scripts start\" \"nodemon server/server.js\"",
     "client": "react-scripts start",
     "server": "nodemon server/server.js",
     "build": "react-scripts build && rm -rf server/build && mv build server",
@@ -48,6 +48,11 @@
       "last 2 firefox versions",
       "last 2 edge versions"
     ],
-    "production": [">1%", "last 4 versions", "Firefox ESR", "not ie < 11"]
+    "production": [
+      ">1%",
+      "last 4 versions",
+      "Firefox ESR",
+      "not ie < 11"
+    ]
   }
 }

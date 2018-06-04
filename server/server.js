@@ -4,8 +4,11 @@
  * Module dependencies.
  */
 require("dotenv").config();
+const appInsights = require("applicationinsights");
+appInsights.setup(process.env.APPINSIGHTS_INSTRUMENTATIONKEY).start();
+
 const app = require("./app");
-const debug = require("debug")("express-react:server");
+const debug = require("debug")("taskmeow:server");
 const http = require("http");
 
 /**
