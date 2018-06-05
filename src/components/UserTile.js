@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Persona, ActionButton } from "office-ui-fabric-react";
-import initials from "initials";
 import authService from "../services/auth.service";
 
 /**
@@ -15,20 +14,8 @@ class UserTile extends Component {
     this.state = {
       userName: props.user.name,
       userFirstName: props.user.given_name,
-      userInitials: initials(props.user.name),
       userObjectId: props.user.oid
     };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.user.oid !== this.state.userObjectId) {
-      this.setState({
-        userName: nextProps.user.given_name,
-        userInitials: initials(nextProps.user.profile.name),
-        userObjectId: nextProps.user.oid,
-        userImage: null
-      });
-    }
   }
 
   componentDidMount() {

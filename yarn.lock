@@ -4681,10 +4681,6 @@ ini@^1.3.4, ini@~1.3.0:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.5.tgz#eee25f56db1c9ec6085e0c22778083f596abf927"
 
-initials@^2.1.5:
-  version "2.1.5"
-  resolved "https://registry.yarnpkg.com/initials/-/initials-2.1.5.tgz#36cc96c9986d80e12e3d34dacd9faafbd8357462"
-
 inquirer@5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-5.0.0.tgz#261b77cdb535495509f1b90197108ffb96c02db5"
