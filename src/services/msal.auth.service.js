@@ -18,11 +18,11 @@ class MsalAuthService {
     );
   }
 
-  isCallback = () => {
+  isCallback() {
     return this.app.isCallback(window.location.hash);
-  };
+  }
 
-  login = () => {
+  login() {
     const scopes = [
       `api://${this.applicationConfig.clientId}/access_as_user`,
       "https://graph.microsoft.com/user.read"
@@ -34,17 +34,17 @@ class MsalAuthService {
     ).then(() => {
       return this.app.getUser();
     });
-  };
+  }
 
-  logout = () => {
+  logout() {
     this.app.logout();
-  };
+  }
 
-  getUser = () => {
+  getUser() {
     return Promise.resolve(this.app.getUser());
-  };
+  }
 
-  getToken = () => {
+  getToken() {
     return this.app
       .acquireTokenSilent([this.applicationConfig.clientId])
       .catch(error => {
@@ -57,7 +57,7 @@ class MsalAuthService {
             console.error(error);
           });
       });
-  };
+  }
 }
 
 export default MsalAuthService;

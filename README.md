@@ -1,4 +1,4 @@
-# React CosmosDB
+# Taskmeow
 
 This is my implementation of Burke Holland's great React CosmoDB sample.
 
@@ -9,8 +9,8 @@ This is my implementation of Burke Holland's great React CosmoDB sample.
 ## Installing
 
 ```bash
-git clone https://github.com/ydogandjiev/react-cosmosdb.git
-cd react-cosmosdb
+git clone https://github.com/ydogandjiev/taskmeow.git
+cd taskmeow
 yarn install
 ```
 

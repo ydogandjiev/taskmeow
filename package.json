@@ -1,6 +1,6 @@
 {
-  "name": "react-cosmosdb",
-  "version": "0.1.0",
+  "name": "taskmeow",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "adal-angular": "^1.0.17",
