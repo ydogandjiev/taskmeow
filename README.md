@@ -1,14 +1,16 @@
-# React CosmosDB
+# Taskmeow
 
 This is my implementation of Burke Holland's great React CosmoDB sample.
 
 [![Build Status](https://ydogandjiev.visualstudio.com/_apis/public/build/definitions/35dab36f-5d13-406c-afa8-9b2b906763c4/3/badge)](https://ydogandjiev.visualstudio.com/taskmeow/_build/index?definitionId=3)
+[![Build Status](https://travis-ci.org/ydogandjiev/taskmeow.svg?branch=master)](https://travis-ci.org/ydogandjiev/taskmeow)
+[![Coverage Status](https://coveralls.io/repos/github/ydogandjiev/taskmeow/badge.svg?branch=code-coverage)](https://coveralls.io/github/ydogandjiev/taskmeow?branch=code-coverage)
 
 ## Installing
 
 ```bash
-git clone https://github.com/ydogandjiev/react-cosmosdb.git
-cd react-cosmosdb
+git clone https://github.com/ydogandjiev/taskmeow.git
+cd taskmeow
 yarn install
 ```
 

@@ -18,10 +18,6 @@ class AdalAuthService {
     this.authContext = new AuthenticationContext(this.applicationConfig);
   }
 
-  isCallback = () => {
-    return this.authContext.isCallback(window.location.hash);
-  };
-
   loginCallback = (reason, token, error) => {
     if (this.loginPromise) {
       if (!error) {
@@ -36,7 +32,11 @@ class AdalAuthService {
     }
   };
 
-  login = () => {
+  isCallback() {
+    return this.authContext.isCallback(window.location.hash);
+  }
+
+  login() {
     if (!this.loginPromise) {
       this.loginPromise = new Promise((resolve, reject) => {
         // Allow the promise to be resolved/rejected from the loginCallback above
@@ -48,13 +48,13 @@ class AdalAuthService {
       });
     }
     return this.loginPromise;
-  };
+  }
 
-  logout = () => {
+  logout() {
     this.authContext.logOut();
-  };
+  }
 
-  getUser = () => {
+  getUser() {
     return new Promise((resolve, reject) => {
       this.authContext.getUser((error, user) => {
         if (!error) {
@@ -64,9 +64,9 @@ class AdalAuthService {
         }
       });
     });
-  };
+  }
 
-  getToken = () => {
+  getToken() {
     return new Promise((resolve, reject) => {
       this.authContext.acquireToken(
         this.applicationConfig.endpoints.api,
@@ -79,7 +79,7 @@ class AdalAuthService {
         }
       );
     });
-  };
+  }
 }
 
 export default AdalAuthService;
