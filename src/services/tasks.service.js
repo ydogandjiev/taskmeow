@@ -1,6 +1,7 @@
 import MockTasksService from "./mock.tasks.service";
 import RestTasksService from "./rest.tasks.service";
 import GraphTasksService from "./graph.tasks.service";
+
 class TasksService {
   constructor() {
     const url = new URL(window.location);

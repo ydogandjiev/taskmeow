@@ -14,6 +14,8 @@
     "express-graphql": "^0.6.12",
     "graphql": "^0.13.2",
     "jade": "^1.11.0",
+    "jest-environment-jsdom": "^23.1.0",
+    "jest-environment-jsdom-global": "^1.1.0",
     "mongodb": "^3.0.5",
     "mongoose": "^5.0.13",
     "morgan": "^1.8.2",
@@ -37,7 +39,7 @@
     "client": "react-scripts start",
     "server": "nodemon server/server.js",
     "build": "react-scripts build && rm -rf server/build && mv build server",
-    "test": "react-scripts test --env=jsdom",
+    "test": "react-scripts test --env=jest-environment-jsdom-global",
     "eject": "react-scripts eject"
   },
   "proxy": "http://localhost:3001",

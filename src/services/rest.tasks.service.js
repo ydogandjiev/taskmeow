@@ -1,13 +1,13 @@
 import authService from "./auth.service";
 
 class RestTasksService {
-  get = () => {
+  get() {
     return authService
       .fetch("/api/tasks", { method: "GET" })
       .then(result => result.json());
-  };
+  }
 
-  create = task => {
+  create(task) {
     return authService
       .fetch("/api/tasks", {
         method: "POST",
@@ -18,9 +18,9 @@ class RestTasksService {
         }
       })
       .then(result => result.json());
-  };
+  }
 
-  update = task => {
+  update(task) {
     return authService
       .fetch(`/api/tasks/${task._id}`, {
         method: "PUT",
@@ -31,13 +31,13 @@ class RestTasksService {
         }
       })
       .then(result => result.json());
-  };
+  }
 
-  destroy = id => {
+  destroy(id) {
     return authService.fetch(`/api/tasks/${id}`, {
       method: "DELETE"
     });
-  };
+  }
 }
 
 export default RestTasksService;

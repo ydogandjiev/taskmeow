@@ -1,7 +1,7 @@
 import authService from "./auth.service";
 
 class GraphTasksService {
-  get = () => {
+  get() {
     return authService
       .fetch("/graphql", {
         method: "POST",
@@ -19,9 +19,9 @@ class GraphTasksService {
       .catch(error => {
         console.error(error);
       });
-  };
+  }
 
-  create = task => {
+  create(task) {
     return authService
       .fetch("/graphql", {
         method: "POST",
@@ -41,9 +41,9 @@ class GraphTasksService {
       .catch(error => {
         console.error(error);
       });
-  };
+  }
 
-  update = task => {
+  update(task) {
     return authService
       .fetch("/graphql", {
         method: "POST",
@@ -65,9 +65,9 @@ class GraphTasksService {
       .catch(error => {
         console.error(error);
       });
-  };
+  }
 
-  destroy = id => {
+  destroy(id) {
     return authService
       .fetch("/graphql", {
         method: "POST",
@@ -85,7 +85,7 @@ class GraphTasksService {
       .catch(error => {
         console.error(error);
       });
-  };
+  }
 }
 
 export default GraphTasksService;

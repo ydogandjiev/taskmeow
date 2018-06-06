@@ -1,8 +1,62 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
 
-it('renders without crashing', () => {
-  const div = document.createElement('div');
+import authService from "./services/auth.service";
+jest.mock("./services/auth.service");
+
+import tasksService from "./services/tasks.service";
+jest.mock("./services/tasks.service");
+
+beforeEach(() => {
+  jest.resetModules();
+});
+
+it("renders logged out view", done => {
+  const div = document.createElement("div");
   ReactDOM.render(<App />, div);
+
+  setTimeout(() => {
+    expect(div.getElementsByClassName("App-login").length).toEqual(1);
+    done();
+  });
+});
+
+it("renders logged in view", done => {
+  const user = {
+    name: "mockName",
+    given_name: "mockGivenName",
+    oid: "mockOid"
+  };
+  authService.getUser.mockResolvedValue(user);
+
+  const token = "mockToken";
+  authService.getToken.mockResolvedValue(token);
+
+  const result = {
+    status: 200,
+    blob: jest.fn(() => "mockBlob")
+  };
+  authService.fetch.mockResolvedValue(result);
+
+  const tasks = [];
+  tasksService.get.mockResolvedValue(tasks);
+
+  const mockFileReaderInstance = {
+    result: "mockResult",
+    readAsDataURL: blob => {
+      expect(blob).toEqual("mockBlob");
+      expect(mockFileReaderInstance.onload).toBeDefined();
+      mockFileReaderInstance.onload();
+    }
+  };
+  window.FileReader = jest.fn(() => mockFileReaderInstance);
+
+  const div = document.createElement("div");
+  ReactDOM.render(<App />, div);
+
+  setTimeout(() => {
+    expect(div.getElementsByClassName("App-content").length).toEqual(1);
+    done();
+  });
 });
