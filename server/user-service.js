@@ -13,9 +13,22 @@ function getGraphToken(tid, token, useV2) {
 function getImage(req, res) {
   getGraphToken(req.authInfo.tid, req.token, req.query.useV2 === "true")
     .then(token => {
-      request("https://graph.microsoft.com/v1.0/me/photo/$value", {
-        headers: { Authorization: `Bearer ${token}` }
-      }).pipe(res);
+      request(
+        "https://graph.microsoft.com/v1.0/me/photo/$value",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          encoding: null
+        },
+        (error, response, body) => {
+          if (error) {
+            console.error(error);
+            res.status(500).send(error);
+          } else {
+            res.contentType("image/jpeg");
+            res.end(body);
+          }
+        }
+      );
     })
     .catch(error => {
       console.error(error);
