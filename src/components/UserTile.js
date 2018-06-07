@@ -11,10 +11,15 @@ import authService from "../services/auth.service";
 class UserTile extends Component {
   constructor(props) {
     super(props);
+
+    const url = new URL(window.location);
+    const params = new URLSearchParams(url.search);
+
     this.state = {
       userName: props.user.name,
       userFirstName: props.user.given_name,
-      userObjectId: props.user.oid
+      userObjectId: props.user.oid,
+      useV2: !!params.get("useV2")
     };
   }
 
@@ -30,7 +35,7 @@ class UserTile extends Component {
 
   loadUserImage() {
     authService
-      .fetch("/api/user/image")
+      .fetch(`/api/user/image?useV2=${this.state.useV2}`)
       .then(result => {
         if (result.status !== 200) {
           return new Promise((resolve, reject) => {
