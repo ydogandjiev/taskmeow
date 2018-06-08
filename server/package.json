@@ -1,6 +1,6 @@
 {
-  "name": "express-react-starter",
-  "version": "0.1.0",
+  "name": "taskmeow",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "applicationinsights": "^1.0.3",
