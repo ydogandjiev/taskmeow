@@ -94,7 +94,7 @@ it("can update task", done => {
   });
 });
 
-it("can delete task", done => {
+it("can destroy task", done => {
   const mockResponse = new Response(
     JSON.stringify({
       _id: "fakeId",
