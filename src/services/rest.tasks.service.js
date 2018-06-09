@@ -34,9 +34,11 @@ class RestTasksService {
   }
 
   destroy(id) {
-    return authService.fetch(`/api/tasks/${id}`, {
-      method: "DELETE"
-    });
+    return authService
+      .fetch(`/api/tasks/${id}`, {
+        method: "DELETE"
+      })
+      .then(result => result.json());
   }
 }
 
