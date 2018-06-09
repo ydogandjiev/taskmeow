@@ -43,7 +43,7 @@ router.delete("/tasks/:id", (req, res, next) => {
   taskService
     .remove(req.params.id)
     .then(task => {
-      res.status(204).send(task);
+      res.status(202).json(task);
     })
     .catch(err => {
       res.status(500).send(err);
