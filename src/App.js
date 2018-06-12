@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { DefaultButton } from "office-ui-fabric-react";
 import "./App.css";
 import logo from "./logo.svg";
-import background from "./background.svg";
+import background from "./background.png";
 import microsoftLogo from "./microsoft.png";
 import Tasks from "./components/Tasks";
 import UserTile from "./components/UserTile";
