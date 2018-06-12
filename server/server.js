@@ -8,7 +8,6 @@ const appInsights = require("applicationinsights");
 appInsights.setup(process.env.APPINSIGHTS_INSTRUMENTATIONKEY).start();
 
 const app = require("./app");
-const debug = require("debug")("taskmeow:server");
 const http = require("http");
 
 /**
@@ -79,5 +78,5 @@ function onError(error) {
 function onListening() {
   const addr = server.address();
   const bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
-  debug("Listening on " + bind);
+  console.log("Listening on " + bind);
 }
