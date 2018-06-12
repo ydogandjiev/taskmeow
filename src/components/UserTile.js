@@ -77,7 +77,7 @@ class UserTile extends Component {
           ]
         }}
       >
-        <span className="ms-Persona-primaryText primaryText-54">
+        <span className="ms-Persona-primaryText primaryText-58">
           {this.state.userFirstName}
         </span>
         <Persona

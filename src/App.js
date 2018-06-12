@@ -86,7 +86,7 @@ class App extends Component {
                     alt="Microsoft logo"
                     src={microsoftLogo}
                   />
-                  <span className="ms-Button-label label-42">Sign in</span>
+                  <span className="ms-Button-label label-46">Sign in</span>
                 </DefaultButton>
               </div>
             </div>
