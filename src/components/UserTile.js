@@ -82,7 +82,7 @@ class UserTile extends Component {
         </span>
         <Persona
           imageUrl={this.state.userImage}
-          primaryText={this.state.userName}
+          text={this.state.userName}
           imageShouldFadeIn={true}
           hidePersonaDetails={true}
         />

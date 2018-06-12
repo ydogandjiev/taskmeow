@@ -9,7 +9,7 @@ import UserTile from "./components/UserTile";
 import authService from "./services/auth.service";
 
 // Initialize Office Fabric icons for use throughout app
-import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
+import { initializeIcons } from "@uifabric/icons";
 initializeIcons();
 
 class App extends Component {
