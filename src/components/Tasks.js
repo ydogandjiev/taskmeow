@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Icon, Spinner, TextField } from "office-ui-fabric-react";
 import { Droppable, DragDropContext } from "react-beautiful-dnd";
 import Task from "./Task";
+import UserTile from "./UserTile";
 import tasksService from "../services/tasks.service";
 
 // A little function to help us with reordering the result
@@ -108,45 +109,51 @@ class Tasks extends Component {
 
   render() {
     return (
-      <DragDropContext onDragEnd={this.onDragEnd}>
-        <div className="Tasks">
-          {this.state.loading ? (
-            <Spinner label="Loading tasks..." />
-          ) : (
-            <Droppable droppableId="tasksDroppable" type="TASK">
-              {(provided, snapshot) => (
-                <ul
-                  className="Tasks-list"
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                >
-                  {this.state.tasks.map((task, index) => (
-                    <Task
-                      key={task._id}
-                      index={index}
-                      task={task}
-                      onCheckedChange={this.handleTaskCheckedChange}
-                      onStarredChange={this.handleTaskStarredChange}
-                    />
-                  ))}
-                </ul>
-              )}
-            </Droppable>
-          )}
-          <div className="Tasks-add">
-            <div>
-              <Icon className="Tasks-add-icon" iconName="Add" />
-            </div>
-            <TextField
-              className="Tasks-add-textfield"
-              placeholder="New Task"
-              value={this.state.newTask.title}
-              onChanged={this.handleTextChanged}
-              onKeyDown={this.handleKeyDown}
-            />
-          </div>
+      <div className="App-content">
+        <div className="App-header">
+          <h1 className="App-header-title">Tasks</h1>
+          <UserTile history={this.props.history} />
         </div>
-      </DragDropContext>
+        <DragDropContext onDragEnd={this.onDragEnd}>
+          <div className="Tasks">
+            {this.state.loading ? (
+              <Spinner label="Loading tasks..." />
+            ) : (
+              <Droppable droppableId="tasksDroppable" type="TASK">
+                {(provided, snapshot) => (
+                  <ul
+                    className="Tasks-list"
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                  >
+                    {this.state.tasks.map((task, index) => (
+                      <Task
+                        key={task._id}
+                        index={index}
+                        task={task}
+                        onCheckedChange={this.handleTaskCheckedChange}
+                        onStarredChange={this.handleTaskStarredChange}
+                      />
+                    ))}
+                  </ul>
+                )}
+              </Droppable>
+            )}
+            <div className="Tasks-add">
+              <div>
+                <Icon className="Tasks-add-icon" iconName="Add" />
+              </div>
+              <TextField
+                className="Tasks-add-textfield"
+                placeholder="New Task"
+                value={this.state.newTask.title}
+                onChanged={this.handleTextChanged}
+                onKeyDown={this.handleKeyDown}
+              />
+            </div>
+          </div>
+        </DragDropContext>
+      </div>
     );
   }
 }

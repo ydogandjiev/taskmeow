@@ -1,11 +1,12 @@
 import React, { Component } from "react";
-import { DefaultButton } from "office-ui-fabric-react";
+import { Switch, Route } from "react-router-dom";
+import { DefaultButton, Label } from "office-ui-fabric-react";
 import "./App.css";
 import logo from "./logo.svg";
 import background from "./background.png";
 import microsoftLogo from "./microsoft.png";
+import Profile from "./components/Profile";
 import Tasks from "./components/Tasks";
-import UserTile from "./components/UserTile";
 import authService from "./services/auth.service";
 
 // Initialize Office Fabric icons for use throughout app
@@ -32,11 +33,6 @@ class App extends Component {
       });
   }
 
-  logout = () => {
-    authService.logout();
-    this.setState({ user: null });
-  };
-
   login = () => {
     this.setState({ loading: true });
     authService
@@ -59,13 +55,10 @@ class App extends Component {
       return (
         <div className="App" style={{ backgroundImage: `url(${background})` }}>
           {this.state.user ? (
-            <div className="App-content">
-              <div className="App-header">
-                <h1 className="App-header-title">Tasks</h1>
-                <UserTile user={this.state.user} onLogout={this.logout} />
-              </div>
-              <Tasks testing={this.state.testing} />
-            </div>
+            <Switch>
+              <Route path="/profile" component={Profile} />
+              <Route path="/" component={Tasks} />
+            </Switch>
           ) : (
             <div className="App-login">
               <div className="App-login-image-container">
@@ -94,7 +87,7 @@ class App extends Component {
         </div>
       );
     } else {
-      return <div>Signing in...</div>;
+      return <Label>Signing in...</Label>;
     }
   }
 }

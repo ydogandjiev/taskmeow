@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Persona, ActionButton } from "office-ui-fabric-react";
+import { ActionButton, Persona, Spinner } from "office-ui-fabric-react";
 import authService from "../services/auth.service";
 
 /**
@@ -16,21 +16,15 @@ class UserTile extends Component {
     const params = new URLSearchParams(url.search);
 
     this.state = {
-      userName: props.user.name,
-      userFirstName: props.user.given_name,
-      userObjectId: props.user.oid,
       useV2: !!params.get("useV2")
     };
   }
 
   componentDidMount() {
-    this.loadUserImage();
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.userImage === null) {
+    authService.getUser().then(user => {
+      this.setState({ user });
       this.loadUserImage();
-    }
+    });
   }
 
   loadUserImage() {
@@ -59,35 +53,61 @@ class UserTile extends Component {
       });
   }
 
+  viewTasks = () => {
+    this.props.history.push("/");
+  };
+
+  viewProfile = () => {
+    this.props.history.push("/profile");
+  };
+
+  logout = () => {
+    authService.logout();
+  };
+
   render() {
-    return (
-      <ActionButton
-        className="UserTile-button"
-        split={false}
-        onRenderMenuIcon={() => false}
-        menuProps={{
-          shouldFocusOnMount: true,
-          useTargetWidth: true,
-          items: [
-            {
-              key: "logout",
-              name: "Logout",
-              onClick: this.props.onLogout
-            }
-          ]
-        }}
-      >
-        <span className="ms-Persona-primaryText primaryText-58">
-          {this.state.userFirstName}
-        </span>
-        <Persona
-          imageUrl={this.state.userImage}
-          text={this.state.userName}
-          imageShouldFadeIn={true}
-          hidePersonaDetails={true}
-        />
-      </ActionButton>
-    );
+    if (!this.state.user) {
+      return <Spinner label="Loading user..." />;
+    } else {
+      return (
+        <ActionButton
+          className="UserTile-button"
+          split={false}
+          onRenderMenuIcon={() => false}
+          menuProps={{
+            shouldFocusOnMount: true,
+            useTargetWidth: true,
+            items: [
+              {
+                key: "tasks",
+                name: "Tasks",
+                onClick: this.viewTasks
+              },
+              {
+                key: "profile",
+                name: "Profile",
+                onClick: this.viewProfile
+              },
+              {
+                key: "logout",
+                name: "Logout",
+                onClick: this.logout
+              }
+            ]
+          }}
+        >
+          <span className="ms-Persona-primaryText primaryText-58">
+            {this.state.user.given_name}
+          </span>
+          <Persona
+            imageUrl={this.state.userImage}
+            text={this.state.user.name}
+            imageShouldFadeIn={true}
+            hidePersonaDetails={true}
+          />
+        </ActionButton>
+      );
+    }
   }
 }
 
