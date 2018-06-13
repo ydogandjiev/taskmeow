@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Label, TextField } from "office-ui-fabric-react";
+import { Spinner, TextField } from "office-ui-fabric-react";
 import UserTile from "./UserTile";
 import authService from "../services/auth.service";
 
@@ -49,7 +49,7 @@ class Profile extends Component {
               />
             </div>
           ) : (
-            <Label>Loading...</Label>
+            <Spinner label="Loading profile..." />
           )}
         </div>
       </div>

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
-import { DefaultButton, Label } from "office-ui-fabric-react";
+import { DefaultButton, Spinner } from "office-ui-fabric-react";
 import "./App.css";
 import logo from "./logo.svg";
 import background from "./background.png";
@@ -87,7 +87,7 @@ class App extends Component {
         </div>
       );
     } else {
-      return <Label>Signing in...</Label>;
+      return <Spinner label="Signing in..." />;
     }
   }
 }
