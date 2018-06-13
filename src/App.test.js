@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 
 import authService from "./services/auth.service";
@@ -14,7 +15,12 @@ beforeEach(() => {
 
 it("renders logged out view", done => {
   const div = document.createElement("div");
-  ReactDOM.render(<App />, div);
+  ReactDOM.render(
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>,
+    div
+  );
 
   setTimeout(() => {
     expect(div.getElementsByClassName("App-login").length).toEqual(1);
@@ -53,7 +59,12 @@ it("renders logged in view", done => {
   window.FileReader = jest.fn(() => mockFileReaderInstance);
 
   const div = document.createElement("div");
-  ReactDOM.render(<App />, div);
+  ReactDOM.render(
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>,
+    div
+  );
 
   setTimeout(() => {
     expect(div.getElementsByClassName("App-content").length).toEqual(1);
