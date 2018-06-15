@@ -71,6 +71,4 @@ it("renders unstarred task", () => {
   const unstarredIcon = div.getElementsByClassName("Task-unstarred-icon")[0];
   expect(starredIcon).toBeUndefined();
   expect(unstarredIcon).toBeDefined();
-
-  expect(true);
 });
