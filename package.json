@@ -33,6 +33,7 @@
   "devDependencies": {
     "concurrently": "^3.5.0",
     "coveralls": "^3.0.1",
+    "jest-localstorage-mock": "^2.2.0",
     "nodemon": "^1.12.0",
     "react-scripts": "^2.0.0-next.66cc7a90"
   },
