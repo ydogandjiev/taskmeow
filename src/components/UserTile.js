@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { ActionButton, Persona, Spinner } from "office-ui-fabric-react";
 import authService from "../services/auth.service";
+import userService from "../services/user.service";
 
 /**
  * This component is responsible for:
@@ -21,32 +22,14 @@ class UserTile extends Component {
   }
 
   componentDidMount() {
-    authService.getUser().then(user => {
+    authService.getUser(this.state.useV2).then(user => {
       this.setState({ user });
-      this.loadUserImage();
     });
-  }
 
-  loadUserImage() {
-    authService
-      .fetch(`/api/user/image?useV2=${this.state.useV2}`)
-      .then(result => {
-        if (result.status !== 200) {
-          return new Promise((resolve, reject) => {
-            // TODO: Figure out how to reliably log fetch errors
-            // result.json().then(json => reject(JSON.stringify(json)));
-            reject(`Failed to fetch image; error code: ${result.status}`);
-          });
-        } else {
-          return result.blob();
-        }
-      })
-      .then(blob => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          this.setState({ userImage: reader.result });
-        };
-        reader.readAsDataURL(blob);
+    userService
+      .getImage()
+      .then(userImage => {
+        this.setState({ userImage });
       })
       .catch(error => {
         console.error(error);

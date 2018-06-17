@@ -12,6 +12,9 @@ jest.mock("../services/auth.service");
 import tasksService from "../services/tasks.service";
 jest.mock("../services/tasks.service");
 
+import userService from "../services/user.service";
+jest.mock("../services/user.service");
+
 it("renders tasks", () => {
   const user = {
     name: "mockName",
@@ -20,24 +23,10 @@ it("renders tasks", () => {
   };
   authService.getUser.mockResolvedValue(user);
 
-  const result = {
-    status: 200,
-    blob: jest.fn(() => "mockBlob")
-  };
-  authService.fetch.mockResolvedValue(result);
+  userService.getImage.mockResolvedValue("mockImage");
 
   const tasks = [];
   tasksService.get.mockResolvedValue(tasks);
-
-  const mockFileReaderInstance = {
-    result: "mockResult",
-    readAsDataURL: blob => {
-      expect(blob).toEqual("mockBlob");
-      expect(mockFileReaderInstance.onload).toBeDefined();
-      mockFileReaderInstance.onload();
-    }
-  };
-  window.FileReader = jest.fn(() => mockFileReaderInstance);
 
   const div = document.createElement("div");
   ReactDOM.render(<Tasks />, div);

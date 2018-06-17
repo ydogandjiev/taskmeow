@@ -9,6 +9,9 @@ initializeIcons();
 import authService from "../services/auth.service";
 jest.mock("../services/auth.service");
 
+import userService from "../services/user.service";
+jest.mock("../services/user.service");
+
 it("renders profile", () => {
   const user = {
     name: "mockName",
@@ -17,21 +20,7 @@ it("renders profile", () => {
   };
   authService.getUser.mockResolvedValue(user);
 
-  const result = {
-    status: 200,
-    blob: jest.fn(() => "mockBlob")
-  };
-  authService.fetch.mockResolvedValue(result);
-
-  const mockFileReaderInstance = {
-    result: "mockResult",
-    readAsDataURL: blob => {
-      expect(blob).toEqual("mockBlob");
-      expect(mockFileReaderInstance.onload).toBeDefined();
-      mockFileReaderInstance.onload();
-    }
-  };
-  window.FileReader = jest.fn(() => mockFileReaderInstance);
+  userService.getImage.mockResolvedValue("mockImage");
 
   const div = document.createElement("div");
   ReactDOM.render(<Profile />, div);
