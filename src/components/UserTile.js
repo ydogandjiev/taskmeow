@@ -60,6 +60,8 @@ class UserTile extends Component {
           menuProps={{
             shouldFocusOnMount: true,
             useTargetWidth: true,
+            isBeakVisible: false,
+            gapSpace: 10,
             items: [
               {
                 key: "tasks",
