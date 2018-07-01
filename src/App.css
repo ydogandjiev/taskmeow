@@ -78,7 +78,6 @@ body,
 }
 
 .Tasks-add {
-  margin: 1rem 0;
   display: flex;
   flex: 0 0 auto;
   flex-direction: row;

@@ -23,7 +23,7 @@ class Tasks extends Component {
     this.setState({ loading: true });
     tasksService.get().then(tasks => {
       this.setState({
-        tasks: tasks.sort((a, b) => a.order - b.order),
+        tasks: tasks.sort((a, b) => b.order - a.order),
         loading: false
       });
     });
@@ -63,13 +63,13 @@ class Tasks extends Component {
       tasksService
         .create({
           ...this.state.newTask,
-          order: tasks.length > 0 ? tasks[tasks.length - 1].order + 100 : 100
+          order: tasks.length > 0 ? tasks[0].order + 100 : 100
         })
         .then(task => {
           this.setState(prevState => {
             return {
               newTask: { title: "" },
-              tasks: [...prevState.tasks, task]
+              tasks: [task, ...prevState.tasks]
             };
           });
         });
@@ -116,6 +116,18 @@ class Tasks extends Component {
         </div>
         <DragDropContext onDragEnd={this.onDragEnd}>
           <div className="Tasks">
+            <div className="Tasks-add">
+              <div>
+                <Icon className="Tasks-add-icon" iconName="Add" />
+              </div>
+              <TextField
+                className="Tasks-add-textfield"
+                placeholder="New Task"
+                value={this.state.newTask.title}
+                onChanged={this.handleTextChanged}
+                onKeyDown={this.handleKeyDown}
+              />
+            </div>
             {this.state.loading ? (
               <Spinner label="Loading tasks..." />
             ) : (
@@ -139,18 +151,6 @@ class Tasks extends Component {
                 )}
               </Droppable>
             )}
-            <div className="Tasks-add">
-              <div>
-                <Icon className="Tasks-add-icon" iconName="Add" />
-              </div>
-              <TextField
-                className="Tasks-add-textfield"
-                placeholder="New Task"
-                value={this.state.newTask.title}
-                onChanged={this.handleTextChanged}
-                onKeyDown={this.handleKeyDown}
-              />
-            </div>
           </div>
         </DragDropContext>
       </div>
