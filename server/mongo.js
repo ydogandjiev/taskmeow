@@ -5,7 +5,7 @@ const password = process.env.SQLCONNSTR_CosmosPassword;
 
 mongoose.Promise = global.Promise;
 
-const mongoUri = `mongodb://ds018558.mlab.com:18558/taskmeow`;
+const mongoUri = `mongodb://ds018798-a0.mlab.com:18798,ds018798-a1.mlab.com:18796/taskmeow?replicaSet=rs-ds018798`;
 
 function connect() {
   return mongoose
