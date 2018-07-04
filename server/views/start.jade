@@ -1,0 +1,40 @@
+doctype html
+
+html
+  head
+    title Task Meow
+
+  body
+    script(src="https://statics.teams.microsoft.com/sdk/v1.2/js/MicrosoftTeams.min.js", integrity="sha384-OncOcMprEYFkUvhe15zi8VdCZIOcuNGnf4ilq2yTfDEjTwPF19V7pZrzxOq/iqt0", crossorigin="anonymous")
+    script(src="https://secure.aadcdn.microsoftonline-p.com/lib/1.0.15/js/adal.min.js", integrity="sha384-lIk8T3uMxKqXQVVfFbiw0K/Nq+kt1P3NtGt/pNexiDby2rKU6xnDY8p16gIwKqgI", crossorigin="anonymous")
+
+    script.
+      microsoftTeams.initialize();
+
+      // Get the tab context, and use the information to navigate to Azure AD login page
+      microsoftTeams.getContext(function (context) {
+
+        // ADAL.js configuration
+        const config = {
+            // Use the tenant id of the current organization. For guest users, we want an access token for 
+            // the tenant we are currently in, not the home tenant of the guest. 
+            tenant: context.tid,
+            clientId: "ab93102c-869b-4d34-a921-a31d3e7f76ef",
+            redirectUri: window.location.origin + "/tab/silent-end",
+            cacheLocation: "localStorage",
+            navigateToLoginRequestUrl: false,
+        };
+
+        // Setup extra query parameters for ADAL
+        // - openid and profile scope adds profile information to the id_token
+        // - login_hint provides the expected user name
+        if (context.loginHint) {
+          config.extraQueryParameter = "scope=openid+profile&login_hint=" + encodeURIComponent(context.loginHint);
+        } else {
+          config.extraQueryParameter = "scope=openid+profile";
+        }
+
+        // Navigate to the AzureAD login page
+        const authContext = new AuthenticationContext(config);
+        authContext.login();
+      });

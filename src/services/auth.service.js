@@ -1,6 +1,7 @@
 import MockAuthService from "./mock.auth.service";
 import MsalAuthService from "./msal.auth.service";
 import AdalAuthService from "./adal.auth.service";
+import TeamsAuthService from "./teams.auth.service";
 
 class AuthService {
   constructor() {
@@ -8,6 +9,8 @@ class AuthService {
     const params = new URLSearchParams(url.search);
     if (params.get("useTest")) {
       this.authService = new MockAuthService();
+    } else if (params.get("inTeams")) {
+      this.authService = new TeamsAuthService();
     } else if (
       params.get("useV2") ||
       url.pathname.indexOf("/callback/v2") !== -1

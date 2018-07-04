@@ -1,0 +1,34 @@
+doctype html
+
+html
+  head
+    title Task Meow
+
+  body
+    script(src="https://statics.teams.microsoft.com/sdk/v1.2/js/MicrosoftTeams.min.js", integrity="sha384-OncOcMprEYFkUvhe15zi8VdCZIOcuNGnf4ilq2yTfDEjTwPF19V7pZrzxOq/iqt0", crossorigin="anonymous")
+    script(src="https://secure.aadcdn.microsoftonline-p.com/lib/1.0.15/js/adal.min.js", integrity="sha384-lIk8T3uMxKqXQVVfFbiw0K/Nq+kt1P3NtGt/pNexiDby2rKU6xnDY8p16gIwKqgI", crossorigin="anonymous")
+
+    script.
+      microsoftTeams.initialize();
+
+      // ADAL.js configuration
+      const config = {
+        clientId: "ab93102c-869b-4d34-a921-a31d3e7f76ef",
+        redirectUri: window.location.origin + "/tab/silent-end",
+        cacheLocation: "localStorage",
+        navigateToLoginRequestUrl: false,
+      };
+
+      const authContext = new AuthenticationContext(config);
+      if (authContext.isCallback(window.location.hash)) {
+        authContext.handleWindowCallback(window.location.hash);
+
+        // Only call notifySuccess or notifyFailure if this page is in the authentication popup
+        if (window.opener) {
+          if (authContext.getCachedUser()) {
+            microsoftTeams.authentication.notifySuccess();
+          } else {
+            microsoftTeams.authentication.notifyFailure(authContext.getLoginError());
+          }
+        }
+      }

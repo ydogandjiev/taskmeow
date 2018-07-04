@@ -30,6 +30,24 @@ app.use("/graphql", authService.authenticateUser, graph);
 // Rest endpoints
 app.use("/api", authService.ensureAuthenticated(), rest);
 
+// Auth routes
+app.get("/tab/silent-start", (req, res) => {
+  res.render("start");
+});
+
+app.get("/tab/silent-end", (req, res) => {
+  res.render("end");
+});
+
+// Static routes
+app.get("/privacypolicy", (req, res) => {
+  res.render("privacypolicy");
+});
+
+app.get("/termsofuse", (req, res) => {
+  res.render("termsofuse");
+});
+
 // React routes
 app.get("*", (req, res) => {
   res.sendFile("build/index.html", { root: __dirname });

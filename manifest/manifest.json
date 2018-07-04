@@ -1,0 +1,45 @@
+﻿{
+  "$schema":
+    "https://statics.teams.microsoft.com/sdk/v1.2/manifest/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.2",
+  "version": "1.0",
+  "id": "ab93102c-869b-4d34-a921-a31d3e7f76ef",
+  "packageName": "com.microsoft.teams.samples.auth",
+  "developer": {
+    "name": "Yuri Dogandjiev",
+    "websiteUrl": "https://taskmeow.ngrok.io",
+    "privacyUrl": "https://taskmeow.ngrok.io/privacystatement",
+    "termsOfUseUrl": "https://taskmeow.ngrok.io/termsofuse"
+  },
+  "name": {
+    "short": "Task Meow (Int)",
+    "full": "Task Meow (Int) for Microsoft Teams"
+  },
+  "description": {
+    "short": "Task Meow to do list app.",
+    "full":
+      "Task Meow is a simple to do list app that helps you track the important things in your life."
+  },
+  "icons": {
+    "outline": "outline.png",
+    "color": "color.png"
+  },
+  "accentColor": "#ffffff",
+  "configurableTabs": [],
+  "staticTabs": [
+    {
+      "contentUrl": "https://taskmeow.ngrok.io/?inTeams=true",
+      "entityId": "myTasks",
+      "name": "My Tasks",
+      "scopes": ["personal"]
+    },
+    {
+      "contentUrl": "https://taskmeow.ngrok.io/profile/?inTeams=true",
+      "entityId": "myProfile",
+      "name": "My Profile",
+      "scopes": ["personal"]
+    }
+  ],
+  "permissions": ["messageTeamMembers", "identity"],
+  "validDomains": ["taskmeow.ngrok.io"]
+}

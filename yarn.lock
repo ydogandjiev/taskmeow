@@ -1180,6 +1180,10 @@
   version "1.7.61"
   resolved "https://registry.yarnpkg.com/@microsoft/load-themed-styles/-/load-themed-styles-1.7.61.tgz#2d1406c55df6b91fe38a1228cf5dd64c084670bf"
 
+"@microsoft/teams-js@^1.3.0-beta.1":
+  version "1.3.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@microsoft/teams-js/-/teams-js-1.3.0-beta.1.tgz#763953191df0e4cafdeff7862e6f0f4f7dd3beba"
+
 "@types/node@*":
   version "10.0.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.0.tgz#c40f8e07dce607d3ef25a626b93a6a7cdcf97881"
