@@ -4,9 +4,9 @@
   "manifestVersion": "1.2",
   "version": "1.0",
   "id": "ab93102c-869b-4d34-a921-a31d3e7f76ef",
-  "packageName": "com.microsoft.teams.samples.auth",
+  "packageName": "io.ngrok.taskmeow",
   "developer": {
-    "name": "Yuri Dogandjiev",
+    "name": "Task Meow",
     "websiteUrl": "https://taskmeow.ngrok.io",
     "privacyUrl": "https://taskmeow.ngrok.io/privacystatement",
     "termsOfUseUrl": "https://taskmeow.ngrok.io/termsofuse"
