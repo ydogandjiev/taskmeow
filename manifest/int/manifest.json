@@ -8,7 +8,7 @@
   "developer": {
     "name": "Task Meow",
     "websiteUrl": "https://taskmeow.ngrok.io",
-    "privacyUrl": "https://taskmeow.ngrok.io/privacystatement",
+    "privacyUrl": "https://taskmeow.ngrok.io/privacypolicy",
     "termsOfUseUrl": "https://taskmeow.ngrok.io/termsofuse"
   },
   "name": {
@@ -37,6 +37,12 @@
       "contentUrl": "https://taskmeow.ngrok.io/profile/?inTeams=true",
       "entityId": "myProfile",
       "name": "My Profile",
+      "scopes": ["personal"]
+    }
+  ],
+  "bots": [
+    {
+      "botId": "ab93102c-869b-4d34-a921-a31d3e7f76ef",
       "scopes": ["personal"]
     }
   ],

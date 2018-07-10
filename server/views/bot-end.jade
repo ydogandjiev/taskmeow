@@ -1,0 +1,27 @@
+doctype html
+
+html
+  head
+    title Task Meow
+
+  body
+    div(style="display: none")
+      div
+        p You're almost there!
+        p To finish linking your account with<br/> Azure AD, type
+        span #{verificationCode}
+        p in the Microsoft Teams chat window.
+
+    script(src="https://statics.teams.microsoft.com/sdk/v1.2/js/MicrosoftTeams.min.js", integrity="sha384-OncOcMprEYFkUvhe15zi8VdCZIOcuNGnf4ilq2yTfDEjTwPF19V7pZrzxOq/iqt0", crossorigin="anonymous")
+    script(src="https://secure.aadcdn.microsoftonline-p.com/lib/1.0.15/js/adal.min.js", integrity="sha384-lIk8T3uMxKqXQVVfFbiw0K/Nq+kt1P3NtGt/pNexiDby2rKU6xnDY8p16gIwKqgI", crossorigin="anonymous")
+
+    script.
+      // If the window is still visible after 5 seconds, then we are probably on a platform
+      // that does not support automatically passing the verification code using notifySuccess().
+      // So we ask the user to manually enter the verification code in the chat window.
+      setTimeout(() => {
+          document.getElementById("instructionText").style.display = "initial";
+      }, 5000);
+
+      microsoftTeams.initialize();
+      microsoftTeams.authentication.notifySuccess("#{verificationCode}");
