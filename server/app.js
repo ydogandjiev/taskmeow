@@ -40,11 +40,11 @@ app.get("/bot/start", (req, res) => {
 });
 
 app.get("/tab/silent-start", (req, res) => {
-  res.render("start");
+  res.render("start", { clientId: process.env.APPSETTING_AAD_ApplicationId });
 });
 
 app.get("/tab/silent-end", (req, res) => {
-  res.render("end");
+  res.render("end", { clientId: process.env.APPSETTING_AAD_ApplicationId });
 });
 
 // Static routes

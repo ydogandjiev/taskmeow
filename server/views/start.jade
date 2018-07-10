@@ -16,13 +16,13 @@ html
 
         // ADAL.js configuration
         const config = {
-            // Use the tenant id of the current organization. For guest users, we want an access token for 
-            // the tenant we are currently in, not the home tenant of the guest. 
-            tenant: context.tid,
-            clientId: "36b1586d-b1da-45d2-9b32-899c3757b6f8",
-            redirectUri: window.location.origin + "/tab/silent-end",
-            cacheLocation: "localStorage",
-            navigateToLoginRequestUrl: false,
+          // Use the tenant id of the current organization. For guest users, we want an access token for 
+          // the tenant we are currently in, not the home tenant of the guest. 
+          tenant: context.tid,
+          clientId: "#{clientId}",
+          redirectUri: window.location.origin + "/tab/silent-end",
+          cacheLocation: "localStorage",
+          navigateToLoginRequestUrl: false,
         };
 
         // Setup extra query parameters for ADAL
