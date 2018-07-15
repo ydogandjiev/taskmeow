@@ -52,36 +52,26 @@ class AuthDialog extends builder.IntentDialog {
   async showTasks(session) {
     const userToken = utils.getUserToken(session);
     if (userToken) {
-      session.connector.fetchMembers(
-        session.message.address.serviceUrl,
-        session.message.address.conversation.id,
-        async (err, result) => {
-          if (err || !result || result.length === 0) {
-            session.endDialog("There is some error");
-          } else {
-            const user = await userService.getUser(
-              session.message.address.user.aadObjectId
-            );
-            const tasks = await taskService.get(user._id);
-            const msg = new builder.Message(session).addAttachment({
-              contentType: "application/vnd.microsoft.teams.card.list",
-              content: {
-                title: "Tasks",
-                items: tasks.map(task => ({
-                  type: "resultItem",
-                  icon: `${process.env.APPSETTING_AAD_BaseUri}/checkmark.png`,
-                  title: task.title,
-                  tap: {
-                    type: "openUrl",
-                    value: "http://trello.com"
-                  }
-                }))
-              }
-            });
-            session.send(msg);
-          }
-        }
+      const user = await userService.getUser(
+        session.message.address.user.aadObjectId
       );
+      const tasks = await taskService.get(user._id);
+      const msg = new builder.Message(session).addAttachment({
+        contentType: "application/vnd.microsoft.teams.card.list",
+        content: {
+          title: "Tasks",
+          items: tasks.map(task => ({
+            type: "resultItem",
+            icon: `${process.env.APPSETTING_AAD_BaseUri}/checkmark.png`,
+            title: task.title,
+            tap: {
+              type: "openUrl",
+              value: "http://trello.com"
+            }
+          }))
+        }
+      });
+      session.send(msg);
     } else {
       session.send("Please sign in to AzureAD so I can access your profile.");
     }
