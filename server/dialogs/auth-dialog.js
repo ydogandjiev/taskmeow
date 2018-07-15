@@ -69,10 +69,8 @@ class AuthDialog extends builder.IntentDialog {
                 title: "Tasks",
                 items: tasks.map(task => ({
                   type: "resultItem",
-                  icon:
-                    "https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Trello-128.png",
+                  icon: `${process.env.APPSETTING_AAD_BaseUri}/checkmark.png`,
                   title: task.title,
-                  subtitle: task.title,
                   tap: {
                     type: "openUrl",
                     value: "http://trello.com"
@@ -84,7 +82,11 @@ class AuthDialog extends builder.IntentDialog {
           }
         }
       );
+    } else {
+      session.send("Please sign in to AzureAD so I can access your profile.");
     }
+
+    await this.promptForAction(session);
   }
 
   // Show prompt of options
