@@ -1,44 +1,65 @@
 const request = require("request-promise");
+const ReadPreference = require("mongodb").ReadPreference;
 const authService = require("./auth-service");
+const User = require("./user-model");
 
-function getGraphToken(tid, token, useV2) {
+async function getUser(oid) {
+  return await User.findOne({
+    "accounts.uid": oid,
+    "accounts.provider": "aad"
+  })
+    .read(ReadPreference.NEAREST)
+    .exec();
+}
+
+async function getGraphToken(tid, token, useV2) {
   return useV2
-    ? authService.exchangeForTokenV2(tid, token, [
+    ? await authService.exchangeForTokenV2(tid, token, [
         "https://graph.microsoft.com/user.read"
       ])
-    : authService.exchangeForTokenV1(tid, token, "https://graph.microsoft.com");
+    : await authService.exchangeForTokenV1(
+        tid,
+        token,
+        "https://graph.microsoft.com"
+      );
 }
 
-function getImage(req, res) {
-  getGraphToken(req.authInfo.tid, req.token, req.query.useV2 === "true")
-    .then(token => {
-      return request("https://graph.microsoft.com/v1.0/me/photo/$value", {
+async function getImage(req, res) {
+  try {
+    const token = await getGraphToken(
+      req.authInfo.tid,
+      req.token,
+      req.query.useV2 === "true"
+    );
+
+    const img = await request.get(
+      "https://graph.microsoft.com/v1.0/me/photo/$value",
+      {
         headers: { Authorization: `Bearer ${token}` },
         encoding: null
-      }).then(img => {
-        res.contentType("image/jpeg");
-        res.end(img);
-      });
-    })
-    .catch(error => {
-      console.error(error);
-      res.status(500).send(error);
-    });
+      }
+    );
+
+    res.contentType("image/jpeg");
+    res.end(img);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
 }
 
-const graphProfileUrl = "https://graph.microsoft.com/v1.0/me";
 async function getProfile(accessToken) {
-  const options = {
-    url: graphProfileUrl,
+  return await request.get({
+    url: "https://graph.microsoft.com/v1.0/me",
     json: true,
     headers: {
       Authorization: `Bearer ${accessToken}`
     }
-  };
-  return await request.get(options);
+  });
 }
 
 module.exports = {
+  getUser,
   getImage,
   getProfile
 };

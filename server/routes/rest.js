@@ -4,7 +4,9 @@ const router = express.Router();
 const taskService = require("../task-service");
 const userService = require("../user-service");
 
-router.get("/user/image", (req, res, next) => userService.getImage(req, res));
+router.get("/user/image", (req, res, next) => {
+  userService.getImage(req, res);
+});
 
 router.get("/tasks", (req, res, next) => {
   taskService

@@ -4,7 +4,6 @@ const querystring = require("querystring");
 const passport = require("passport");
 const OIDCBearerStrategy = require("passport-azure-ad").BearerStrategy;
 const User = require("./user-model");
-const ReadPreference = require("mongodb").ReadPreference;
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -30,7 +29,7 @@ passport.use(
     (token, done) => {
       User.findOne(
         { "accounts.uid": token.oid, "accounts.provider": "aad" },
-        function(err, user) {
+        (err, user) => {
           if (err) {
             return done(err);
           }

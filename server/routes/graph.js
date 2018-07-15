@@ -6,7 +6,6 @@ const express = require("express");
 const router = express.Router();
 
 const taskService = require("../task-service");
-const userService = require("../user-service");
 
 const schema = buildSchema(
   fs.readFileSync(path.join(__dirname, "schema.graphql"), { encoding: "utf-8" })

@@ -3,6 +3,7 @@ const msteams = require("botbuilder-teams");
 const uuidv4 = require("uuid/v4");
 
 const authService = require("../auth-service");
+const taskService = require("../task-service");
 const userService = require("../user-service");
 const utils = require("../utils");
 
@@ -17,21 +18,18 @@ class AuthDialog extends builder.IntentDialog {
     this.onDefault(session => {
       this.onMessageReceived(session);
     });
-    this.matches(/SignIn/, session => {
-      this.handleLogin(session);
-    });
     this.matches(/ShowProfile/, session => {
       this.showUserProfile(session);
+    });
+    this.matches(/ShowTasks/, session => {
+      this.showTasks(session);
     });
     this.matches(/SignOut/, session => {
       this.handleLogout(session);
     });
-    this.matches(/Back/, session => {
-      session.endDialog();
-    });
   }
 
-  // Show user profile
+  // Show the user's profile
   async showUserProfile(session) {
     let userToken = utils.getUserToken(session);
     if (userToken) {
@@ -50,27 +48,63 @@ class AuthDialog extends builder.IntentDialog {
     await this.promptForAction(session);
   }
 
-  // Get the validated user token, if we have one
-  getUserToken(session) {
-    return utils.getUserToken(session);
+  // Show the user's tasks
+  async showTasks(session) {
+    const userToken = utils.getUserToken(session);
+    if (userToken) {
+      session.connector.fetchMembers(
+        session.message.address.serviceUrl,
+        session.message.address.conversation.id,
+        async (err, result) => {
+          if (err || !result || result.length === 0) {
+            session.endDialog("There is some error");
+          } else {
+            const user = await userService.getUser(
+              session.message.address.user.aadObjectId
+            );
+            const tasks = await taskService.get(user._id);
+            const msg = new builder.Message(session).addAttachment({
+              contentType: "application/vnd.microsoft.teams.card.list",
+              content: {
+                title: "Tasks",
+                items: tasks.map(task => ({
+                  type: "resultItem",
+                  icon:
+                    "https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Trello-128.png",
+                  title: task.title,
+                  subtitle: task.title,
+                  tap: {
+                    type: "openUrl",
+                    value: "http://trello.com"
+                  }
+                }))
+              }
+            });
+            session.send(msg);
+          }
+        }
+      );
+    }
   }
 
   // Show prompt of options
   async promptForAction(session) {
+    if (!utils.getUserToken(session)) {
+      await this.handleLogin(session);
+      return;
+    }
+
     let msg = new builder.Message(session).addAttachment(
       new builder.ThumbnailCard(session).title("Azure AD").buttons([
-        builder.CardAction.messageBack(session, "{}", "Sign in")
-          .text("SignIn")
-          .displayText("Sign in"),
         builder.CardAction.messageBack(session, "{}", "Show profile")
           .text("ShowProfile")
           .displayText("Show profile"),
+        builder.CardAction.messageBack(session, "{}", "Show tasks")
+          .text("ShowTasks")
+          .displayText("Show tasks"),
         builder.CardAction.messageBack(session, "{}", "Sign out")
           .text("SignOut")
-          .displayText("Sign out"),
-        builder.CardAction.messageBack(session, "{}", "Back")
-          .text("Back")
-          .displayText("Back")
+          .displayText("Sign out")
       ])
     );
     session.send(msg);
@@ -118,7 +152,6 @@ class AuthDialog extends builder.IntentDialog {
         }
       } else {
         // Unrecognized input
-        session.send("I didn't understand. Please select an option below.");
         this.promptForAction(session);
       }
     }
@@ -155,57 +188,52 @@ class AuthDialog extends builder.IntentDialog {
 
   // Handle user login request
   async handleLogin(session) {
-    if (utils.getUserToken(session)) {
-      session.send("You're already signed in to Azure AD.");
-      await this.promptForAction(session);
-    } else {
-      // Create the OAuth state, including a random anti-forgery state token
-      let address = session.message.address;
-      let state = JSON.stringify({
-        securityToken: uuidv4(),
-        address: {
-          user: {
-            id: address.user.id
-          },
-          conversation: {
-            id: address.conversation.id
-          }
+    // Create the OAuth state, including a random anti-forgery state token
+    let address = session.message.address;
+    let state = JSON.stringify({
+      securityToken: uuidv4(),
+      address: {
+        user: {
+          id: address.user.id
+        },
+        conversation: {
+          id: address.conversation.id
         }
-      });
-      utils.setOAuthState(session, state);
+      }
+    });
+    utils.setOAuthState(session, state);
 
-      // Create the authorization URL
-      let authUrl = this.getAuthorizationUrl(session, state);
+    // Create the authorization URL
+    let authUrl = this.getAuthorizationUrl(session, state);
 
-      // Build the sign-in url
-      let signinUrl = `${
-        process.env.APPSETTING_AAD_BaseUri
-      }/bot/start?authorizationUrl=${encodeURIComponent(authUrl)}`;
+    // Build the sign-in url
+    let signinUrl = `${
+      process.env.APPSETTING_AAD_BaseUri
+    }/bot/start?authorizationUrl=${encodeURIComponent(authUrl)}`;
 
-      // The fallbackUrl specifies the page to be opened on mobile, until they support automatically passing the
-      // verification code via notifySuccess(). If you want to support only this protocol, then you can give the
-      // URL of an error page that directs the user to sign in using the desktop app. The flow demonstrated here
-      // gracefully falls back to asking the user to enter the verification code manually, so we use the same
-      // signin URL as the fallback URL.
-      let signinUrlWithFallback = `${signinUrl}&fallbackUrl=${encodeURIComponent(
-        signinUrl
-      )}`;
+    // The fallbackUrl specifies the page to be opened on mobile, until they support automatically passing the
+    // verification code via notifySuccess(). If you want to support only this protocol, then you can give the
+    // URL of an error page that directs the user to sign in using the desktop app. The flow demonstrated here
+    // gracefully falls back to asking the user to enter the verification code manually, so we use the same
+    // signin URL as the fallback URL.
+    let signinUrlWithFallback = `${signinUrl}&fallbackUrl=${encodeURIComponent(
+      signinUrl
+    )}`;
 
-      // Send card with signin action
-      let msg = new builder.Message(session).addAttachment(
-        new builder.HeroCard(session)
-          .text("Click below to sign in to Azure AD")
-          .buttons([
-            new builder.CardAction(session)
-              .type("signin")
-              .value(signinUrlWithFallback)
-              .title("Sign in")
-          ])
-      );
-      session.send(msg);
+    // Send card with signin action
+    let msg = new builder.Message(session).addAttachment(
+      new builder.HeroCard(session)
+        .text("Click below to sign in to Azure AD")
+        .buttons([
+          new builder.CardAction(session)
+            .type("signin")
+            .value(signinUrlWithFallback)
+            .title("Sign in")
+        ])
+    );
+    session.send(msg);
 
-      // The auth flow resumes when we handle the identity provider's OAuth callback in AuthBot.handleOAuthCallback()
-    }
+    // The auth flow resumes when we handle the identity provider's OAuth callback in AuthBot.handleOAuthCallback()
   }
 }
 
