@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 import { DefaultButton, Spinner } from "office-ui-fabric-react";
-import "./App.css";
-import logo from "./logo.svg";
-import background from "./background.png";
-import microsoftLogo from "./microsoft.png";
 import Profile from "./components/Profile";
 import Tasks from "./components/Tasks";
 import authService from "./services/auth.service";
+import microsoftLogo from "./microsoft.png";
+import background from "./background.png";
+import logo from "./logo.svg";
+import "./App.css";
 
 // Initialize Office Fabric icons for use throughout app
 import { initializeIcons } from "@uifabric/icons";
