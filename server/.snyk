@@ -1,0 +1,64 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.12.0
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  'npm:base64url:20180511':
+    - passport-azure-ad > jws > base64url:
+        reason: No fix available
+        expires: '2018-08-16T23:07:58.840Z'
+    - passport-azure-ad > jws > jwa > base64url:
+        reason: No fix available
+        expires: '2018-08-16T23:07:58.840Z'
+    - passport-azure-ad > jws > jwa > ecdsa-sig-formatter > base64url:
+        reason: No fix available
+        expires: '2018-08-16T23:07:58.840Z'
+    - botbuilder > base64url:
+        reason: No fix available
+        expires: '2018-08-16T23:07:58.840Z'
+    - botbuilder-teams > botbuilder > base64url:
+        reason: No fix available
+        expires: '2018-08-16T23:07:58.840Z'
+    - passport-azure-ad > base64url:
+        reason: No fix available
+        expires: '2018-08-16T23:07:58.840Z'
+  'npm:clean-css:20180306':
+    - jade > clean-css:
+        reason: No fix available
+        expires: '2018-08-16T23:07:58.840Z'
+  'npm:constantinople:20180421':
+    - jade > constantinople:
+        reason: No fix available
+        expires: '2018-08-16T23:07:58.841Z'
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:stringstream:20180511':
+    - passport-azure-ad > request > stringstream:
+        patched: '2018-07-17T23:05:48.870Z'
+    - request > stringstream:
+        patched: '2018-07-17T23:05:48.870Z'
+  'npm:hoek:20180212':
+    - botbuilder > jsonwebtoken > joi > topo > hoek:
+        patched: '2018-07-17T23:05:48.870Z'
+    - botbuilder-teams > ms-rest > request > hawk > hoek:
+        patched: '2018-07-17T23:05:48.870Z'
+    - botbuilder-teams > ms-rest > request > hawk > boom > hoek:
+        patched: '2018-07-17T23:05:48.870Z'
+    - botbuilder-teams > ms-rest > request > hawk > sntp > hoek:
+        patched: '2018-07-17T23:05:48.870Z'
+    - botbuilder-teams > ms-rest > request > hawk > cryptiles > boom > hoek:
+        patched: '2018-07-17T23:05:48.870Z'
+    - botbuilder-teams > botbuilder > jsonwebtoken > joi > hoek:
+        patched: '2018-07-17T23:05:48.870Z'
+    - botbuilder-teams > botbuilder > jsonwebtoken > joi > topo > hoek:
+        patched: '2018-07-17T23:05:48.870Z'
+    - botbuilder > jsonwebtoken > joi > hoek:
+        patched: '2018-07-17T23:05:48.870Z'
+  'npm:tunnel-agent:20170305':
+    - botbuilder-teams > ms-rest > request > tunnel-agent:
+        patched: '2018-07-17T23:05:48.870Z'
+  'npm:uglify-js:20150824':
+    - jade > transformers > uglify-js:
+        patched: '2018-07-17T23:05:48.870Z'
+  'npm:uglify-js:20151024':
+    - jade > transformers > uglify-js:
+        patched: '2018-07-17T23:05:48.870Z'

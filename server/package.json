@@ -22,9 +22,14 @@
     "passport-azure-ad": "^3.0.12",
     "random-number-csprng": "^1.0.2",
     "request": "^2.85.0",
-    "request-promise": "^4.2.2"
+    "request-promise": "^4.2.2",
+    "snyk": "^1.89.0"
   },
   "scripts": {
-    "start": "./server.js"
-  }
+    "start": "./server.js",
+    "test": "snyk test",
+    "snyk-protect": "snyk protect",
+    "prepare": "yarn run snyk-protect"
+  },
+  "snyk": true
 }
