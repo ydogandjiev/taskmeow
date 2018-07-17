@@ -1,0 +1,79 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.12.0
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  'npm:braces:20180219':
+    - jest-environment-jsdom-global > jest-environment-jsdom > jest-util > jest-message-util > micromatch > braces:
+        reason: Test-only code
+        expires: '2018-08-16T22:30:55.616Z'
+  'npm:stringstream:20180511':
+    - jest-environment-jsdom-global > jest-environment-jsdom > jsdom > request > stringstream:
+        reason: Test-only code
+        expires: '2018-08-16T22:30:55.616Z'
+    - jest-environment-jsdom-global > jest-environment-jsdom > jsdom > request-promise-native > request > stringstream:
+        reason: Test-only code
+        expires: '2018-08-16T22:30:55.616Z'
+    - jest-environment-jsdom-global > jest-environment-jsdom > jsdom > request-promise-native > request-promise-core > request > stringstream:
+        reason: Test-only code
+        expires: '2018-08-16T22:30:55.616Z'
+    - passport-azure-ad > request > stringstream:
+        reason: No fix available
+        expires: '2018-08-16T22:30:55.616Z'
+  'npm:base64url:20180511':
+    - passport-azure-ad > jws > base64url:
+        reason: No fix available
+        expires: '2018-08-16T22:30:55.616Z'
+    - passport-azure-ad > jws > jwa > base64url:
+        reason: No fix available
+        expires: '2018-08-16T22:30:55.616Z'
+    - passport-azure-ad > jws > jwa > ecdsa-sig-formatter > base64url:
+        reason: No fix available
+        expires: '2018-08-16T22:30:55.616Z'
+    - botbuilder > base64url:
+        reason: No fix available
+        expires: '2018-08-16T22:30:55.616Z'
+    - botbuilder-teams > botbuilder > base64url:
+        reason: No fix available
+        expires: '2018-08-16T22:30:55.616Z'
+    - passport-azure-ad > base64url:
+        reason: No fix available
+        expires: '2018-08-16T22:30:55.616Z'
+  'npm:clean-css:20180306':
+    - jade > clean-css:
+        reason: No fix available
+        expires: '2018-08-16T22:30:55.616Z'
+  'npm:constantinople:20180421':
+    - jade > constantinople:
+        reason: No fix available
+        expires: '2018-08-16T22:30:55.616Z'
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:stringstream:20180511':
+    - request > stringstream:
+        patched: '2018-07-17T22:28:14.422Z'
+  'npm:hoek:20180212':
+    - botbuilder > jsonwebtoken > joi > topo > hoek:
+        patched: '2018-07-17T22:28:14.422Z'
+    - botbuilder-teams > ms-rest > request > hawk > hoek:
+        patched: '2018-07-17T22:28:14.422Z'
+    - botbuilder-teams > ms-rest > request > hawk > boom > hoek:
+        patched: '2018-07-17T22:28:14.422Z'
+    - botbuilder-teams > ms-rest > request > hawk > sntp > hoek:
+        patched: '2018-07-17T22:28:14.422Z'
+    - botbuilder-teams > ms-rest > request > hawk > cryptiles > boom > hoek:
+        patched: '2018-07-17T22:28:14.422Z'
+    - botbuilder-teams > botbuilder > jsonwebtoken > joi > hoek:
+        patched: '2018-07-17T22:28:14.422Z'
+    - botbuilder-teams > botbuilder > jsonwebtoken > joi > topo > hoek:
+        patched: '2018-07-17T22:28:14.422Z'
+    - botbuilder > jsonwebtoken > joi > hoek:
+        patched: '2018-07-17T22:28:14.422Z'
+  'npm:tunnel-agent:20170305':
+    - botbuilder-teams > ms-rest > request > tunnel-agent:
+        patched: '2018-07-17T22:28:14.422Z'
+  'npm:uglify-js:20150824':
+    - jade > transformers > uglify-js:
+        patched: '2018-07-17T22:28:14.422Z'
+  'npm:uglify-js:20151024':
+    - jade > transformers > uglify-js:
+        patched: '2018-07-17T22:28:14.422Z'
