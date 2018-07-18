@@ -6,6 +6,12 @@ ignore:
     - jest-environment-jsdom-global > jest-environment-jsdom > jest-util > jest-message-util > micromatch > braces:
         reason: Test-only code
         expires: '2018-08-16T22:30:55.616Z'
+    - jest-environment-jsdom-global > jest-environment-jsdom > jest-util > jest-message-util > micromatch > braces:
+        reason: Test-only dependency
+        expires: '2018-08-17T00:09:34.190Z'
+    - jest-environment-jsdom > jest-util > jest-message-util > micromatch > braces:
+        reason: Test-only dependency
+        expires: '2018-08-17T00:09:34.189Z'
   'npm:stringstream:20180511':
     - jest-environment-jsdom-global > jest-environment-jsdom > jsdom > request > stringstream:
         reason: Test-only code
@@ -19,61 +25,86 @@ ignore:
     - passport-azure-ad > request > stringstream:
         reason: No fix available
         expires: '2018-08-16T22:30:55.616Z'
+    - jest-environment-jsdom-global > jest-environment-jsdom > jsdom > request-promise-native > request > stringstream:
+        reason: Test-only dependency
+        expires: '2018-08-17T00:09:34.190Z'
+    - jest-environment-jsdom-global > jest-environment-jsdom > jsdom > request-promise-native > request-promise-core > request > stringstream:
+        reason: Test-only dependency
+        expires: '2018-08-17T00:09:34.190Z'
+    - passport-azure-ad > request > stringstream:
+        reason: No fix available
+        expires: '2018-08-17T00:09:34.190Z'
+    - jest-environment-jsdom > jsdom > request-promise-native > request > stringstream:
+        reason: Test-only dependency
+        expires: '2018-08-17T00:09:34.189Z'
+    - jest-environment-jsdom > jsdom > request > stringstream:
+        reason: Test-only dependency
+        expires: '2018-08-17T00:09:34.189Z'
+    - jest-environment-jsdom > jsdom > request-promise-native > request-promise-core > request > stringstream:
+        reason: Test-only dependency
+        expires: '2018-08-17T00:09:34.189Z'
+    - jest-environment-jsdom-global > jest-environment-jsdom > jsdom > request > stringstream:
+        reason: Test-only dependency
+        expires: '2018-08-17T00:09:34.190Z'
   'npm:base64url:20180511':
     - passport-azure-ad > jws > base64url:
         reason: No fix available
-        expires: '2018-08-16T22:30:55.616Z'
+        expires: '2018-08-17T00:09:34.190Z'
     - passport-azure-ad > jws > jwa > base64url:
         reason: No fix available
-        expires: '2018-08-16T22:30:55.616Z'
+        expires: '2018-08-17T00:09:34.190Z'
     - passport-azure-ad > jws > jwa > ecdsa-sig-formatter > base64url:
         reason: No fix available
-        expires: '2018-08-16T22:30:55.616Z'
+        expires: '2018-08-17T00:09:34.190Z'
     - botbuilder > base64url:
         reason: No fix available
-        expires: '2018-08-16T22:30:55.616Z'
+        expires: '2018-08-17T00:09:34.191Z'
     - botbuilder-teams > botbuilder > base64url:
         reason: No fix available
-        expires: '2018-08-16T22:30:55.616Z'
+        expires: '2018-08-17T00:09:34.191Z'
     - passport-azure-ad > base64url:
         reason: No fix available
-        expires: '2018-08-16T22:30:55.616Z'
+        expires: '2018-08-17T00:09:34.191Z'
   'npm:clean-css:20180306':
     - jade > clean-css:
         reason: No fix available
-        expires: '2018-08-16T22:30:55.616Z'
+        expires: '2018-08-17T00:09:34.191Z'
   'npm:constantinople:20180421':
     - jade > constantinople:
-        reason: No fix available
-        expires: '2018-08-16T22:30:55.616Z'
+        reason: Test-only dependency
+        expires: '2018-08-17T00:09:34.191Z'
+  'npm:uglify-js:20150824':
+    - jade > transformers > uglify-js:
+        reason: Can't be patched
+        expires: '2018-08-17T00:34:24.076Z'
 # patches apply the minimum changes required to fix a vulnerability
 patch:
   'npm:stringstream:20180511':
     - request > stringstream:
-        patched: '2018-07-17T22:28:14.422Z'
+        patched: '2018-07-18T00:06:56.860Z'
   'npm:hoek:20180212':
     - botbuilder > jsonwebtoken > joi > topo > hoek:
-        patched: '2018-07-17T22:28:14.422Z'
+        patched: '2018-07-18T00:06:56.860Z'
     - botbuilder-teams > ms-rest > request > hawk > hoek:
-        patched: '2018-07-17T22:28:14.422Z'
+        patched: '2018-07-18T00:06:56.860Z'
     - botbuilder-teams > ms-rest > request > hawk > boom > hoek:
-        patched: '2018-07-17T22:28:14.422Z'
+        patched: '2018-07-18T00:06:56.860Z'
     - botbuilder-teams > ms-rest > request > hawk > sntp > hoek:
-        patched: '2018-07-17T22:28:14.422Z'
+        patched: '2018-07-18T00:06:56.860Z'
     - botbuilder-teams > ms-rest > request > hawk > cryptiles > boom > hoek:
-        patched: '2018-07-17T22:28:14.422Z'
+        patched: '2018-07-18T00:06:56.860Z'
     - botbuilder-teams > botbuilder > jsonwebtoken > joi > hoek:
-        patched: '2018-07-17T22:28:14.422Z'
+        patched: '2018-07-18T00:06:56.860Z'
     - botbuilder-teams > botbuilder > jsonwebtoken > joi > topo > hoek:
-        patched: '2018-07-17T22:28:14.422Z'
+        patched: '2018-07-18T00:06:56.860Z'
     - botbuilder > jsonwebtoken > joi > hoek:
-        patched: '2018-07-17T22:28:14.422Z'
+        patched: '2018-07-18T00:06:56.860Z'
   'npm:tunnel-agent:20170305':
     - botbuilder-teams > ms-rest > request > tunnel-agent:
-        patched: '2018-07-17T22:28:14.422Z'
+        patched: '2018-07-18T00:06:56.860Z'
   'npm:uglify-js:20150824':
     - jade > transformers > uglify-js:
-        patched: '2018-07-17T22:28:14.422Z'
+        patched: '2018-07-18T00:06:56.860Z'
   'npm:uglify-js:20151024':
     - jade > transformers > uglify-js:
-        patched: '2018-07-17T22:28:14.422Z'
+        patched: '2018-07-18T00:06:56.860Z'
