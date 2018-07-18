@@ -29,6 +29,13 @@ ignore:
     - jade > constantinople:
         reason: No fix available
         expires: '2018-08-16T23:07:58.841Z'
+  'npm:stringstream:20180511':
+    - request-promise > request > stringstream:
+        reason: No fix available
+        expires: '2018-08-17T01:17:14.254Z'
+    - request-promise > request-promise-core > request > stringstream:
+        reason: No fix available
+        expires: '2018-08-17T01:17:14.254Z'
 # patches apply the minimum changes required to fix a vulnerability
 patch:
   'npm:stringstream:20180511':
