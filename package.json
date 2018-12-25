@@ -32,8 +32,7 @@
     "react-beautiful-dnd": "^8.0.4",
     "react-dom": "^16.3.2",
     "react-router-dom": "^4.3.1",
-    "request": "^2.85.0",
-    "snyk": "^1.89.0"
+    "request": "^2.85.0"
   },
   "devDependencies": {
     "concurrently": "^3.5.0",
@@ -47,12 +46,10 @@
     "client": "react-scripts start",
     "server": "nodemon server/server.js",
     "build": "react-scripts build && rm -rf server/build && mv build server",
-    "test": "snyk test && react-scripts test --env=jest-environment-jsdom-global",
+    "test": "react-scripts test --env=jest-environment-jsdom-global",
     "coverage": "react-scripts test --env=jest-environment-jsdom-global --coverage",
     "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls",
-    "eject": "react-scripts eject",
-    "snyk-protect": "snyk protect",
-    "prepare": "yarn run snyk-protect"
+    "eject": "react-scripts eject"
   },
   "proxy": "http://localhost:3001",
   "browserslist": {
@@ -67,6 +64,5 @@
       "Firefox ESR",
       "not ie < 11"
     ]
-  },
-  "snyk": true
+  }
 }
