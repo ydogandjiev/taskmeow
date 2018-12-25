@@ -8,7 +8,8 @@ class MockTasksService {
   }
 
   get = () => {
-    return Promise.resolve(this.tasks);
+    const tasks = JSON.parse(JSON.stringify(this.tasks));
+    return Promise.resolve(tasks);
   };
 
   create = task => {

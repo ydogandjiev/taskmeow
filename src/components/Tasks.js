@@ -23,7 +23,7 @@ class Tasks extends Component {
     this.setState({ loading: true });
     tasksService.get().then(tasks => {
       this.setState({
-        tasks: tasks.sort((a, b) => b.order - a.order),
+        tasks: tasks.sort((a, b) => a.order - b.order),
         loading: false
       });
     });
@@ -42,15 +42,21 @@ class Tasks extends Component {
   };
 
   handleTaskStarredChange = (task, isStarred) => {
-    tasksService.update({ ...task, starred: isStarred }).then(updatedTask => {
-      this.setState(prevState => {
-        return {
-          tasks: prevState.tasks.map(
-            t => (t._id === updatedTask._id ? updatedTask : t)
-          )
-        };
+    let newOrder = task.order;
+    if (isStarred && this.state.tasks.length > 0) {
+      newOrder = this.state.tasks[0].order - 100;
+    }
+    tasksService
+      .update({ ...task, order: newOrder, starred: isStarred })
+      .then(updatedTask => {
+        this.setState(prevState => {
+          return {
+            tasks: prevState.tasks
+              .map(t => (t._id === updatedTask._id ? updatedTask : t))
+              .sort((a, b) => a.order - b.order)
+          };
+        });
       });
-    });
   };
 
   handleTextChanged = value => {
