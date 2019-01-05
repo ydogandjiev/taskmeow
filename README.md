@@ -19,10 +19,32 @@ yarn install
 
 The template can be run in development, or in production. For development, use the following workflow.
 
+### Configure environment
+
+Create a `.env` file at the root of the repository with the following values:
+
+```bash
+APPSETTING_AAD_ApplicationId="<AAD App ID>"
+APPSETTING_AAD_ApplicationSecret="<AAD App Secret>"
+APPSETTING_AAD_BaseUri="<SSL Base Uri>"
+SQLCONNSTR_DbUri="<DB Uri>"
+SQLCONNSTR_DbUsername="<DB Username>"
+SQLCONNSTR_DbPassword="<DB Password>"
+APPINSIGHTS_INSTRUMENTATIONKEY="AppInsights Instrumentation Key"
+```
+
 ### Start Create React App and Express Server
 
 ```bash
 yarn start
+```
+
+### Start ngrok tunnel
+
+For authentication to work it's recommended to use an ngrok tunnel to hoist the localhost site to an SSL uri:
+
+```bash
+ngrok http 3000 --host-header=rewrite [--subdomain=<YOUR_SUBDOMAIN>]
 ```
 
 ## Building For Production

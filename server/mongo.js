@@ -1,16 +1,15 @@
 const mongoose = require("mongoose");
 
-const username = process.env.SQLCONNSTR_CosmosUsername;
-const password = process.env.SQLCONNSTR_CosmosPassword;
+const uri = process.env.SQLCONNSTR_DbUri;
+const username = process.env.SQLCONNSTR_DbUsername;
+const password = process.env.SQLCONNSTR_DbPassword;
 
 mongoose.Promise = global.Promise;
-
-const mongoUri = `mongodb://ds018798-a0.mlab.com:18798,ds018798-a1.mlab.com:18796/taskmeow?replicaSet=rs-ds018798`;
 
 function connect() {
   return mongoose
     .connect(
-      mongoUri,
+      uri,
       {
         auth: {
           user: username,
@@ -22,7 +21,7 @@ function connect() {
       }
     )
     .then(() => {
-      console.log(`Successfully connected to ${mongoUri}`);
+      console.log(`Successfully connected to ${uri}`);
     })
     .catch(err => {
       console.error(err);
