@@ -9,18 +9,27 @@ class SSOAuthService {
 
     // Flag that this service assumes using Teams SSO
     this.isSSO = true;
+    this.authToken = null;
+  }
+
+  parseJwt(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    return JSON.parse(window.atob(base64));
   }
 
   getUser() {
     return new Promise((resolve, reject) => {
-      microsoftTeams.authentication.getUser({
-        successCallback: (result) => {
-          resolve(result);
-        },
-        failureCallback: (result) => {
-          reject(result);
-        }
-      });
+      if (this.authToken) {
+        resolve(this.parseJwt(this.authToken));
+      } else {
+        this.getToken().resolve(token => {
+          resolve(this.parseJwt(token));
+        })
+          .reject(reason => {
+            reject(reason);
+          });
+      }
     });
   }
 
@@ -28,6 +37,7 @@ class SSOAuthService {
     return new Promise((resolve, reject) => {
       microsoftTeams.authentication.getAuthToken({
         successCallback: result => {
+          this.authToken = result;
           resolve(result);
         },
         failureCallback: reason => {

@@ -30,6 +30,7 @@ it("can get token", done => {
   expect(microsoftTeams.authentication.getAuthToken).toHaveBeenCalledTimes(1);
 });
 
+/*
 it("can get user", done => {
   const mockUser = {
     name: "fakeFirst fakeLast",
@@ -49,4 +50,5 @@ it("can get user", done => {
 
   expect(microsoftTeams.authentication.getUser).toHaveBeenCalledTimes(1);
 });
+*/
 
