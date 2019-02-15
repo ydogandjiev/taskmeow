@@ -2,15 +2,19 @@ import MockAuthService from "./mock.auth.service";
 import MsalAuthService from "./msal.auth.service";
 import AdalAuthService from "./adal.auth.service";
 import TeamsAuthService from "./teams.auth.service";
+import SSOAuthService from "./sso.auth.service";
 
 class AuthService {
   constructor() {
     const url = new URL(window.location);
     const params = new URLSearchParams(url.search);
+
     if (params.get("useTest")) {
       this.authService = new MockAuthService();
     } else if (params.get("inTeams")) {
       this.authService = new TeamsAuthService();
+    } else if (params.get("inTeamsSSO")) {
+      this.authService = new SSOAuthService();
     } else if (
       params.get("useV2") ||
       url.pathname.indexOf("/callback/v2") !== -1
@@ -39,6 +43,10 @@ class AuthService {
 
   getUser() {
     return this.authService.getUser();
+  }
+
+  useSSO() {
+    return this.authService.isSSO ? this.authService.isSSO : false;
   }
 
   // Does an authenticated fetch by acquiring and appending the Bearer token for our backend

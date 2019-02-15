@@ -51,7 +51,7 @@ class App extends Component {
   };
 
   render() {
-    if (!authService.isCallback()) {
+    if (!authService.useSSO() && !authService.isCallback()) {
       return (
         <div className="App" style={{ backgroundImage: `url(${background})` }}>
           {this.state.user ? (
@@ -60,34 +60,37 @@ class App extends Component {
               <Route path="/" component={Tasks} />
             </Switch>
           ) : (
-            <div className="App-login">
-              <div className="App-login-image-container">
-                <img
-                  className="App-login-image"
-                  alt="Taskmeow logo"
-                  src={logo}
-                />
-              </div>
-              <div className="App-login-button-container">
-                <DefaultButton
-                  className="App-login-button"
-                  primary="true"
-                  onClick={this.login}
-                >
+              <div className="App-login">
+                <div className="App-login-image-container">
                   <img
-                    className="App-login-button-image"
-                    alt="Microsoft logo"
-                    src={microsoftLogo}
+                    className="App-login-image"
+                    alt="Taskmeow logo"
+                    src={logo}
                   />
-                  <span className="ms-Button-label label-46">Sign in</span>
-                </DefaultButton>
+                </div>
+                <div className="App-login-button-container">
+                  <DefaultButton
+                    className="App-login-button"
+                    primary="true"
+                    onClick={this.login}
+                  >
+                    <img
+                      className="App-login-button-image"
+                      alt="Microsoft logo"
+                      src={microsoftLogo}
+                    />
+                    <span className="ms-Button-label label-46">Sign in</span>
+                  </DefaultButton>
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
       );
     } else {
-      return <Spinner label="Signing in..." />;
+      return (
+        <div className="App" style={{ backgroundImage: `url(${background})` }}>
+          <Spinner label="Signing in..." />
+        </div>);
     }
   }
 }
