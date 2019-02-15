@@ -1,7 +1,7 @@
 import SSOAuthService from "./sso.auth.service";
-
 import * as microsoftTeams from "@microsoft/teams-js";
 import { resolve } from "any-promise";
+
 jest.mock("@microsoft/teams-js");
 
 afterEach(() => {
@@ -14,13 +14,12 @@ it("can be constructed", () => {
   expect(authService.isSSO).toBeTruthy();
 });
 
-/*
 it("can get token", done => {
   const tokenValue = "faketoken";
 
   const authService = new SSOAuthService();
-  microsoftTeams.authentication.getAuthToken.mockImplementationOnce({
-
+  microsoftTeams.authentication.getAuthToken.mockImplementationOnce(request => {
+    request.successCallback(tokenValue);
   });
 
   authService.getToken().then(token => {
@@ -39,8 +38,8 @@ it("can get user", done => {
   };
 
   const authService = new SSOAuthService();
-  microsoftTeams.authentication.getUser.mockImplementationOnce({
-
+  microsoftTeams.authentication.getUser.mockImplementationOnce(request => {
+    request.successCallback(mockUser);
   });
 
   authService.getUser().then(user => {
@@ -50,4 +49,4 @@ it("can get user", done => {
 
   expect(microsoftTeams.authentication.getUser).toHaveBeenCalledTimes(1);
 });
-*/
+
