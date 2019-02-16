@@ -24,21 +24,22 @@ it("can get token", done => {
 
   authService.getToken().then(token => {
     expect(token).toEqual(tokenValue);
+    expect(token).toEqual(authService.authToken);
     done();
   });
 
   expect(microsoftTeams.authentication.getAuthToken).toHaveBeenCalledTimes(1);
 });
 
-/*
 it("can get user", done => {
+  const tokenValue = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UifQ.DjwRE2jZhren2Wt37t5hlVru6Myq4AhpGLiiefF69u8";
+
   const mockUser = {
-    name: "fakeFirst fakeLast",
-    given_name: "fakeFirst",
-    oid: "fakeOid"
+    name: "John Doe",
   };
 
   const authService = new SSOAuthService();
+  authService.authToken = tokenValue;
   microsoftTeams.authentication.getUser.mockImplementationOnce(request => {
     request.successCallback(mockUser);
   });
@@ -47,8 +48,4 @@ it("can get user", done => {
     expect(user).toEqual(mockUser);
     done();
   });
-
-  expect(microsoftTeams.authentication.getUser).toHaveBeenCalledTimes(1);
 });
-*/
-
