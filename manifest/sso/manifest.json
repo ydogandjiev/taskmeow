@@ -1,0 +1,64 @@
+﻿{
+  "$schema": "https://raw.githubusercontent.com/OfficeDev/microsoft-teams-app-schema/preview/DevPreview/MicrosoftTeams.schema.json",
+  "manifestVersion": "devPreview",
+  "version": "1.0",
+  "id": "36b1586d-b1da-45d2-9b32-899c3757b6f8",
+  "packageName": "com.taskmeow",
+  "developer": {
+    "name": "Task Meow",
+    "websiteUrl": "https://taskmeow.com",
+    "privacyUrl": "https://taskmeow.com/privacypolicy",
+    "termsOfUseUrl": "https://taskmeow.com/termsofuse"
+  },
+  "name": {
+    "short": "Task Meow",
+    "full": "Task Meow for Microsoft Teams"
+  },
+  "description": {
+    "short": "Task Meow to do list app.",
+    "full": "Task Meow is a simple to do list app that helps you track the important things in your life."
+  },
+  "icons": {
+    "outline": "outline.png",
+    "color": "color.png"
+  },
+  "accentColor": "#ffffff",
+  "configurableTabs": [],
+  "staticTabs": [
+    {
+      "contentUrl": "https://taskmeow.com/?inTeamsSSO=true",
+      "entityId": "myTasks",
+      "name": "My Tasks",
+      "scopes": [
+        "personal"
+      ]
+    },
+    {
+      "contentUrl": "https://taskmeow.com/profile/?inTeamsSSO=true",
+      "entityId": "myProfile",
+      "name": "My Profile",
+      "scopes": [
+        "personal"
+      ]
+    }
+  ],
+  "bots": [
+    {
+      "botId": "36b1586d-b1da-45d2-9b32-899c3757b6f8",
+      "scopes": [
+        "personal"
+      ]
+    }
+  ],
+  "permissions": [
+    "messageTeamMembers",
+    "identity"
+  ],
+  "validDomains": [
+    "taskmeow.com"
+  ],
+  "webApplicationInfo": {
+    "id": "36b1586d-b1da-45d2-9b32-899c3757b6f8",
+    "resource": "api://taskmeow.com/36b1586d-b1da-45d2-9b32-899c3757b6f8"
+  }
+}
