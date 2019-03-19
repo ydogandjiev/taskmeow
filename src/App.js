@@ -22,16 +22,17 @@ class App extends Component {
   }
 
   componentDidMount() {
-    Promise.all([authService.getUser(), authService.getToken()])
-      .then(([user, token]) => {
+    authService.getToken().then(token => {
+      return authService.getUser().then(user => {
         if (user && token) {
           this.setState({ user, loading: false });
         }
-      })
+      });
+    })
       .catch(err => {
         this.setState({ loading: false });
       });
-  }
+  };
 
   login = () => {
     this.setState({ loading: true });
