@@ -22,23 +22,17 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // get the token first just in case its needed to get the user information
     authService.getToken().then(token => {
       return authService.getUser().then(user => {
         if (user && token) {
           this.setState({ user, loading: false });
         }
-      })
-        .catch(err => {
-          console.error("getUser: " + err);
-          this.setState({ loading: false });
-        });
+      });
     })
       .catch(err => {
-        console.error("getToken: " + err);
         this.setState({ loading: false });
       });
-  }
+  };
 
   login = () => {
     this.setState({ loading: true });

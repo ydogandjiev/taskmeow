@@ -17,6 +17,8 @@ beforeEach(() => {
 });
 
 it("renders logged out view", done => {
+  authService.getToken.mockResolvedValue(null);
+
   const div = document.createElement("div");
   ReactDOM.render(
     <BrowserRouter>
