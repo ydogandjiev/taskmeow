@@ -35,7 +35,10 @@ it("can get user", done => {
   const tokenValue = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UifQ.DjwRE2jZhren2Wt37t5hlVru6Myq4AhpGLiiefF69u8";
 
   const mockUser = {
+    family_name: "John",
+    given_name: "Doe",
     name: "John Doe",
+    upn: undefined
   };
 
   const authService = new SSOAuthService();
