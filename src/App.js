@@ -22,6 +22,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this.setState({ loading: false })
     authService.getToken().then(token => {
       return authService.getUser().then(user => {
         if (user && token) {
@@ -52,7 +53,8 @@ class App extends Component {
   };
 
   render() {
-    if (!authService.useSSO() && !authService.isCallback()) {
+    if ((!authService.useSSO() && !authService.isCallback()) ||
+      (authService.useSSO() && this.state.user)) {
       return (
         <div className="App" style={{ backgroundImage: `url(${background})` }}>
           {this.state.user ? (
