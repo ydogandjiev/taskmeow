@@ -19,8 +19,8 @@ class SSOAuthService {
     var parsedToken = JSON.parse(window.atob(base64));
     var nameParts = parsedToken.name.split(" ");
     return {
-      family_name: nameParts.length > 0 ? nameParts[0] : "n/a",
-      given_name: nameParts.length > 1 ? nameParts[1] : "n/a",
+      family_name: nameParts.length > 1 ? nameParts[1] : "n/a",
+      given_name: nameParts.length > 0 ? nameParts[0] : "n/a",
       upn: parsedToken.preferred_username,
       name: parsedToken.name
     };
@@ -43,15 +43,19 @@ class SSOAuthService {
 
   getToken() {
     return new Promise((resolve, reject) => {
-      microsoftTeams.authentication.getAuthToken({
-        successCallback: result => {
-          this.authToken = result;
-          resolve(result);
-        },
-        failureCallback: reason => {
-          reject(reason);
-        }
-      });
+      if (this.authToken) {
+        resolve(this.authToken);
+      } else {
+        microsoftTeams.authentication.getAuthToken({
+          successCallback: result => {
+            this.authToken = result;
+            resolve(result);
+          },
+          failureCallback: reason => {
+            reject(reason);
+          }
+        });
+      }
     });
   }
 }
