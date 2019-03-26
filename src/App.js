@@ -30,6 +30,10 @@ class App extends Component {
             loading: false,
             error: null
           });
+        } else {
+          this.setState({
+            error: "No user profile or token returned for login"
+          });
         }
       });
     })
