@@ -24,19 +24,11 @@ class App extends Component {
   componentDidMount() {
     authService.getToken().then(token => {
       return authService.getUser().then(user => {
-        if (user && token) {
-          this.setState({
-            user: user,
-            loading: false,
-            error: null
-          });
-        } else {
-          this.setState({
-            user: null,
-            loading: false,
-            error: "Missing values required for login"
-          });
-        }
+        this.setState({
+          user: user,
+          loading: false,
+          error: null
+        });
       });
     })
       .catch(error => {

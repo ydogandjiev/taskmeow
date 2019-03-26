@@ -63,23 +63,3 @@ it("renders logged in view", done => {
   });
 });
 
-it("renders loading error view", done => {
-  authService.getUser.mockResolvedValue(null);
-  authService.getToken.mockResolvedValue(null);
-
-  const tasks = [];
-  tasksService.get.mockResolvedValue(tasks);
-
-  const div = document.createElement("div");
-  ReactDOM.render(
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>,
-    div
-  );
-
-  setTimeout(() => {
-    expect(div.getElementsByClassName("App-error").length).toEqual(1);
-    done();
-  });
-});
