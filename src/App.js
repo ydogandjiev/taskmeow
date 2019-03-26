@@ -32,7 +32,9 @@ class App extends Component {
           });
         } else {
           this.setState({
-            error: "No user profile or token returned for login"
+            user: null,
+            loading: false,
+            error: "Missing values required for login"
           });
         }
       });
