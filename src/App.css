@@ -65,6 +65,13 @@ body,
   background: #ffffff;
 }
 
+.App-error {
+  border: 1px solid gray;
+  background-color: #ffffff;
+  color: darkred;
+  padding: 2rem;
+}
+
 .Tasks {
   display: flex;
   flex-direction: column;

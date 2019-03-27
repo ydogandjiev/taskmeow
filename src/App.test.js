@@ -62,3 +62,4 @@ it("renders logged in view", done => {
     done();
   });
 });
+

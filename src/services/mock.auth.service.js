@@ -38,6 +38,10 @@ class MockAuthService {
       return Promise.reject("User information is not available");
     }
   };
+
+  useSSO = () => {
+    return false;
+  };
 }
 
 export default MockAuthService;

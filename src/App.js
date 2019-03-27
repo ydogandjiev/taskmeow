@@ -22,16 +22,21 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.setState({ loading: false })
     authService.getToken().then(token => {
       return authService.getUser().then(user => {
-        if (user && token) {
-          this.setState({ user, loading: false });
-        }
+        this.setState({
+          user: user,
+          loading: false,
+          error: null
+        });
       });
     })
-      .catch(err => {
-        this.setState({ loading: false });
+      .catch(error => {
+        this.setState({
+          user: null,
+          loading: false,
+          error: error
+        });
       });
   };
 
@@ -92,7 +97,11 @@ class App extends Component {
     } else {
       return (
         <div className="App" style={{ backgroundImage: `url(${background})` }}>
-          <Spinner label="Signing in..." />
+          {this.state.error ? (
+            <div className="App-error">{this.state.error}</div>
+          ) : (
+              <Spinner label="Signing in..." />
+            )}
         </div>);
     }
   }
