@@ -23,7 +23,16 @@
     "color": "color.png"
   },
   "accentColor": "#ffffff",
-  "configurableTabs": [],
+  "configurableTabs": [
+    {
+      "configurationUrl": "https://taskmeow.com/config/?inTeamsSSO=true",
+      "canUpdateConfiguration": true,
+      "scopes": [
+        "team",
+        "groupchat"
+      ]
+    }
+  ],
   "staticTabs": [
     {
       "contentUrl": "https://taskmeow.com/?inTeamsSSO=true",
