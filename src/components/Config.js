@@ -13,6 +13,11 @@ class Config extends Component {
 
   componentDidMount() {
     microsoftTeams.initialize();
+
+    microsoftTeams.settings.registerOnSaveHandler(function (saveEvent) {
+      saveEvent.notifySuccess();
+    });
+
     this.setState({ loading: true });
     authService
       .getUser()
