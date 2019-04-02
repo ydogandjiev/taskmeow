@@ -3,6 +3,7 @@ import { Switch, Route } from "react-router-dom";
 import { DefaultButton, Spinner } from "office-ui-fabric-react";
 import Profile from "./components/Profile";
 import Tasks from "./components/Tasks";
+import Config from "./components/Config";
 import authService from "./services/auth.service";
 import microsoftLogo from "./microsoft.png";
 import background from "./background.png";
@@ -65,6 +66,7 @@ class App extends Component {
           {this.state.user ? (
             <Switch>
               <Route path="/profile" component={Profile} />
+              <Route path="/config" component={Config} />
               <Route path="/" component={Tasks} />
             </Switch>
           ) : (
