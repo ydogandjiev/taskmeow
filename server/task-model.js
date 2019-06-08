@@ -6,6 +6,7 @@ const taskSchema = new Schema({
   title: { type: String, required: true },
   order: { type: Number, default: 0 },
   starred: { type: Boolean, default: false },
+  conversationId: { type: String },
   date: { type: Date, default: Date.now }
 });
 

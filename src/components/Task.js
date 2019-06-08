@@ -19,7 +19,7 @@ const Task = props => {
             }
           />
           <span className="Task-title">{props.task.title}</span>
-          <Link className="Task-starlink">
+          <Link className="Task-star-link">
             {props.task.starred ? (
               <Icon
                 className="Task-starred-icon"
@@ -34,6 +34,23 @@ const Task = props => {
               />
             )}
           </Link>
+          {props.inTeams && (
+            <Link className="Task-conversation-link">
+              {props.conversationOpen ? (
+                <Icon
+                  className="Task-conversation-open-icon"
+                  iconName="ChatSolid"
+                  onClick={event => props.closeConversation(props.task)}
+                />
+              ) : (
+                <Icon
+                  className="Task-conversation-closed-icon"
+                  iconName="Chat"
+                  onClick={event => props.openConversation(props.task)}
+                />
+              )}
+            </Link>
+          )}
         </li>
       )}
     </Draggable>

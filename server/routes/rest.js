@@ -21,7 +21,13 @@ router.get("/tasks", (req, res, next) => {
 
 router.post("/tasks", (req, res, next) => {
   taskService
-    .create(req.user._id, req.body.title, req.body.order, req.body.starred)
+    .create(
+      req.user._id,
+      req.body.title,
+      req.body.order,
+      req.body.starred,
+      req.body.conversationId
+    )
     .then(task => {
       res.json(task);
     })
@@ -32,7 +38,13 @@ router.post("/tasks", (req, res, next) => {
 
 router.put("/tasks/:id", (req, res, next) => {
   taskService
-    .update(req.params.id, req.body.title, req.body.order, req.body.starred)
+    .update(
+      req.params.id,
+      req.body.title,
+      req.body.order,
+      req.body.starred,
+      req.body.conversationId
+    )
     .then(task => {
       res.json(task);
     })

@@ -4,6 +4,7 @@ import { Droppable, DragDropContext } from "react-beautiful-dnd";
 import Task from "./Task";
 import UserTile from "./UserTile";
 import tasksService from "../services/tasks.service";
+import * as microsoftTeams from "@microsoft/teams-js";
 
 // A little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
@@ -14,10 +15,19 @@ const reorder = (list, startIndex, endIndex) => {
 };
 
 class Tasks extends Component {
-  state = {
-    newTask: { title: "" },
-    tasks: []
-  };
+  constructor(props) {
+    super(props);
+
+    const url = new URL(window.location);
+    const params = new URLSearchParams(url.search);
+
+    this.state = {
+      conversationOpen: false,
+      newTask: { title: "" },
+      tasks: [],
+      inTeams: !!params.get("inTeams")
+    };
+  }
 
   componentDidMount() {
     this.setState({ loading: true });
@@ -27,6 +37,10 @@ class Tasks extends Component {
         loading: false
       });
     });
+
+    if (this.state.inTeams) {
+      microsoftTeams.initialize();
+    }
   }
 
   handleTaskCheckedChange = (task, isChecked) => {
@@ -57,6 +71,41 @@ class Tasks extends Component {
           };
         });
       });
+  };
+
+  handleOpenConversation = task => {
+    if (this.state.inTeams) {
+      microsoftTeams.conversations.openConversation({
+        conversationId: task.conversationId,
+        subEntityId: task._id,
+        title: task.title,
+        onStartConversation: (subEntityId, conversationId) => {
+          if (task._id === subEntityId) {
+            task.conversationId = conversationId;
+            tasksService.update(task);
+          }
+        },
+        onCloseConversation: (subEntityId, conversationId) => {
+          this.setState({
+            conversationOpen: false
+          });
+        }
+      });
+
+      this.setState({
+        conversationOpen: true
+      });
+    }
+  };
+
+  handleCloseConversation = task => {
+    if (this.state.inTeams) {
+      microsoftTeams.conversations.closeConversation();
+
+      this.setState({
+        conversationOpen: false
+      });
+    }
   };
 
   handleTextChanged = value => {
@@ -149,8 +198,12 @@ class Tasks extends Component {
                         key={task._id}
                         index={index}
                         task={task}
+                        inTeams={this.state.inTeams}
+                        conversationOpen={this.state.conversationOpen}
                         onCheckedChange={this.handleTaskCheckedChange}
                         onStarredChange={this.handleTaskStarredChange}
+                        openConversation={this.handleOpenConversation}
+                        closeConversation={this.handleCloseConversation}
                       />
                     ))}
                   </ul>

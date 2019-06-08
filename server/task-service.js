@@ -9,16 +9,17 @@ function get(userId) {
     .exec();
 }
 
-function create(userId, taskTitle, taskOrder, taskStarred) {
+function create(userId, taskTitle, taskOrder, taskStarred, taskConversationId) {
   return new Task({
     user: userId,
     title: taskTitle,
     order: taskOrder,
-    starred: taskStarred
+    starred: taskStarred,
+    conversationId: taskConversationId
   }).save();
 }
 
-function update(taskId, taskTitle, taskOrder, taskStarred) {
+function update(taskId, taskTitle, taskOrder, taskStarred, taskConversationId) {
   return Task.findOne({ _id: taskId }).then(task => {
     if (typeof taskTitle !== "undefined") {
       task.title = taskTitle;
@@ -28,6 +29,9 @@ function update(taskId, taskTitle, taskOrder, taskStarred) {
     }
     if (typeof taskStarred !== "undefined") {
       task.starred = taskStarred;
+    }
+    if (typeof taskConversationId !== "undefined") {
+      task.conversationId = taskConversationId;
     }
     return task.save();
   });

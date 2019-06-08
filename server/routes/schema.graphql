@@ -4,8 +4,19 @@ type Query {
 }
 
 type Mutation {
-  createTask(title: String!, order: Float!, starred: Boolean): Task!
-  updateTask(id: ID!, title: String, order: Float, starred: Boolean): Task
+  createTask(
+    title: String!
+    order: Float!
+    starred: Boolean
+    conversationId: String
+  ): Task!
+  updateTask(
+    id: ID!
+    title: String
+    order: Float
+    starred: Boolean
+    convesationId: String
+  ): Task
   deleteTask(id: ID!): Task
 }
 
@@ -14,6 +25,7 @@ type Task {
   title: String!
   starred: Boolean
   order: Float
+  conversationId: String
 }
 
 type User {

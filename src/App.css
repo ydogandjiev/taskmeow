@@ -121,9 +121,13 @@ body,
   align-items: center;
 }
 
-.Tasks-list .Task-listitem .Task-starlink {
+.Tasks-list .Task-listitem .Task-star-link {
   flex: 0 0 auto;
   justify-content: flex-end;
+}
+
+.Tasks-list .Task-listitem .Task-conversation-link {
+  padding-left: 0.5rem;
 }
 
 .ms-Persona-initials {

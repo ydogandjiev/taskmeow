@@ -7,7 +7,7 @@ class GraphTasksService {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          query: "query { tasks { _id title starred order } }"
+          query: "query { tasks { _id title starred order conversationId } }"
         })
       })
       .then(result => result.json())
@@ -29,7 +29,7 @@ class GraphTasksService {
         body: JSON.stringify({
           query: `mutation { createTask(title: "${task.title}", order: ${
             task.order
-          }, starred: ${!!task.starred}) { _id title starred order } }`
+          }, starred: ${!!task.starred}) { _id title starred order conversationId } }`
         })
       })
       .then(result => result.json())
@@ -53,7 +53,7 @@ class GraphTasksService {
             task.title
           }", order: ${
             task.order
-          }, starred: ${!!task.starred}) { _id title starred order } }`
+          }, starred: ${!!task.starred}) { _id title starred order conversationId } }`
         })
       })
       .then(result => result.json())
@@ -73,7 +73,7 @@ class GraphTasksService {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          query: `mutation { deleteTask(id: "${id}") { _id title starred order } }`
+          query: `mutation { deleteTask(id: "${id}") { _id title starred order conversationId } }`
         })
       })
       .then(result => result.json())

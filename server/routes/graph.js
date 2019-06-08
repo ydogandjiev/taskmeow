@@ -17,10 +17,22 @@ const resolvers = {
   },
   createTask: (args, request) => {
     const userId = request.user._id;
-    return taskService.create(userId, args.title, args.order, args.starred);
+    return taskService.create(
+      userId,
+      args.title,
+      args.order,
+      args.starred,
+      args.conversationId
+    );
   },
   updateTask: (args, request) => {
-    return taskService.update(args.id, args.title, args.order, args.starred);
+    return taskService.update(
+      args.id,
+      args.title,
+      args.order,
+      args.starred,
+      args.conversationId
+    );
   },
   deleteTask: (args, request) => {
     return taskService.remove(args.id);
