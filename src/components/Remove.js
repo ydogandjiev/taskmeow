@@ -6,9 +6,9 @@ import { DefaultButton } from "office-ui-fabric-react";
 
 /**
  * This component is responsible for:
- * 1. Displaying configuration settings
+ * 1. Displaying remove settings
  */
-class Config extends Component {
+class Remove extends Component {
   state = {};
 
   componentDidMount() {
@@ -44,7 +44,7 @@ class Config extends Component {
     return (
       <div className="App-content">
         <div className="App-header">
-          <h1 className="App-header-title">Config</h1>
+          <h1 className="App-header-title">Remove</h1>
           <UserTile history={this.props.history} />
         </div>
         <div>
@@ -57,4 +57,4 @@ class Config extends Component {
   }
 }
 
-export default Config;
+export default Remove;

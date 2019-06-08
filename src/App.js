@@ -4,6 +4,7 @@ import { DefaultButton, Spinner } from "office-ui-fabric-react";
 import Profile from "./components/Profile";
 import Tasks from "./components/Tasks";
 import Config from "./components/Config";
+import Remove from "./components/Remove";
 import authService from "./services/auth.service";
 import microsoftLogo from "./microsoft.png";
 import background from "./background.png";
@@ -23,15 +24,17 @@ class App extends Component {
   }
 
   componentDidMount() {
-    authService.getToken().then(token => {
-      return authService.getUser().then(user => {
-        this.setState({
-          user: user,
-          loading: false,
-          error: null
+    authService
+      .getToken()
+      .then(token => {
+        return authService.getUser().then(user => {
+          this.setState({
+            user: user,
+            loading: false,
+            error: null
+          });
         });
-      });
-    })
+      })
       .catch(error => {
         this.setState({
           user: null,
@@ -39,7 +42,7 @@ class App extends Component {
           error: error
         });
       });
-  };
+  }
 
   login = () => {
     this.setState({ loading: true });
@@ -59,41 +62,44 @@ class App extends Component {
   };
 
   render() {
-    if ((!authService.useSSO() && !authService.isCallback()) ||
-      (authService.useSSO() && this.state.user)) {
+    if (
+      (!authService.useSSO() && !authService.isCallback()) ||
+      (authService.useSSO() && this.state.user)
+    ) {
       return (
         <div className="App" style={{ backgroundImage: `url(${background})` }}>
           {this.state.user ? (
             <Switch>
               <Route path="/profile" component={Profile} />
               <Route path="/config" component={Config} />
+              <Route path="/remove" component={Remove} />
               <Route path="/" component={Tasks} />
             </Switch>
           ) : (
-              <div className="App-login">
-                <div className="App-login-image-container">
-                  <img
-                    className="App-login-image"
-                    alt="Taskmeow logo"
-                    src={logo}
-                  />
-                </div>
-                <div className="App-login-button-container">
-                  <DefaultButton
-                    className="App-login-button"
-                    primary="true"
-                    onClick={this.login}
-                  >
-                    <img
-                      className="App-login-button-image"
-                      alt="Microsoft logo"
-                      src={microsoftLogo}
-                    />
-                    <span className="ms-Button-label label-46">Sign in</span>
-                  </DefaultButton>
-                </div>
+            <div className="App-login">
+              <div className="App-login-image-container">
+                <img
+                  className="App-login-image"
+                  alt="Taskmeow logo"
+                  src={logo}
+                />
               </div>
-            )}
+              <div className="App-login-button-container">
+                <DefaultButton
+                  className="App-login-button"
+                  primary="true"
+                  onClick={this.login}
+                >
+                  <img
+                    className="App-login-button-image"
+                    alt="Microsoft logo"
+                    src={microsoftLogo}
+                  />
+                  <span className="ms-Button-label label-46">Sign in</span>
+                </DefaultButton>
+              </div>
+            </div>
+          )}
         </div>
       );
     } else {
@@ -102,9 +108,10 @@ class App extends Component {
           {this.state.error ? (
             <div className="App-error">{this.state.error}</div>
           ) : (
-              <Spinner label="Signing in..." />
-            )}
-        </div>);
+            <Spinner label="Signing in..." />
+          )}
+        </div>
+      );
     }
   }
 }
