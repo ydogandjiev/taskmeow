@@ -1,7 +1,6 @@
+import GraphTasksService from "./graph.tasks.service";
 import authService from "./auth.service";
 jest.mock("./auth.service");
-
-import GraphTasksService from "./graph.tasks.service";
 
 afterEach(() => {
   jest.resetAllMocks();
@@ -24,7 +23,8 @@ it("can get tasks", done => {
     expect(authService.fetch).toHaveBeenCalledTimes(1);
     expect(authService.fetch).toHaveBeenCalledWith("/graphql", {
       method: "POST",
-      body: '{"query":"query { tasks { _id title starred order } }"}',
+      body:
+        '{"query":"query { tasks { _id title starred order conversationId } }"}',
       headers: { "Content-Type": "application/json" }
     });
 
@@ -62,7 +62,7 @@ it("can create task", done => {
     expect(authService.fetch).toHaveBeenCalledWith("/graphql", {
       method: "POST",
       body:
-        '{"query":"mutation { createTask(title: \\"fakeTitle\\", order: 100, starred: false) { _id title starred order } }"}',
+        '{"query":"mutation { createTask(title: \\"fakeTitle\\", order: 100, starred: false) { _id title starred order conversationId } }"}',
       headers: { "Content-Type": "application/json" }
     });
 
@@ -93,7 +93,7 @@ it("can update task", done => {
     expect(authService.fetch).toHaveBeenCalledWith("/graphql", {
       method: "POST",
       body:
-        '{"query":"mutation { updateTask(id: \\"fakeId\\", title: \\"fakeTitle\\", order: 100, starred: false) { _id title starred order } }"}',
+        '{"query":"mutation { updateTask(id: \\"fakeId\\", title: \\"fakeTitle\\", order: 100, starred: false) { _id title starred order conversationId } }"}',
       headers: { "Content-Type": "application/json" }
     });
 
@@ -126,7 +126,7 @@ it("can destroy task", done => {
     expect(authService.fetch).toHaveBeenCalledWith("/graphql", {
       method: "POST",
       body:
-        '{"query":"mutation { deleteTask(id: \\"fakeId\\") { _id title starred order } }"}',
+        '{"query":"mutation { deleteTask(id: \\"fakeId\\") { _id title starred order conversationId } }"}',
       headers: { "Content-Type": "application/json" }
     });
 
