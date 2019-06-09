@@ -1,18 +1,18 @@
 ﻿{
-  "$schema": "https://raw.githubusercontent.com/OfficeDev/microsoft-teams-app-schema/preview/DevPreview/MicrosoftTeams.schema.json",
-  "manifestVersion": "devPreview",
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.5/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.5",
   "version": "1.0",
   "id": "13ec5bf6-8538-4cbe-87b3-2f2442cc5e5b",
   "packageName": "com.taskmeow",
   "developer": {
-    "name": "Task Meow (sso-int)",
+    "name": "Yuri Dogandjiev",
     "websiteUrl": "https://taskmeow.com",
     "privacyUrl": "https://taskmeow.com/privacypolicy",
     "termsOfUseUrl": "https://taskmeow.com/termsofuse"
   },
   "name": {
-    "short": "Task Meow (sso-int)",
-    "full": "Task Meow for Microsoft Teams"
+    "short": "Task Meow (SSO-INT)",
+    "full": "Task Meow (SSO-INT) for Microsoft Teams"
   },
   "description": {
     "short": "Task Meow to do list app.",

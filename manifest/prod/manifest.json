@@ -1,6 +1,6 @@
 ﻿{
-  "$schema": "https://statics.teams.microsoft.com/sdk/v1.2/manifest/MicrosoftTeams.schema.json",
-  "manifestVersion": "1.2",
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.5/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.5",
   "version": "1.0",
   "id": "36b1586d-b1da-45d2-9b32-899c3757b6f8",
   "packageName": "com.taskmeow",
@@ -27,7 +27,8 @@
     {
       "configurationUrl": "https://taskmeow.com/config/?inTeams=true",
       "scopes": [
-        "team"
+        "team",
+        "groupchat"
       ]
     }
   ],
@@ -46,14 +47,6 @@
       "name": "My Profile",
       "scopes": [
         "personal"
-      ]
-    },
-    {
-      "contentUrl": "https://taskmeow.com/?inTeams=true",
-      "entityId": "teamTasks",
-      "name": "Team Tasks",
-      "scopes": [
-        "team"
       ]
     }
   ],
