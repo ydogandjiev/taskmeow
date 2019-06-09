@@ -13,16 +13,8 @@ class Remove extends Component {
 
   componentDidMount() {
     microsoftTeams.initialize();
-    microsoftTeams.settings.registerOnSaveHandler(function(saveEvent) {
-      microsoftTeams.settings.setSettings({
-        entityId: "channelTasks",
-        suggestedDisplayName: "Channel Tasks",
-        contentUrl: `${window.location.origin}/?inTeams=true`,
-        removeUrl: `${window.location.origin}/remove/?inTeams=true`,
-        websiteUrl: `${window.location.origin}/`
-      });
-
-      saveEvent.notifySuccess();
+    microsoftTeams.settings.registerOnRemoveHandler(removeEvent => {
+      removeEvent.notifySuccess();
     });
 
     this.setState({ loading: true });

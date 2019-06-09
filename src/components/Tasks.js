@@ -85,15 +85,21 @@ class Tasks extends Component {
             tasksService.update(task);
           }
         },
-        onCloseConversation: (subEntityId, conversationId) => {
+        onCloseConversation: () => {
           this.setState({
-            conversationOpen: false
+            tasks: this.state.tasks.map(t => ({
+              ...t,
+              conversationOpen: false
+            }))
           });
         }
       });
 
       this.setState({
-        conversationOpen: true
+        tasks: this.state.tasks.map(t => ({
+          ...t,
+          conversationOpen: t._id === task._id
+        }))
       });
     }
   };
@@ -103,7 +109,7 @@ class Tasks extends Component {
       microsoftTeams.conversations.closeConversation();
 
       this.setState({
-        conversationOpen: false
+        tasks: this.state.tasks.map(t => ({ ...t, conversationOpen: false }))
       });
     }
   };
