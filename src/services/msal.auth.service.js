@@ -5,7 +5,7 @@ import * as Msal from "msal";
 class MsalAuthService {
   constructor() {
     this.applicationConfig = {
-      clientId: "36b1586d-b1da-45d2-9b32-899c3757b6f8"
+      clientId: "13ec5bf6-8538-4cbe-87b3-2f2442cc5e5b"
     };
 
     this.app = new Msal.UserAgentApplication(
