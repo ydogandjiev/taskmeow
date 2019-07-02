@@ -1,18 +1,18 @@
-{
+﻿{
   "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.5/MicrosoftTeams.schema.json",
   "manifestVersion": "1.5",
   "version": "1.0",
-  "id": "ab93102c-869b-4d34-a921-a31d3e7f76ef",
-  "packageName": "io.ngrok.taskmeow",
+  "id": "13ec5bf6-8538-4cbe-87b3-2f2442cc5e5b",
+  "packageName": "com.taskmeow",
   "developer": {
     "name": "Yuri Dogandjiev",
-    "websiteUrl": "https://taskmeow.ngrok.io",
-    "privacyUrl": "https://taskmeow.ngrok.io/privacypolicy",
-    "termsOfUseUrl": "https://taskmeow.ngrok.io/termsofuse"
+    "websiteUrl": "https://taskmeow.com",
+    "privacyUrl": "https://taskmeow.com/privacypolicy",
+    "termsOfUseUrl": "https://taskmeow.com/termsofuse"
   },
   "name": {
-    "short": "Task Meow (INT)",
-    "full": "Task Meow (INT) for Microsoft Teams"
+    "short": "Task Meow (SSO)",
+    "full": "Task Meow (SSO) for Microsoft Teams"
   },
   "description": {
     "short": "Task Meow to do list app.",
@@ -25,7 +25,8 @@
   "accentColor": "#ffffff",
   "configurableTabs": [
     {
-      "configurationUrl": "https://taskmeow.ngrok.io/config/?inTeams=true",
+      "configurationUrl": "https://taskmeow.com/config/?inTeamsSSO=true",
+      "canUpdateConfiguration": true,
       "scopes": [
         "team",
         "groupchat"
@@ -34,7 +35,7 @@
   ],
   "staticTabs": [
     {
-      "contentUrl": "https://taskmeow.ngrok.io/?inTeams=true",
+      "contentUrl": "https://taskmeow.com/?inTeamsSSO=true",
       "entityId": "myTasks",
       "name": "My Tasks",
       "scopes": [
@@ -42,7 +43,7 @@
       ]
     },
     {
-      "contentUrl": "https://taskmeow.ngrok.io/profile/?inTeams=true",
+      "contentUrl": "https://taskmeow.com/profile/?inTeamsSSO=true",
       "entityId": "myProfile",
       "name": "My Profile",
       "scopes": [
@@ -52,11 +53,9 @@
   ],
   "bots": [
     {
-      "botId": "ab93102c-869b-4d34-a921-a31d3e7f76ef",
+      "botId": "13ec5bf6-8538-4cbe-87b3-2f2442cc5e5b",
       "scopes": [
-        "personal",
-        "team",
-        "groupchat"
+        "personal"
       ]
     }
   ],
@@ -65,6 +64,10 @@
     "identity"
   ],
   "validDomains": [
-    "taskmeow.ngrok.io"
-  ]
+    "taskmeow.com"
+  ],
+  "webApplicationInfo": {
+    "id": "13ec5bf6-8538-4cbe-87b3-2f2442cc5e5b",
+    "resource": "https://taskmeow.com"
+  }
 }
