@@ -9,16 +9,33 @@ import { DefaultButton } from "office-ui-fabric-react";
  * 1. Displaying configuration settings
  */
 class Config extends Component {
-  state = {};
+  constructor(props) {
+    super(props);
+
+    const url = new URL(window.location);
+    const params = new URLSearchParams(url.search);
+
+    this.state = {
+      useV2: !!params.get("useV2")
+    };
+  }
 
   componentDidMount() {
     microsoftTeams.initialize();
-    microsoftTeams.settings.registerOnSaveHandler(function(saveEvent) {
+    microsoftTeams.settings.registerOnSaveHandler(saveEvent => {
+      let contentUrl = `${window.location.origin}/channel/?inTeams=true`;
+      let removeUrl = `${window.location.origin}/remove/?inTeams=true`;
+
+      if (this.state.useV2) {
+        contentUrl += "&useV2=true";
+        removeUrl += "&useV2=true";
+      }
+
       microsoftTeams.settings.setSettings({
         entityId: "channelTasks",
         suggestedDisplayName: "Channel Tasks",
-        contentUrl: `${window.location.origin}/?inTeams=true`,
-        removeUrl: `${window.location.origin}/remove/?inTeams=true`,
+        contentUrl: contentUrl,
+        removeUrl: removeUrl,
         websiteUrl: `${window.location.origin}/`
       });
 

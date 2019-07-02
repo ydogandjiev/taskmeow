@@ -1187,9 +1187,9 @@
   version "1.7.61"
   resolved "https://registry.yarnpkg.com/@microsoft/load-themed-styles/-/load-themed-styles-1.7.61.tgz#2d1406c55df6b91fe38a1228cf5dd64c084670bf"
 
-"@microsoft/teams-js@^1.5.0-beta.5":
-  version "1.5.0-beta.5"
-  resolved "https://registry.yarnpkg.com/@microsoft/teams-js/-/teams-js-1.5.0-beta.5.tgz#a9225c9867b299d64c409ebf3548af5cc9f0930b"
+"@microsoft/teams-js@^1.5.0-beta.7":
+  version "1.5.0-beta.7"
+  resolved "https://registry.yarnpkg.com/@microsoft/teams-js/-/teams-js-1.5.0-beta.7.tgz#e8a732640542cd2a1f84240673de191479a79da1"
 
 "@types/async@^2.0.48":
   version "2.0.49"

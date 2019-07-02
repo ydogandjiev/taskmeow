@@ -14,7 +14,7 @@ const reorder = (list, startIndex, endIndex) => {
   return result;
 };
 
-class Tasks extends Component {
+class Channel extends Component {
   constructor(props) {
     super(props);
 
@@ -31,21 +31,27 @@ class Tasks extends Component {
 
   componentDidMount() {
     this.setState({ loading: true });
-    tasksService.get().then(tasks => {
-      this.setState({
-        tasks: tasks.sort((a, b) => a.order - b.order),
-        loading: false
-      });
-    });
 
     if (this.state.inTeams) {
       microsoftTeams.initialize();
+      microsoftTeams.getContext(context => {
+        this.setState({
+          threadId: context.channelId || context.chatId
+        });
+
+        tasksService.get(this.state.threadId).then(tasks => {
+          this.setState({
+            tasks: tasks.sort((a, b) => a.order - b.order),
+            loading: false
+          });
+        });
+      });
     }
   }
 
   handleTaskCheckedChange = (task, isChecked) => {
     if (isChecked) {
-      tasksService.destroy(task._id).then(() => {
+      tasksService.destroy(task._id, this.state.threadId).then(() => {
         this.setState(prevState => {
           return {
             tasks: prevState.tasks.filter(item => item._id !== task._id)
@@ -61,7 +67,10 @@ class Tasks extends Component {
       newOrder = this.state.tasks[0].order - 100;
     }
     tasksService
-      .update({ ...task, order: newOrder, starred: isStarred })
+      .update(
+        { ...task, order: newOrder, starred: isStarred },
+        this.state.threadId
+      )
       .then(updatedTask => {
         this.setState(prevState => {
           return {
@@ -73,6 +82,49 @@ class Tasks extends Component {
       });
   };
 
+  handleOpenConversation = task => {
+    if (this.state.inTeams) {
+      microsoftTeams.conversations.openConversation({
+        conversationId: task.conversationId,
+        subEntityId: task._id,
+        title: task.title,
+        onStartConversation: (subEntityId, conversationId) => {
+          if (task._id === subEntityId) {
+            tasksService.update(
+              { ...task, conversationId: conversationId },
+              this.state.threadId
+            );
+          }
+        },
+        onCloseConversation: () => {
+          this.setState({
+            tasks: this.state.tasks.map(t => ({
+              ...t,
+              conversationOpen: false
+            }))
+          });
+        }
+      });
+
+      this.setState({
+        tasks: this.state.tasks.map(t => ({
+          ...t,
+          conversationOpen: t._id === task._id
+        }))
+      });
+    }
+  };
+
+  handleCloseConversation = task => {
+    if (this.state.inTeams) {
+      microsoftTeams.conversations.closeConversation();
+
+      this.setState({
+        tasks: this.state.tasks.map(t => ({ ...t, conversationOpen: false }))
+      });
+    }
+  };
+
   handleTextChanged = value => {
     this.setState({ newTask: { title: value } });
   };
@@ -81,10 +133,13 @@ class Tasks extends Component {
     if (event.key === "Enter") {
       const tasks = this.state.tasks;
       tasksService
-        .create({
-          ...this.state.newTask,
-          order: tasks.length > 0 ? tasks[0].order + 100 : 100
-        })
+        .create(
+          {
+            ...this.state.newTask,
+            order: tasks.length > 0 ? tasks[0].order + 100 : 100
+          },
+          this.state.threadId
+        )
         .then(task => {
           this.setState(prevState => {
             return {
@@ -119,7 +174,7 @@ class Tasks extends Component {
         task.order = (tasks[index - 1].order + tasks[index + 1].order) / 2;
       }
 
-      tasksService.update(task);
+      tasksService.update(task, this.state.threadId);
 
       this.setState({
         tasks
@@ -164,9 +219,12 @@ class Tasks extends Component {
                         index={index}
                         task={task}
                         inTeams={this.state.inTeams}
+                        supportsConversation={true}
                         conversationOpen={this.state.conversationOpen}
                         onCheckedChange={this.handleTaskCheckedChange}
                         onStarredChange={this.handleTaskStarredChange}
+                        openConversation={this.handleOpenConversation}
+                        closeConversation={this.handleCloseConversation}
                       />
                     ))}
                   </ul>
@@ -180,4 +238,4 @@ class Tasks extends Component {
   }
 }
 
-export default Tasks;
+export default Channel;
