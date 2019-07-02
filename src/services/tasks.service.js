@@ -15,13 +15,13 @@ class TasksService {
     }
   }
 
-  get = () => this.tasksService.get();
+  get = (...args) => this.tasksService.get(...args);
 
-  create = task => this.tasksService.create(task);
+  create = (...args) => this.tasksService.create(...args);
 
-  update = task => this.tasksService.update(task);
+  update = (...args) => this.tasksService.update(...args);
 
-  destroy = id => this.tasksService.destroy(id);
+  destroy = (...args) => this.tasksService.destroy(...args);
 }
 
 export default new TasksService();

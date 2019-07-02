@@ -13,12 +13,11 @@ const schema = buildSchema(
 
 const resolvers = {
   tasks: (args, request) => {
-    return taskService.get(request.user._id);
+    return taskService.getForUser(request.user._id);
   },
   createTask: (args, request) => {
-    const userId = request.user._id;
-    return taskService.create(
-      userId,
+    return taskService.createForUser(
+      request.user._id,
       args.title,
       args.order,
       args.starred,
@@ -26,7 +25,8 @@ const resolvers = {
     );
   },
   updateTask: (args, request) => {
-    return taskService.update(
+    return taskService.updateForUser(
+      request.user._id,
       args.id,
       args.title,
       args.order,
@@ -35,7 +35,7 @@ const resolvers = {
     );
   },
   deleteTask: (args, request) => {
-    return taskService.remove(args.id);
+    return taskService.removeForUser(request.user._id, args.id);
   },
   me: (args, request) => {
     return {

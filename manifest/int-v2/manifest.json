@@ -11,8 +11,8 @@
     "termsOfUseUrl": "https://taskmeow.ngrok.io/termsofuse"
   },
   "name": {
-    "short": "Task Meow (INT)",
-    "full": "Task Meow (INT) for Microsoft Teams"
+    "short": "Task Meow (INT-V2)",
+    "full": "Task Meow (INT-V2) for Microsoft Teams"
   },
   "description": {
     "short": "Task Meow to do list app.",
@@ -25,7 +25,7 @@
   "accentColor": "#ffffff",
   "configurableTabs": [
     {
-      "configurationUrl": "https://taskmeow.ngrok.io/config/?inTeams=true",
+      "configurationUrl": "https://taskmeow.ngrok.io/config/?inTeams=true&useV2=true",
       "scopes": [
         "team",
         "groupchat"
@@ -34,7 +34,7 @@
   ],
   "staticTabs": [
     {
-      "contentUrl": "https://taskmeow.ngrok.io/?inTeams=true",
+      "contentUrl": "https://taskmeow.ngrok.io/?inTeams=true&useV2=true",
       "entityId": "myTasks",
       "name": "My Tasks",
       "scopes": [
@@ -42,7 +42,7 @@
       ]
     },
     {
-      "contentUrl": "https://taskmeow.ngrok.io/profile/?inTeams=true",
+      "contentUrl": "https://taskmeow.ngrok.io/profile/?inTeams=true&useV2=true",
       "entityId": "myProfile",
       "name": "My Profile",
       "scopes": [
@@ -54,9 +54,7 @@
     {
       "botId": "ab93102c-869b-4d34-a921-a31d3e7f76ef",
       "scopes": [
-        "personal",
-        "team",
-        "groupchat"
+        "personal"
       ]
     }
   ],

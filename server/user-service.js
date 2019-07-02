@@ -15,7 +15,7 @@ async function getUser(oid) {
 async function getGraphToken(tid, token, useV2) {
   return useV2
     ? await authService.exchangeForTokenV2(tid, token, [
-        "https://graph.microsoft.com/user.read"
+        "https://graph.microsoft.com/User.Read"
       ])
     : await authService.exchangeForTokenV1(
         tid,

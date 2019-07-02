@@ -3,47 +3,77 @@ const ReadPreference = require("mongodb").ReadPreference;
 
 require("./mongo").connect();
 
-function get(userId) {
+function getForUser(userId) {
   return Task.find({ user: userId })
     .read(ReadPreference.NEAREST)
     .exec();
 }
 
-function create(userId, taskTitle, taskOrder, taskStarred, taskConversationId) {
-  return new Task({
-    user: userId,
-    title: taskTitle,
-    order: taskOrder,
-    starred: taskStarred,
-    conversationId: taskConversationId
-  }).save();
+function getForGroup(channelId) {
+  return Task.find({ channelId })
+    .read(ReadPreference.NEAREST)
+    .exec();
 }
 
-function update(taskId, taskTitle, taskOrder, taskStarred, taskConversationId) {
-  return Task.findOne({ _id: taskId }).then(task => {
-    if (typeof taskTitle !== "undefined") {
-      task.title = taskTitle;
+function createForUser(userId, title) {
+  return new Task({ title, user: userId }).save();
+}
+
+function createForGroup(channelId, title) {
+  return new Task({ title, channelId }).save();
+}
+
+function updateForUser(userId, taskId, title, order, starred, conversationId) {
+  return Task.findOne({ _id: taskId, user: userId }).then(task => {
+    if (typeof title !== "undefined") {
+      task.title = title;
     }
-    if (typeof taskOrder !== "undefined") {
-      task.order = taskOrder;
+    if (typeof order !== "undefined") {
+      task.order = order;
     }
-    if (typeof taskStarred !== "undefined") {
-      task.starred = taskStarred;
+    if (typeof starred !== "undefined") {
+      task.starred = starred;
     }
-    if (typeof taskConversationId !== "undefined") {
-      task.conversationId = taskConversationId;
+    if (typeof conversationId !== "undefined") {
+      task.conversationId = conversationId;
     }
     return task.save();
   });
 }
 
-function remove(taskId) {
-  return Task.findOneAndRemove({ _id: taskId });
+function updateForGroup(channelId, id, title, order, starred, conversationId) {
+  return Task.findOne({ _id: id, channelId }).then(task => {
+    if (typeof title !== "undefined") {
+      task.title = title;
+    }
+    if (typeof order !== "undefined") {
+      task.order = order;
+    }
+    if (typeof starred !== "undefined") {
+      task.starred = starred;
+    }
+    if (typeof conversationId !== "undefined") {
+      task.conversationId = conversationId;
+    }
+    return task.save();
+  });
+}
+
+function removeForUser(userId, taskId) {
+  return Task.findOneAndRemove({ _id: taskId, user: userId });
+}
+
+function removeForGroup(channelId, taskId) {
+  return Task.findOneAndRemove({ _id: taskId, channelId });
 }
 
 module.exports = {
-  get,
-  create,
-  update,
-  remove
+  getForUser,
+  getForGroup,
+  createForUser,
+  createForGroup,
+  updateForUser,
+  updateForGroup,
+  removeForUser,
+  removeForGroup
 };

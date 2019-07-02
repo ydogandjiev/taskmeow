@@ -5,9 +5,9 @@ import AuthenticationContext from "adal-angular/lib/adal";
 class AdalAuthService {
   constructor() {
     this.applicationConfig = {
-      clientId: "13ec5bf6-8538-4cbe-87b3-2f2442cc5e5b",
+      clientId: "ab93102c-869b-4d34-a921-a31d3e7f76ef",
       endpoints: {
-        api: "13ec5bf6-8538-4cbe-87b3-2f2442cc5e5b"
+        api: "ab93102c-869b-4d34-a921-a31d3e7f76ef"
       },
       redirectUri: `${window.location.origin}/callback/v1`,
       cacheLocation: "localStorage",
