@@ -34,7 +34,7 @@ const Task = props => {
               />
             )}
           </Link>
-          {props.inTeams && (
+          {props.inTeams && props.supportsConversation && (
             <Link className="Task-conversation-link">
               {props.task.conversationOpen ? (
                 <Icon
