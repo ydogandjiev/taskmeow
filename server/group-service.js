@@ -4,7 +4,7 @@ const ReadPreference = require("mongodb").ReadPreference;
 require("./mongo").connect();
 
 function get(threadId) {
-  return Group.find({ threadId })
+  return Group.findOne({ threadId })
     .read(ReadPreference.NEAREST)
     .exec();
 }

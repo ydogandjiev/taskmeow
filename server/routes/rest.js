@@ -77,7 +77,7 @@ router.get("/groups/:threadId/tasks", (req, res, next) => {
         botService.getMembers(group.serviceUrl, threadId).then(members => {
           if (members && members.some(member => member.objectId === oid)) {
             taskService
-              .getForGroup(threadId)
+              .getForGroup(group._id)
               .then(tasks => {
                 res.json(tasks);
               })
@@ -110,7 +110,7 @@ router.post("/groups/:threadId/tasks", (req, res, next) => {
           if (members && members.some(member => member.objectId === oid)) {
             taskService
               .createForGroup(
-                threadId,
+                group._id,
                 req.body.title,
                 req.body.order,
                 req.body.starred,
@@ -148,7 +148,7 @@ router.put("/groups/:threadId/tasks/:taskId", (req, res, next) => {
           if (members && members.some(member => member.objectId === oid)) {
             taskService
               .updateForGroup(
-                threadId,
+                group._id,
                 req.params.taskId,
                 req.body.title,
                 req.body.order,
@@ -186,7 +186,7 @@ router.delete("/groups/:thredId/tasks/:taskId", (req, res, next) => {
         botService.getMembers(group.serviceUrl, threadId).then(members => {
           if (members && members.some(member => member.objectId === oid)) {
             taskService
-              .removeForGroup(threadId, req.params.taskId)
+              .removeForGroup(group._id, req.params.taskId)
               .then(task => {
                 res.status(202).json(task);
               })

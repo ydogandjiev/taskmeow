@@ -32,5 +32,5 @@ it("renders tasks", () => {
   ReactDOM.render(<Channel />, div);
 
   const title = div.getElementsByClassName("App-header-title")[0];
-  expect(title.innerHTML).toEqual("Channel");
+  expect(title.innerHTML).toEqual("Tasks");
 });

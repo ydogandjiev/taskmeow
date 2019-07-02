@@ -9,8 +9,8 @@ function getForUser(userId) {
     .exec();
 }
 
-function getForGroup(channelId) {
-  return Task.find({ channelId })
+function getForGroup(groupId) {
+  return Task.find({ group: groupId })
     .read(ReadPreference.NEAREST)
     .exec();
 }
@@ -19,8 +19,8 @@ function createForUser(userId, title) {
   return new Task({ title, user: userId }).save();
 }
 
-function createForGroup(channelId, title) {
-  return new Task({ title, channelId }).save();
+function createForGroup(groupId, title) {
+  return new Task({ title, group: groupId }).save();
 }
 
 function updateForUser(userId, taskId, title, order, starred, conversationId) {
@@ -41,8 +41,8 @@ function updateForUser(userId, taskId, title, order, starred, conversationId) {
   });
 }
 
-function updateForGroup(channelId, id, title, order, starred, conversationId) {
-  return Task.findOne({ _id: id, channelId }).then(task => {
+function updateForGroup(groupId, id, title, order, starred, conversationId) {
+  return Task.findOne({ _id: id, group: groupId }).then(task => {
     if (typeof title !== "undefined") {
       task.title = title;
     }
@@ -63,8 +63,8 @@ function removeForUser(userId, taskId) {
   return Task.findOneAndRemove({ _id: taskId, user: userId });
 }
 
-function removeForGroup(channelId, taskId) {
-  return Task.findOneAndRemove({ _id: taskId, channelId });
+function removeForGroup(groupId, taskId) {
+  return Task.findOneAndRemove({ _id: taskId, group: groupId });
 }
 
 module.exports = {
