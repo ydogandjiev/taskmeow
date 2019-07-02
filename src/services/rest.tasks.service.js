@@ -1,15 +1,19 @@
 import authService from "./auth.service";
 
 class RestTasksService {
-  get() {
+  get(threadId) {
+    const route = threadId ? `/api/groups/${threadId}/tasks` : "/api/tasks";
+
     return authService
-      .fetch("/api/tasks", { method: "GET" })
+      .fetch(route, { method: "GET" })
       .then(result => result.json());
   }
 
-  create(task) {
+  create(task, threadId) {
+    const route = threadId ? `/api/groups/${threadId}/tasks` : "/api/tasks";
+
     return authService
-      .fetch("/api/tasks", {
+      .fetch(route, {
         method: "POST",
         body: JSON.stringify(task),
         headers: {
@@ -20,9 +24,13 @@ class RestTasksService {
       .then(result => result.json());
   }
 
-  update(task) {
+  update(task, threadId) {
+    const route = threadId
+      ? `/api/groups/${threadId}/tasks/${task._id}`
+      : `/api/tasks/${task._id}`;
+
     return authService
-      .fetch(`/api/tasks/${task._id}`, {
+      .fetch(route, {
         method: "PUT",
         body: JSON.stringify(task),
         headers: {
@@ -33,9 +41,13 @@ class RestTasksService {
       .then(result => result.json());
   }
 
-  destroy(id) {
+  destroy(taskId, threadId) {
+    const route = threadId
+      ? `/api/groups/${threadId}/tasks/${taskId}`
+      : `/api/tasks/${taskId}`;
+
     return authService
-      .fetch(`/api/tasks/${id}`, {
+      .fetch(route, {
         method: "DELETE"
       })
       .then(result => result.json());

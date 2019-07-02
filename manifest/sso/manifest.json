@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.5/MicrosoftTeams.schema.json",
   "manifestVersion": "1.5",
   "version": "1.0",
-  "id": "13ec5bf6-8538-4cbe-87b3-2f2442cc5e5b",
+  "id": "36b1586d-b1da-45d2-9b32-899c3757b6f8",
   "packageName": "com.taskmeow",
   "developer": {
     "name": "Yuri Dogandjiev",
@@ -53,7 +53,7 @@
   ],
   "bots": [
     {
-      "botId": "13ec5bf6-8538-4cbe-87b3-2f2442cc5e5b",
+      "botId": "36b1586d-b1da-45d2-9b32-899c3757b6f8",
       "scopes": [
         "personal"
       ]
@@ -67,7 +67,7 @@
     "taskmeow.com"
   ],
   "webApplicationInfo": {
-    "id": "13ec5bf6-8538-4cbe-87b3-2f2442cc5e5b",
-    "resource": "https://taskmeow.com"
+    "id": "36b1586d-b1da-45d2-9b32-899c3757b6f8",
+    "resource": "api://taskmeow.com/36b1586d-b1da-45d2-9b32-899c3757b6f8"
   }
 }
