@@ -14,7 +14,7 @@ const reorder = (list, startIndex, endIndex) => {
   return result;
 };
 
-class Channel extends Component {
+class GroupTasks extends Component {
   constructor(props) {
     super(props);
 
@@ -36,7 +36,7 @@ class Channel extends Component {
       microsoftTeams.initialize();
       microsoftTeams.getContext(context => {
         this.setState({
-          threadId: context.channelId || context.chatId
+          threadId: context.teamId || context.chatId
         });
 
         tasksService.get(this.state.threadId).then(tasks => {
@@ -186,7 +186,7 @@ class Channel extends Component {
     return (
       <div className="App-content">
         <div className="App-header">
-          <h1 className="App-header-title">Tasks</h1>
+          <h1 className="App-header-title">Group Tasks</h1>
           <UserTile history={this.props.history} />
         </div>
         <DragDropContext onDragEnd={this.onDragEnd}>
@@ -238,4 +238,4 @@ class Channel extends Component {
   }
 }
 
-export default Channel;
+export default GroupTasks;

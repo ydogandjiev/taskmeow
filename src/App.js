@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 import { DefaultButton, Spinner } from "office-ui-fabric-react";
-import Channel from "./components/Channel";
+import GroupTasks from "./components/GroupTasks";
 import Profile from "./components/Profile";
 import Tasks from "./components/Tasks";
 import Config from "./components/Config";
@@ -71,7 +71,7 @@ class App extends Component {
         <div className="App" style={{ backgroundImage: `url(${background})` }}>
           {this.state.user ? (
             <Switch>
-              <Route path="/channel" component={Channel} />
+              <Route path="/group" component={GroupTasks} />
               <Route path="/profile" component={Profile} />
               <Route path="/config" component={Config} />
               <Route path="/remove" component={Remove} />

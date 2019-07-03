@@ -23,7 +23,7 @@ class Config extends Component {
   componentDidMount() {
     microsoftTeams.initialize();
     microsoftTeams.settings.registerOnSaveHandler(saveEvent => {
-      let contentUrl = `${window.location.origin}/channel/?inTeams=true`;
+      let contentUrl = `${window.location.origin}/group/?inTeams=true`;
       let removeUrl = `${window.location.origin}/remove/?inTeams=true`;
 
       if (this.state.useV2) {
@@ -32,8 +32,8 @@ class Config extends Component {
       }
 
       microsoftTeams.settings.setSettings({
-        entityId: "channelTasks",
-        suggestedDisplayName: "Channel Tasks",
+        entityId: "meowTasks",
+        suggestedDisplayName: "Meow Tasks",
         contentUrl: contentUrl,
         removeUrl: removeUrl,
         websiteUrl: `${window.location.origin}/`
