@@ -88,12 +88,22 @@ class GroupTasks extends Component {
         conversationId: task.conversationId,
         subEntityId: task._id,
         title: task.title,
-        onStartConversation: (subEntityId, conversationId) => {
-          if (task._id === subEntityId) {
-            tasksService.update(
-              { ...task, conversationId: conversationId },
-              this.state.threadId
-            );
+        onStartConversation: conversation => {
+          if (task._id === conversation.subEntityId) {
+            tasksService
+              .update(
+                { ...task, conversationId: conversation.conversationId },
+                this.state.threadId
+              )
+              .then(updatedTask => {
+                this.setState(prevState => {
+                  return {
+                    tasks: prevState.tasks
+                      .map(t => (t._id === updatedTask._id ? updatedTask : t))
+                      .sort((a, b) => a.order - b.order)
+                  };
+                });
+              });
           }
         },
         onCloseConversation: () => {
