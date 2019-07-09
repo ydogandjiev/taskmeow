@@ -143,20 +143,24 @@ const bot = new AuthBot(connector, botSettings);
 
 bot.on("conversationUpdate", msg => {
   const members = msg.membersAdded;
+  if (msg.membersAdded) {
+    // Loop through all members that were just added to the team
+    for (let i = 0; i < members.length; i++) {
+      // See if the member added was our bot
+      if (members[i].id.includes(process.env.APPSETTING_AAD_ApplicationId)) {
+        groupService.create(
+          msg.address.conversation.id,
+          msg.address.serviceUrl
+        );
 
-  // Loop through all members that were just added to the team
-  for (let i = 0; i < members.length; i++) {
-    // See if the member added was our bot
-    if (members[i].id.includes(process.env.APPSETTING_AAD_ApplicationId)) {
-      groupService.create(msg.address.conversation.id, msg.address.serviceUrl);
+        const botMessage = new builder.Message()
+          .address(msg.address)
+          .text("Meowcome to a world of getting things done!");
 
-      const botMessage = new builder.Message()
-        .address(msg.address)
-        .text("Meowcome to a world of getting things done!");
-
-      bot.send(botMessage, error => {
-        console.error(error);
-      });
+        bot.send(botMessage, error => {
+          console.error(error);
+        });
+      }
     }
   }
 });
