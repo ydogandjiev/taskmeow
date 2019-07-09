@@ -143,7 +143,7 @@ const bot = new AuthBot(connector, botSettings);
 
 bot.on("conversationUpdate", msg => {
   const members = msg.membersAdded;
-  if (msg.membersAdded) {
+  if (members) {
     // Loop through all members that were just added to the team
     for (let i = 0; i < members.length; i++) {
       // See if the member added was our bot
