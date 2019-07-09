@@ -176,7 +176,7 @@ router.put("/groups/:threadId/tasks/:taskId", (req, res, next) => {
     });
 });
 
-router.delete("/groups/:thredId/tasks/:taskId", (req, res, next) => {
+router.delete("/groups/:threadId/tasks/:taskId", (req, res, next) => {
   const threadId = req.params.threadId;
   groupService
     .get(threadId)
