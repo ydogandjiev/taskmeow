@@ -23,7 +23,7 @@ authService.initialize(app);
 
 // Server-rendered views
 app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "jade");
+app.set("view engine", "pug");
 
 // Bot endpoints
 app.use(bot);
