@@ -108,7 +108,7 @@ class App extends Component {
       return (
         <div className="App" style={{ backgroundImage: `url(${background})` }}>
           {this.state.error ? (
-            <div className="App-error">{this.state.error}</div>
+            <div className="App-error">{JSON.stringify(this.state.error)}</div>
           ) : (
             <Spinner label="Signing in..." />
           )}

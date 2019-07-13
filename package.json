@@ -36,7 +36,7 @@
     "passport": "^0.4.0",
     "passport-azure-ad": "^3.0.12",
     "random-number-csprng": "^1.0.2",
-    "react": "^16.3.2",
+    "react": "^16.8.6",
     "react-beautiful-dnd": "^8.0.4",
     "react-dom": "^16.3.2",
     "react-router-dom": "^4.3.1",
