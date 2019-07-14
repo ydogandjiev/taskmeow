@@ -58,7 +58,7 @@
     "client": "react-scripts start",
     "server": "nodemon server/server.js",
     "build": "react-scripts build && rm -rf server/build && mv build server",
-    "test": "react-scripts test --env=jest-environment-jsdom-global",
+    "test": "react-scripts test --env=jest-environment-jsdom-global --watchAll=false",
     "coverage": "react-scripts test --env=jest-environment-jsdom-global --coverage --watchAll=false",
     "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls",
     "eject": "react-scripts eject"
