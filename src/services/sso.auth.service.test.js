@@ -1,6 +1,5 @@
 import SSOAuthService from "./sso.auth.service";
 import * as microsoftTeams from "@microsoft/teams-js";
-import { resolve } from "any-promise";
 
 jest.mock("@microsoft/teams-js");
 
@@ -15,15 +14,14 @@ it("can be constructed", () => {
 });
 
 it("can get token", done => {
-  const tokenValue = "faketoken";
-
+  const mockToken = "fakeToken";
   const authService = new SSOAuthService();
   microsoftTeams.authentication.getAuthToken.mockImplementationOnce(request => {
-    request.successCallback(tokenValue);
+    request.successCallback(mockToken);
   });
 
   authService.getToken().then(token => {
-    expect(token).toEqual(tokenValue);
+    expect(token).toEqual(mockToken);
     expect(token).toEqual(authService.authToken);
     done();
   });
@@ -32,7 +30,8 @@ it("can get token", done => {
 });
 
 it("can get user", done => {
-  const tokenValue = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UifQ.DjwRE2jZhren2Wt37t5hlVru6Myq4AhpGLiiefF69u8";
+  const mockToken =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UifQ.DjwRE2jZhren2Wt37t5hlVru6Myq4AhpGLiiefF69u8";
 
   const mockUser = {
     family_name: "Doe",
@@ -42,7 +41,7 @@ it("can get user", done => {
   };
 
   const authService = new SSOAuthService();
-  authService.authToken = tokenValue;
+  authService.authToken = mockToken;
   microsoftTeams.authentication.getUser.mockImplementationOnce(request => {
     request.successCallback(mockUser);
   });
