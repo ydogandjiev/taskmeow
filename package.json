@@ -31,7 +31,7 @@
     "morgan": "^1.9.1",
     "msal": "^0.1.5",
     "node-fetch": "^2.1.2",
-    "office-ui-fabric-react": "^6.9.0",
+    "office-ui-fabric-react": "^7.10.0",
     "passport": "^0.4.0",
     "passport-azure-ad": "^4.1.0",
     "pug": "^2.0.4",

@@ -35,17 +35,17 @@ class Profile extends Component {
               <TextField
                 label="First name"
                 value={this.state.user.given_name}
-                disabled={true}
+                readOnly={true}
               />
               <TextField
                 label="Last name"
                 value={this.state.user.family_name}
-                disabled={true}
+                readOnly={true}
               />
               <TextField
                 label="E-mail"
                 value={this.state.user.upn}
-                disabled={true}
+                readOnly={true}
               />
             </div>
           ) : (
