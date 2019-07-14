@@ -41,13 +41,13 @@ it("renders starred task snapshot", () => {
   expect(task).toContainReact(taskTitle);
 
   expect(task).toContainMatchingElement("li.Task-listitem");
-  expect(task).toContainMatchingElement("button.Task-checkbox");
+  expect(task).toContainMatchingElement(".Task-checkbox > input");
   expect(task).toContainMatchingElement("button.Task-star-link");
   expect(task).toContainMatchingElement("i.Task-starred-icon");
   expect(task).not.toContainMatchingElement("i.Task-unstarred-icon");
   expect(task).not.toContainMatchingElement("button.Task-conversation-link");
 
-  task.find("button.Task-checkbox").simulate("click");
+  task.find(".Task-checkbox > input").simulate("change");
   expect(handleTaskCheckedChange).toHaveBeenCalledWith(mockTask, true);
 
   task.find("i.Task-starred-icon").simulate("click");
@@ -86,13 +86,13 @@ it("renders unstarred task snapshot", () => {
   expect(task).toContainReact(taskTitle);
 
   expect(task).toContainMatchingElement("li.Task-listitem");
-  expect(task).toContainMatchingElement("button.Task-checkbox");
+  expect(task).toContainMatchingElement(".Task-checkbox > input");
   expect(task).toContainMatchingElement("button.Task-star-link");
   expect(task).toContainMatchingElement("i.Task-unstarred-icon");
   expect(task).not.toContainMatchingElement("i.Task-starred-icon");
   expect(task).not.toContainMatchingElement("button.Task-conversation-link");
 
-  task.find("button.Task-checkbox").simulate("click");
+  task.find(".Task-checkbox > input").simulate("change");
   expect(handleTaskCheckedChange).toHaveBeenCalledWith(mockTask, true);
 
   task.find("i.Task-unstarred-icon").simulate("click");
@@ -133,7 +133,7 @@ it("matches starred task with conversation closed snapshot in Teams", () => {
   expect(task).toContainReact(taskTitle);
 
   expect(task).toContainMatchingElement("li.Task-listitem");
-  expect(task).toContainMatchingElement("button.Task-checkbox");
+  expect(task).toContainMatchingElement(".Task-checkbox > input");
   expect(task).toContainMatchingElement("button.Task-star-link");
   expect(task).toContainMatchingElement("i.Task-starred-icon");
   expect(task).toContainMatchingElement("button.Task-conversation-link");
@@ -178,7 +178,7 @@ it("matches unstarred task snapshot with conversation open in Teams", () => {
   expect(task).toContainReact(taskTitle);
 
   expect(task).toContainMatchingElement("li.Task-listitem");
-  expect(task).toContainMatchingElement("button.Task-checkbox");
+  expect(task).toContainMatchingElement(".Task-checkbox > input");
   expect(task).toContainMatchingElement("button.Task-star-link");
   expect(task).toContainMatchingElement("i.Task-starred-icon");
   expect(task).toContainMatchingElement("button.Task-conversation-link");

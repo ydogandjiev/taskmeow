@@ -73,7 +73,7 @@ class Tasks extends Component {
       });
   };
 
-  handleTextChanged = value => {
+  handleTextChanged = (event, value) => {
     this.setState({ newTask: { title: value } });
   };
 
@@ -144,7 +144,7 @@ class Tasks extends Component {
                 className="Tasks-add-textfield"
                 placeholder="New Task"
                 value={this.state.newTask.title}
-                onChanged={this.handleTextChanged}
+                onChange={this.handleTextChanged}
                 onKeyDown={this.handleKeyDown}
               />
             </div>
