@@ -33,21 +33,21 @@
     "node-fetch": "^2.1.2",
     "office-ui-fabric-react": "^6.9.0",
     "passport": "^0.4.0",
-    "passport-azure-ad": "^3.0.12",
+    "passport-azure-ad": "^4.1.0",
     "pug": "^2.0.4",
     "random-number-csprng": "^1.0.2",
     "react": "^16.8.6",
     "react-beautiful-dnd": "^8.0.4",
     "react-dom": "^16.8.6",
     "react-router-dom": "^4.3.1",
-    "request": "^2.85.0",
-    "request-promise": "^4.2.2"
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4"
   },
   "devDependencies": {
     "concurrently": "^3.5.0",
     "coveralls": "^3.0.1",
     "jest-localstorage-mock": "^2.2.0",
-    "nodemon": "^1.12.0",
+    "nodemon": "^1.19.1",
     "react-scripts": "2.1.8"
   },
   "scripts": {
