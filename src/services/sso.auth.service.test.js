@@ -1,6 +1,5 @@
 import SSOAuthService from "./sso.auth.service";
 import * as microsoftTeams from "@microsoft/teams-js";
-import { resolve } from "any-promise";
 
 jest.mock("@microsoft/teams-js");
 
@@ -32,7 +31,8 @@ it("can get token", done => {
 });
 
 it("can get user", done => {
-  const tokenValue = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UifQ.DjwRE2jZhren2Wt37t5hlVru6Myq4AhpGLiiefF69u8";
+  const tokenValue =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UifQ.DjwRE2jZhren2Wt37t5hlVru6Myq4AhpGLiiefF69u8";
 
   const mockUser = {
     family_name: "Doe",
