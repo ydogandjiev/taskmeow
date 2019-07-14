@@ -6501,13 +6501,13 @@ mongoose@^5.0.13:
     regexp-clone "0.0.1"
     sliced "1.0.1"
 
-morgan@^1.8.2:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/morgan/-/morgan-1.9.0.tgz#d01fa6c65859b76fcf31b3cb53a3821a311d8051"
+morgan@^1.9.1:
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/morgan/-/morgan-1.9.1.tgz#0a8d16734a1d9afbc824b99df87e738e58e2da59"
   dependencies:
     basic-auth "~2.0.0"
     debug "2.6.9"
-    depd "~1.1.1"
+    depd "~1.1.2"
     on-finished "~2.3.0"
     on-headers "~1.0.1"
 
@@ -7960,14 +7960,14 @@ react-dev-utils@6.0.0-next.66cc7a90:
     strip-ansi "4.0.0"
     text-table "0.2.0"
 
-react-dom@^16.3.2:
-  version "16.3.2"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.3.2.tgz#cb90f107e09536d683d84ed5d4888e9640e0e4df"
+react-dom@^16.8.6:
+  version "16.8.6"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.8.6.tgz#71d6303f631e8b0097f56165ef608f051ff6e10f"
   dependencies:
-    fbjs "^0.8.16"
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
-    prop-types "^15.6.0"
+    prop-types "^15.6.2"
+    scheduler "^0.13.6"
 
 react-error-overlay@5.0.0-next.66cc7a90:
   version "5.0.0-next.66cc7a90"

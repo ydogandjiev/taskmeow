@@ -28,7 +28,7 @@
     "jest-environment-jsdom-global": "^1.1.0",
     "mongodb": "^3.0.5",
     "mongoose": "^5.0.13",
-    "morgan": "^1.8.2",
+    "morgan": "^1.9.1",
     "msal": "^0.1.5",
     "node-fetch": "^2.1.2",
     "office-ui-fabric-react": "^6.9.0",
@@ -38,7 +38,7 @@
     "random-number-csprng": "^1.0.2",
     "react": "^16.8.6",
     "react-beautiful-dnd": "^8.0.4",
-    "react-dom": "^16.3.2",
+    "react-dom": "^16.8.6",
     "react-router-dom": "^4.3.1",
     "request": "^2.85.0",
     "request-promise": "^4.2.2"
