@@ -48,7 +48,7 @@
     "coveralls": "^3.0.1",
     "jest-localstorage-mock": "^2.2.0",
     "nodemon": "^1.12.0",
-    "react-scripts": "2.0.3"
+    "react-scripts": "2.1.8"
   },
   "scripts": {
     "start": "concurrently \"react-scripts start\" \"nodemon server/server.js\"",
