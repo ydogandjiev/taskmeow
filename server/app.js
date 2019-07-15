@@ -9,6 +9,7 @@ const authService = require("./auth-service");
 const bot = require("./routes/bot");
 const rest = require("./routes/rest");
 const graph = require("./routes/graph");
+require("./mongo").connect();
 
 const app = express();
 

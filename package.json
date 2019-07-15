@@ -31,7 +31,7 @@
     "morgan": "^1.9.1",
     "msal": "^0.1.5",
     "node-fetch": "^2.1.2",
-    "office-ui-fabric-react": "^6.9.0",
+    "office-ui-fabric-react": "^7.10.0",
     "passport": "^0.4.0",
     "passport-azure-ad": "^4.1.0",
     "pug": "^2.0.4",
@@ -51,15 +51,15 @@
     "jest-enzyme": "^7.0.2",
     "jest-localstorage-mock": "^2.2.0",
     "nodemon": "^1.19.1",
-    "react-scripts": "2.1.8"
+    "react-scripts": "3.0.1"
   },
   "scripts": {
     "start": "concurrently \"react-scripts start\" \"nodemon server/server.js\"",
     "client": "react-scripts start",
     "server": "nodemon server/server.js",
     "build": "react-scripts build && rm -rf server/build && mv build server",
-    "test": "react-scripts test --env=jest-environment-jsdom-global",
-    "coverage": "react-scripts test --env=jest-environment-jsdom-global --coverage",
+    "test": "react-scripts test --env=jest-environment-jsdom-global --watchAll=false",
+    "coverage": "react-scripts test --env=jest-environment-jsdom-global --coverage --watchAll=false",
     "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls",
     "eject": "react-scripts eject"
   },

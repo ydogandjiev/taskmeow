@@ -1,8 +1,6 @@
 const Group = require("./group-model");
 const ReadPreference = require("mongodb").ReadPreference;
 
-require("./mongo").connect();
-
 function get(threadId) {
   return Group.findOne({ threadId })
     .read(ReadPreference.NEAREST)

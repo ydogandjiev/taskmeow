@@ -1,8 +1,6 @@
 const Task = require("./task-model");
 const ReadPreference = require("mongodb").ReadPreference;
 
-require("./mongo").connect();
-
 function getForUser(userId) {
   return Task.find({ user: userId })
     .read(ReadPreference.NEAREST)
