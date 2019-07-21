@@ -2,7 +2,7 @@
 
 This is my implementation of Burke Holland's great React CosmoDB sample.
 
-[![Build status](https://ydogandjiev.visualstudio.com/taskmeow/_apis/build/status/taskmeow%20-%20CI)](https://ydogandjiev.visualstudio.com/taskmeow/_build/latest?definitionId=13)
+[![Build status](https://ydogandjiev.visualstudio.com/taskmeow/_apis/build/status/taskmeow%20-%20CI)](https://ydogandjiev.visualstudio.com/taskmeow/_build/latest?definitionId=16)
 [![Build Status](https://travis-ci.org/ydogandjiev/taskmeow.svg?branch=master)](https://travis-ci.org/ydogandjiev/taskmeow)
 [![Coverage Status](https://coveralls.io/repos/github/ydogandjiev/taskmeow/badge.svg?branch=master)](https://coveralls.io/github/ydogandjiev/taskmeow?branch=master)
 
