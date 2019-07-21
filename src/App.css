@@ -100,7 +100,7 @@ body,
 .Tasks-list .Task-listitem {
   border: 1px solid;
   border-radius: 0.4rem;
-  padding: 0.6rem;
+  padding: 0 0.6rem;
   margin: 0.4rem 0;
   display: flex;
   flex-direction: row;
@@ -116,9 +116,14 @@ body,
   flex: 1 1 auto;
   margin: 0 0.4rem;
   overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
   align-items: center;
+}
+
+.Tasks-list .Task-listitem .Task-title div {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .Tasks-list .Task-listitem .Task-star-link {

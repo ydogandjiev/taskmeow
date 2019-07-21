@@ -724,7 +724,9 @@ exports[`matches starred task with conversation closed snapshot in Teams 1`] = `
                             <span
                               className="Task-title"
                             >
-                              mockTitle
+                              <div>
+                                mockTitle
+                              </div>
                             </span>
                             <StyledLinkBase
                               className="Task-star-link"
@@ -2540,7 +2542,9 @@ exports[`matches unstarred task snapshot with conversation open in Teams 1`] = `
                             <span
                               className="Task-title"
                             >
-                              mockTitle
+                              <div>
+                                mockTitle
+                              </div>
                             </span>
                             <StyledLinkBase
                               className="Task-star-link"
@@ -4372,7 +4376,9 @@ exports[`renders starred task snapshot 1`] = `
                             <span
                               className="Task-title"
                             >
-                              mockTitle
+                              <div>
+                                mockTitle
+                              </div>
                             </span>
                             <StyledLinkBase
                               className="Task-star-link"
@@ -5667,7 +5673,9 @@ exports[`renders unstarred task snapshot 1`] = `
                             <span
                               className="Task-title"
                             >
-                              mockTitle
+                              <div>
+                                mockTitle
+                              </div>
                             </span>
                             <StyledLinkBase
                               className="Task-star-link"

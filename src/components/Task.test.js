@@ -37,7 +37,11 @@ it("renders starred task snapshot", () => {
     </DragDropContext>
   );
 
-  const taskTitle = <span className="Task-title">{mockTask.title}</span>;
+  const taskTitle = (
+    <span className="Task-title">
+      <div>{mockTask.title}</div>
+    </span>
+  );
   expect(task).toContainReact(taskTitle);
 
   expect(task).toContainMatchingElement("li.Task-listitem");
@@ -82,7 +86,11 @@ it("renders unstarred task snapshot", () => {
     </DragDropContext>
   );
 
-  const taskTitle = <span className="Task-title">{mockTask.title}</span>;
+  const taskTitle = (
+    <span className="Task-title">
+      <div>{mockTask.title}</div>
+    </span>
+  );
   expect(task).toContainReact(taskTitle);
 
   expect(task).toContainMatchingElement("li.Task-listitem");
@@ -129,7 +137,11 @@ it("matches starred task with conversation closed snapshot in Teams", () => {
     </DragDropContext>
   );
 
-  const taskTitle = <span className="Task-title">{mockTask.title}</span>;
+  const taskTitle = (
+    <span className="Task-title">
+      <div>{mockTask.title}</div>
+    </span>
+  );
   expect(task).toContainReact(taskTitle);
 
   expect(task).toContainMatchingElement("li.Task-listitem");
@@ -174,7 +186,11 @@ it("matches unstarred task snapshot with conversation open in Teams", () => {
     </DragDropContext>
   );
 
-  const taskTitle = <span className="Task-title">{mockTask.title}</span>;
+  const taskTitle = (
+    <span className="Task-title">
+      <div>{mockTask.title}</div>
+    </span>
+  );
   expect(task).toContainReact(taskTitle);
 
   expect(task).toContainMatchingElement("li.Task-listitem");

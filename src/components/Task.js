@@ -18,7 +18,9 @@ const Task = props => {
               props.onCheckedChange(props.task, isChecked)
             }
           />
-          <span className="Task-title">{props.task.title}</span>
+          <span className="Task-title">
+            <div>{props.task.title}</div>
+          </span>
           <Link className="Task-star-link">
             {props.task.starred ? (
               <Icon
