@@ -27,7 +27,7 @@ class UserTile extends Component {
     });
 
     userService
-      .getImage()
+      .getImage(this.state.useV2)
       .then(userImage => {
         this.setState({ userImage });
       })
