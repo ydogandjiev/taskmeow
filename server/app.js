@@ -58,8 +58,8 @@ app.get("/termsofuse", (req, res) => {
 });
 
 // React routes
-app.get("*", (req, res) => {
-  res.sendFile("build/index.html", { root: __dirname });
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
 module.exports = app;

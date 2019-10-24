@@ -140,10 +140,10 @@ function getAuthorizationUrl(state, extraParams, tenant) {
     response_type: "code",
     response_mode: "query",
     client_id: process.env.APPSETTING_AAD_ApplicationId,
-    redirect_uri: `${
-      process.env.APPSETTING_AAD_BaseUri
-    }/auth/azureADv1/callback`,
+    prompt: "consent",
+    redirect_uri: `${process.env.APPSETTING_AAD_BaseUri}/auth/azureADv1/callback`,
     resource: "https://graph.microsoft.com",
+    scope: "email openid offline_access profile User.Read User.ReadBasic.All",
     state: state
   };
 
@@ -166,9 +166,7 @@ async function getAccessTokenAsync(code) {
     code: code,
     client_id: process.env.APPSETTING_AAD_ApplicationId,
     client_secret: process.env.APPSETTING_AAD_ApplicationSecret,
-    redirect_uri: `${
-      process.env.APPSETTING_AAD_BaseUri
-    }/auth/azureADv1/callback`,
+    redirect_uri: `${process.env.APPSETTING_AAD_BaseUri}/auth/azureADv1/callback`,
     resource: "https://graph.microsoft.com"
   };
 

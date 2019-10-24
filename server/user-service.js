@@ -44,7 +44,7 @@ async function getImage(req, res) {
     res.end(img);
   } catch (error) {
     console.error(error);
-    res.status(500).send(error);
+    res.status(error.statusCode).send(error.response.statusMessage);
   }
 }
 
