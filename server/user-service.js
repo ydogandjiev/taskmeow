@@ -12,25 +12,15 @@ async function getUser(oid) {
     .exec();
 }
 
-async function getGraphToken(tid, token, useV2) {
-  return useV2
-    ? await authService.exchangeForTokenV2(tid, token, [
-        "https://graph.microsoft.com/User.Read"
-      ])
-    : await authService.exchangeForTokenV1(
-        tid,
-        token,
-        "https://graph.microsoft.com"
-      );
+async function getGraphToken(tid, token) {
+  return await authService.exchangeForToken(tid, token, [
+    "https://graph.microsoft.com/User.Read"
+  ]);
 }
 
 async function getImage(req, res) {
   try {
-    const token = await getGraphToken(
-      req.authInfo.tid,
-      req.token,
-      req.query.useV2 === "true"
-    );
+    const token = await getGraphToken(req.authInfo.tid, req.token);
 
     const img = await request.get(
       "https://graph.microsoft.com/v1.0/me/photo/$value",
@@ -44,7 +34,9 @@ async function getImage(req, res) {
     res.end(img);
   } catch (error) {
     console.error(error);
-    res.status(error.statusCode).send(error.response.statusMessage);
+    res
+      .status(error.statusCode)
+      .send(error.statusMessage || error.response.statusMessage);
   }
 }
 

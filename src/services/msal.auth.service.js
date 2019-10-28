@@ -25,7 +25,7 @@ class MsalAuthService {
   login() {
     const scopes = [
       `api://${this.applicationConfig.clientId}/access_as_user`,
-      "https://graph.microsoft.com/user.read"
+      "https://graph.microsoft.com/User.Read"
     ];
 
     return (window.navigator.standalone

@@ -5,6 +5,14 @@ const passport = require("passport");
 const OIDCBearerStrategy = require("passport-azure-ad").BearerStrategy;
 const User = require("./user-model");
 
+class ServerError extends Error {
+  constructor(statusCode, statusMessage) {
+    super(`ServerError: ${statusCode} - ${statusMessage}`);
+    this.statusCode = statusCode;
+    this.statusMessage = statusMessage;
+  }
+}
+
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
@@ -79,9 +87,21 @@ function ensureAuthenticated() {
   return passport.authenticate("oauth-bearer", { session: false });
 }
 
-function exchangeForToken(endpoint, params) {
+// Acquires a token for the specified scopes using the v2 on-behalf-of AAD flow
+// https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-protocols-oauth-on-behalf-of
+function exchangeForToken(tid, token, scopes) {
   return new Promise((resolve, reject) => {
-    fetch(endpoint, {
+    const url = `https://login.microsoftonline.com/${tid}/oauth2/v2.0/token`;
+    const params = {
+      client_id: process.env.APPSETTING_AAD_ApplicationId,
+      client_secret: process.env.APPSETTING_AAD_ApplicationSecret,
+      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+      assertion: token,
+      requested_token_use: "on_behalf_of",
+      scope: scopes.join(" ")
+    };
+
+    fetch(url, {
       method: "POST",
       body: querystring.stringify(params),
       headers: {
@@ -91,7 +111,8 @@ function exchangeForToken(endpoint, params) {
     }).then(result => {
       if (result.status !== 200) {
         result.json().then(json => {
-          reject(json);
+          // TODO: Check explicitly for invalid_grant or interaction_required
+          reject(new ServerError(403, "ConsentRequired"));
         });
       } else {
         result.json().then(json => {
@@ -100,38 +121,6 @@ function exchangeForToken(endpoint, params) {
       }
     });
   });
-}
-
-// Acquires a token for the specified resource using the v1 on-behalf-of AAD flow
-// https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-protocols-oauth-on-behalf-of
-function exchangeForTokenV1(tid, token, resource) {
-  return exchangeForToken(
-    `https://login.microsoftonline.com/${tid}/oauth2/token`,
-    {
-      client_id: process.env.APPSETTING_AAD_ApplicationId,
-      client_secret: process.env.APPSETTING_AAD_ApplicationSecret,
-      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
-      assertion: token,
-      requested_token_use: "on_behalf_of",
-      resource: resource
-    }
-  );
-}
-
-// Acquires a token for the specified scopes using the v2 on-behalf-of AAD flow
-// https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-protocols-oauth-on-behalf-of
-function exchangeForTokenV2(tid, token, scopes) {
-  return exchangeForToken(
-    `https://login.microsoftonline.com/${tid}/oauth2/v2.0/token`,
-    {
-      client_id: process.env.APPSETTING_AAD_ApplicationId,
-      client_secret: process.env.APPSETTING_AAD_ApplicationSecret,
-      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
-      assertion: token,
-      requested_token_use: "on_behalf_of",
-      scope: scopes.join(" ")
-    }
-  );
 }
 
 // Return the url the user should navigate to to authenticate the app
@@ -143,7 +132,7 @@ function getAuthorizationUrl(state, extraParams, tenant) {
     prompt: "consent",
     redirect_uri: `${process.env.APPSETTING_AAD_BaseUri}/auth/azureADv1/callback`,
     resource: "https://graph.microsoft.com",
-    scope: "email openid offline_access profile User.Read User.ReadBasic.All",
+    scope: "email openid offline_access profile User.Read",
     state: state
   };
 
@@ -186,8 +175,7 @@ module.exports = {
   initialize,
   authenticateUser,
   ensureAuthenticated,
-  exchangeForTokenV1,
-  exchangeForTokenV2,
+  exchangeForToken,
   getAuthorizationUrl,
   getAccessTokenAsync
 };

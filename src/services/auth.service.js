@@ -45,10 +45,6 @@ class AuthService {
     return this.authService.getUser();
   }
 
-  useSSO() {
-    return this.authService.isSSO ? this.authService.isSSO : false;
-  }
-
   // Does an authenticated fetch by acquiring and appending the Bearer token for our backend
   fetch(url, options) {
     return this.getToken().then(token => {

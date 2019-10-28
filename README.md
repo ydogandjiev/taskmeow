@@ -43,7 +43,7 @@ yarn start
 For authentication to work it's recommended to use an ngrok tunnel to hoist the localhost site to an SSL uri:
 
 ```bash
-ngrok http 3000 --host-header=rewrite [--subdomain=<YOUR_SUBDOMAIN>]
+ngrok http 3001 --host-header=rewrite [--subdomain=<YOUR_SUBDOMAIN>]
 ```
 
 ## Building For Production

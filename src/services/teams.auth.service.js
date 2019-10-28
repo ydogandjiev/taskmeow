@@ -11,7 +11,6 @@ class TeamsAuthService {
     // Check for any context information supplied via our QSPs
     const url = new URL(window.location);
     const params = new URLSearchParams(url.search);
-    const loginHint = params["loginHint"];
     const tenantId = params["tenantId"] || "common";
 
     // TODO: Clear sign in context on user mismatch
@@ -95,18 +94,18 @@ class TeamsAuthService {
     return new Promise((resolve, reject) => {
       microsoftTeams.getContext(context => {
         const scopes = encodeURIComponent(
-          "email openid profile offline_access User.Read User.ReadBasic.All"
+          "email openid profile offline_access User.Read"
         );
 
         // Setup extra query parameters for ADAL
         // - openid and profile scope adds profile information to the id_token
         // - login_hint provides the expected user name
         if (context.loginHint) {
-          this.authContext.config.extraQueryParameter = `scope=${scopes}&login_hint=${encodeURIComponent(
+          this.authContext.config.extraQueryParameter = `prompt=consent&scope=${scopes}&login_hint=${encodeURIComponent(
             context.loginHint
           )}`;
         } else {
-          this.authContext.config.extraQueryParameter = `scope=${scopes}`;
+          this.authContext.config.extraQueryParameter = `prompt=consent&scope=${scopes}`;
         }
         resolve();
       });
