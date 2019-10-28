@@ -12,15 +12,13 @@ async function getUser(oid) {
     .exec();
 }
 
-async function getGraphToken(tid, token) {
-  return await authService.exchangeForToken(tid, token, [
-    "https://graph.microsoft.com/User.Read"
-  ]);
-}
-
 async function getImage(req, res) {
   try {
-    const token = await getGraphToken(req.authInfo.tid, req.token);
+    const token = await authService.exchangeForToken(
+      req.authInfo.tid,
+      req.token,
+      ["https://graph.microsoft.com/User.Read"]
+    );
 
     const img = await request.get(
       "https://graph.microsoft.com/v1.0/me/photo/$value",
