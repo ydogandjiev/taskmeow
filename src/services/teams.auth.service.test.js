@@ -5,7 +5,7 @@ import * as microsoftTeams from "@microsoft/teams-js";
 jest.mock("adal-angular/lib/adal");
 jest.mock("@microsoft/teams-js");
 
-let mockAuthContext = {
+const mockAuthContext = {
   config: {},
   isCallback: jest.fn(),
   logOut: jest.fn(),
