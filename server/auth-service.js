@@ -4,14 +4,7 @@ const querystring = require("querystring");
 const passport = require("passport");
 const OIDCBearerStrategy = require("passport-azure-ad").BearerStrategy;
 const User = require("./user-model");
-
-class ServerError extends Error {
-  constructor(statusCode, statusMessage) {
-    super(`ServerError: ${statusCode} - ${statusMessage}`);
-    this.statusCode = statusCode;
-    this.statusMessage = statusMessage;
-  }
-}
+const ServerError = require("./server-error");
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
