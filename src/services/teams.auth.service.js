@@ -19,9 +19,9 @@ class TeamsAuthService {
     // Configure ADAL
     this.applicationConfig = {
       tenant: tenantId,
-      clientId: "ab93102c-869b-4d34-a921-a31d3e7f76ef",
+      clientId: "36b1586d-b1da-45d2-9b32-899c3757b6f8",
       endpoints: {
-        api: "ab93102c-869b-4d34-a921-a31d3e7f76ef"
+        api: "36b1586d-b1da-45d2-9b32-899c3757b6f8"
       },
       redirectUri: `${window.location.origin}/tab/silent-end`,
       cacheLocation: "localStorage",
