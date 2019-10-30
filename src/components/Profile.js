@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Spinner, TextField } from "office-ui-fabric-react";
 import UserTile from "./UserTile";
 import authService from "../services/auth.service";
+import { ConsentConsumer } from "./ConsentContext";
 
 /**
  * This component is responsible for:
@@ -27,7 +28,14 @@ class Profile extends Component {
       <div className="App-content">
         <div className="App-header">
           <h1 className="App-header-title">Profile</h1>
-          <UserTile history={this.props.history} />
+          <ConsentConsumer>
+            {({ setConsentRequired }) => (
+              <UserTile
+                history={this.props.history}
+                setConsentRequired={setConsentRequired}
+              />
+            )}
+          </ConsentConsumer>
         </div>
         <div>
           {this.state.user ? (
