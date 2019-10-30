@@ -5,6 +5,7 @@ import Task from "./Task";
 import UserTile from "./UserTile";
 import tasksService from "../services/tasks.service";
 import * as microsoftTeams from "@microsoft/teams-js";
+import { ConsentConsumer } from "./ConsentContext";
 
 // A little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
@@ -132,7 +133,14 @@ class Tasks extends Component {
       <div className="App-content">
         <div className="App-header">
           <h1 className="App-header-title">Tasks</h1>
-          <UserTile history={this.props.history} />
+          <ConsentConsumer>
+            {({ setConsentRequired }) => (
+              <UserTile
+                history={this.props.history}
+                setConsentRequired={setConsentRequired}
+              />
+            )}
+          </ConsentConsumer>
         </div>
         <DragDropContext onDragEnd={this.onDragEnd}>
           <div className="Tasks">

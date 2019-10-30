@@ -1,6 +1,12 @@
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
-import { DefaultButton, Spinner } from "office-ui-fabric-react";
+import {
+  DefaultButton,
+  Spinner,
+  MessageBar,
+  MessageBarButton,
+  MessageBarType
+} from "office-ui-fabric-react";
 import GroupTasks from "./components/GroupTasks";
 import Profile from "./components/Profile";
 import Tasks from "./components/Tasks";
@@ -14,6 +20,7 @@ import "./App.css";
 
 // Initialize Office Fabric icons for use throughout app
 import { initializeIcons } from "@uifabric/icons";
+import { ConsentConsumer } from "./components/ConsentContext";
 initializeIcons();
 
 class App extends Component {
@@ -63,12 +70,29 @@ class App extends Component {
   };
 
   render() {
-    if (
-      (!authService.useSSO() && !authService.isCallback()) ||
-      (authService.useSSO() && this.state.user)
-    ) {
+    if (!authService.isCallback()) {
       return (
         <div className="App" style={{ backgroundImage: `url(${background})` }}>
+          <ConsentConsumer>
+            {({ consentRequired, requestConsent }) =>
+              consentRequired && (
+                <MessageBar
+                  messageBarType={MessageBarType.warning}
+                  isMultiline={false}
+                  dismissButtonAriaLabel="Close"
+                  actions={
+                    <div>
+                      <MessageBarButton onClick={requestConsent}>
+                        Go
+                      </MessageBarButton>
+                    </div>
+                  }
+                >
+                  TaskMeow needs your consent in order to do its work.
+                </MessageBar>
+              )
+            }
+          </ConsentConsumer>
           {this.state.user ? (
             <Switch>
               <Route path="/group" component={GroupTasks} />

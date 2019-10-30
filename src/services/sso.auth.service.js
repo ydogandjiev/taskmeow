@@ -1,4 +1,5 @@
 import * as microsoftTeams from "@microsoft/teams-js";
+import TeamsAuthService from "./teams.auth.service";
 
 // An authentication that will only request an access token for the logged in user.
 // This token can then be used to request other resources.
@@ -7,15 +8,27 @@ class SSOAuthService {
     // Initialize the Teams SDK
     microsoftTeams.initialize();
 
-    // Flag that this service assumes using Teams SSO
-    this.isSSO = true;
     this.authToken = null;
+  }
+
+  isCallback() {
+    if (!this.teamsAuthService) {
+      this.teamsAuthService = new TeamsAuthService();
+    }
+    return this.teamsAuthService.isCallback();
+  }
+
+  login() {
+    if (!this.teamsAuthService) {
+      this.teamsAuthService = new TeamsAuthService();
+    }
+    return this.teamsAuthService.login();
   }
 
   parseTokenToUser(token) {
     // parse JWT token to object
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var base64Url = token.split(".")[1];
+    var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
     var parsedToken = JSON.parse(window.atob(base64));
     var nameParts = parsedToken.name.split(" ");
     return {
@@ -31,9 +44,10 @@ class SSOAuthService {
       if (this.authToken) {
         resolve(this.parseTokenToUser(this.authToken));
       } else {
-        this.getToken().resolve(token => {
-          resolve(this.parseTokenToUser(token));
-        })
+        this.getToken()
+          .resolve(token => {
+            resolve(this.parseTokenToUser(token));
+          })
           .reject(reason => {
             reject(reason);
           });

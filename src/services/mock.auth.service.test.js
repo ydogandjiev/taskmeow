@@ -32,7 +32,8 @@ it("can get token", done => {
 it("can't get token if not logged in", done => {
   const authService = new MockAuthService();
   authService.logout();
-  authService.getToken()
+  authService
+    .getToken()
     .then(() => {
       done.fail();
     })
@@ -57,7 +58,8 @@ it("can get user", done => {
 it("can't get user if not logged in", done => {
   const authService = new MockAuthService();
   authService.logout();
-  authService.getUser()
+  authService
+    .getUser()
     .then(() => {
       done.fail();
     })
@@ -65,9 +67,4 @@ it("can't get user if not logged in", done => {
       expect(error).toEqual("User information is not available");
       done();
     });
-});
-
-it("can check for useSSO", () => {
-  const authService = new MockAuthService();
-  expect(authService.useSSO()).toEqual(false);
 });

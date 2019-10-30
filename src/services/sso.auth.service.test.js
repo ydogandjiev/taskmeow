@@ -10,7 +10,6 @@ afterEach(() => {
 it("can be constructed", () => {
   const authService = new SSOAuthService();
   expect(authService).toBeDefined();
-  expect(authService.isSSO).toBeTruthy();
 });
 
 it("can get token", done => {

@@ -4,11 +4,16 @@ import AuthenticationContext from "adal-angular/lib/adal";
 // an AAD account. This leverages the AAD v1 endpoint.
 class AdalAuthService {
   constructor() {
+    const scopes = encodeURIComponent(
+      "email openid profile offline_access User.Read"
+    );
+
     this.applicationConfig = {
       clientId: "36b1586d-b1da-45d2-9b32-899c3757b6f8",
       endpoints: {
         api: "36b1586d-b1da-45d2-9b32-899c3757b6f8"
       },
+      extraQueryParameter: `prompt=consent&scope=${scopes}`,
       redirectUri: `${window.location.origin}/callback/v1`,
       cacheLocation: "localStorage",
       callback: this.loginCallback,
@@ -25,9 +30,11 @@ class AdalAuthService {
           .then(user => this.loginPromiseResolve(user))
           .catch(error => {
             this.loginPromiseReject(error);
+            this.loginPromise = undefined;
           });
       } else {
         this.loginPromiseReject(`${error}: ${reason}`);
+        this.loginPromise = undefined;
       }
     }
   };

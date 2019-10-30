@@ -25,13 +25,17 @@ html
           navigateToLoginRequestUrl: false,
         };
 
+        const scopes = encodeURIComponent(
+          "email openid profile offline_access User.Read"
+        );
+
         // Setup extra query parameters for ADAL
         // - openid and profile scope adds profile information to the id_token
         // - login_hint provides the expected user name
         if (context.loginHint) {
-          config.extraQueryParameter = "scope=openid+profile&login_hint=" + encodeURIComponent(context.loginHint);
+          config.extraQueryParameter = `prompt=consent&scope=${scopes}&login_hint=${encodeURIComponent(context.loginHint)}`;
         } else {
-          config.extraQueryParameter = "scope=openid+profile";
+          config.extraQueryParameter = `prompt=consent&scope=${scopes}`;
         }
 
         // Navigate to the AzureAD login page

@@ -32,6 +32,8 @@ class UserTile extends Component {
         this.setState({ userImage });
       })
       .catch(error => {
+        // TODO: Check for ConsentRequired error
+        this.props.setConsentRequired && this.props.setConsentRequired(true);
         console.error(error);
       });
   }
