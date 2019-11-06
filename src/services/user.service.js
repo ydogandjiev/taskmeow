@@ -7,9 +7,10 @@ class UserService {
         .fetch(`/api/user/image?useV2=${useV2}`)
         .then(result => {
           if (result.status !== 200) {
-            return Promise.reject(
-              `Failed to fetch image; error code: ${result.status}`
-            );
+            return Promise.reject({
+              statusCode: result.status,
+              statusMessage: result.statusText
+            });
           } else {
             return result.blob();
           }

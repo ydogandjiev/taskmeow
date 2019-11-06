@@ -32,9 +32,8 @@ async function getImage(req, res) {
     res.end(img);
   } catch (error) {
     console.error(error);
-    res
-      .status(error.statusCode)
-      .send(error.statusMessage || error.response.statusMessage);
+    res.statusMessage = error.statusMessage || error.response.statusMessage;
+    res.status(error.statusCode).send();
   }
 }
 
