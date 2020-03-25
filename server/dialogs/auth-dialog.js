@@ -55,7 +55,7 @@ class AuthDialog extends builder.IntentDialog {
       const user = await userService.getUser(
         session.message.address.user.aadObjectId
       );
-      const tasks = await taskService.get(user._id);
+      const tasks = await taskService.getForUser(user._id);
       const msg = new builder.Message(session).addAttachment({
         contentType: "application/vnd.microsoft.teams.card.list",
         content: {
