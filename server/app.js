@@ -9,11 +9,13 @@ const authService = require("./auth-service");
 const bot = require("./routes/bot");
 const rest = require("./routes/rest");
 const graph = require("./routes/graph");
+const slack = require("./routes/slack");
 require("./mongo").connect();
 
 const app = express();
 
 app.use(logger("dev"));
+app.use(slack);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
