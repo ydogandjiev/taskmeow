@@ -44,54 +44,54 @@ if (
 
     return { text: "Done..." };
   });
-}
 
-function getHomeView() {
-  let blocks = [
-    {
-      type: "section",
-      text: {
-        type: "mrkdwn",
-        text:
-          "Meowcome to a world of getting things done!\n\n *Here are your todos:*"
-      }
-    },
-    {
-      type: "divider"
-    }
-  ];
-
-  todos.forEach(todo => {
-    blocks = blocks.concat({
-      type: "section",
-      text: {
-        type: "mrkdwn",
-        text: `*${todo.title}*`
-      },
-      accessory: {
-        type: "button",
+  function getHomeView() {
+    let blocks = [
+      {
+        type: "section",
         text: {
-          type: "plain_text",
-          text: "Complete",
-          emoji: true
-        },
-        value: todo.id
+          type: "mrkdwn",
+          text:
+            "Meowcome to a world of getting things done!\n\n *Here are your todos:*"
+        }
+      },
+      {
+        type: "divider"
       }
+    ];
+
+    todos.forEach(todo => {
+      blocks = blocks.concat({
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `*${todo.title}*`
+        },
+        accessory: {
+          type: "button",
+          text: {
+            type: "plain_text",
+            text: "Complete",
+            emoji: true
+          },
+          value: todo.id
+        }
+      });
     });
-  });
 
-  blocks = blocks.concat({
-    type: "divider"
-  });
+    blocks = blocks.concat({
+      type: "divider"
+    });
 
-  return {
-    type: "home",
-    title: {
-      type: "plain_text",
-      text: "Keep notes!"
-    },
-    blocks: blocks
-  };
+    return {
+      type: "home",
+      title: {
+        type: "plain_text",
+        text: "Keep notes!"
+      },
+      blocks: blocks
+    };
+  }
 }
 
 module.exports = router;
