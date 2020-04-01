@@ -26,8 +26,13 @@ initializeIcons();
 class App extends Component {
   constructor(props) {
     super(props);
+
+    const url = new URL(window.location);
+    const params = new URLSearchParams(url.search);
+
     this.state = {
-      loading: true
+      loading: true,
+      inTeams: !!params.get("inTeams")
     };
   }
 
@@ -123,6 +128,19 @@ class App extends Component {
                   />
                   <span className="ms-Button-label label-46">Sign in</span>
                 </DefaultButton>
+                {!this.state.inTeams && (
+                  <a
+                    className="App-slack-link"
+                    href="https://slack.com/oauth/v2/authorize?scope=chat%3Awrite&client_id=1034113915760.1024551480609"
+                  >
+                    <img
+                      className="App-slack-img"
+                      alt="Add to Slack"
+                      src="https://platform.slack-edge.com/img/add_to_slack.png"
+                      srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"
+                    />
+                  </a>
+                )}
               </div>
             </div>
           )}

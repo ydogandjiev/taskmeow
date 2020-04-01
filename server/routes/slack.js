@@ -26,6 +26,7 @@ if (
   // Configure slack routes
   router.use("/slack/events", slackEvents.requestListener());
   router.use("/slack/actions", slackInteractions.requestListener());
+  router.get("/slack/auth/redirect", handleOAuthCallback);
 
   slackEvents.on("app_home_opened", event => {
     web.views.publish({ user_id: event.user, view: getHomeView() });
@@ -44,6 +45,18 @@ if (
 
     return { text: "Done..." };
   });
+
+  async function handleOAuthCallback(req, res) {
+    const result = await web.oauth.v2.access({
+      client_id: process.env.APPSETTING_SLACK_ClientId,
+      client_secret: process.env.APPSETTING_SLACK_ClientSecret,
+      code: req.query.code
+    });
+
+    // It's now a good idea to save the access token to your database
+    // await db.createAppInstallation(result.team_id, result.enterprise_id, result.access_token, result.bot);
+    console.log(`Auth result: ${JSON.stringify(result)}`);
+  }
 
   function getHomeView() {
     let blocks = [
