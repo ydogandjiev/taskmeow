@@ -1010,9 +1010,10 @@
   version "1.9.12"
   resolved "https://registry.yarnpkg.com/@microsoft/load-themed-styles/-/load-themed-styles-1.9.12.tgz#b28ba20bc1228d04dba93b4d20505687b01a6657"
 
-"@microsoft/teams-js@^1.6.0-beta.13":
-  version "1.6.0-beta.13"
-  resolved "https://registry.yarnpkg.com/@microsoft/teams-js/-/teams-js-1.6.0-beta.13.tgz#6a6ce9804b2d7153c6a9073a9305d17c5b1e073b"
+"@microsoft/teams-js@^1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@microsoft/teams-js/-/teams-js-1.6.0.tgz#3f3052f79803be57b68dfb711cb551f30c7ed62a"
+  integrity sha512-6OGjEgyC5C5iyJtTT1FKVHv69ROs/NJUI6McuBAtnsYU79W+ixpMnyRE6VMyMUgA0aPmfSsqxS9GFE/TbGTGmQ==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
