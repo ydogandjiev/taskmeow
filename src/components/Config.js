@@ -16,15 +16,20 @@ class Config extends Component {
     const params = new URLSearchParams(url.search);
 
     this.state = {
-      useV2: !!params.get("useV2")
+      useV2: !!params.get("useV2"),
+      inTeamsSSO: !!params.get("inTeamsSSO"),
     };
   }
 
   componentDidMount() {
     microsoftTeams.initialize();
-    microsoftTeams.settings.registerOnSaveHandler(saveEvent => {
-      let contentUrl = `${window.location.origin}/group/?inTeams=true`;
-      let removeUrl = `${window.location.origin}/remove/?inTeams=true`;
+    microsoftTeams.settings.registerOnSaveHandler((saveEvent) => {
+      let contentUrl = `${window.location.origin}/group/?${
+        this.state.inTeamsSSO ? "inTeamsSSO=true" : "inTeams=true"
+      }`;
+      let removeUrl = `${window.location.origin}/remove/?${
+        this.state.inTeamsSSO ? "inTeamsSSO=true" : "inTeams=true"
+      }`;
 
       if (this.state.useV2) {
         contentUrl += "&useV2=true";
@@ -36,7 +41,7 @@ class Config extends Component {
         suggestedDisplayName: "Meow Tasks",
         contentUrl: contentUrl,
         removeUrl: removeUrl,
-        websiteUrl: `${window.location.origin}/`
+        websiteUrl: `${window.location.origin}/`,
       });
 
       saveEvent.notifySuccess();
@@ -45,10 +50,10 @@ class Config extends Component {
     this.setState({ loading: true });
     authService
       .getUser()
-      .then(user => {
+      .then((user) => {
         this.setState({ user, loading: false });
       })
-      .catch(err => {
+      .catch((err) => {
         this.setState({ loading: false });
       });
   }
