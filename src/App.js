@@ -5,7 +5,7 @@ import {
   Spinner,
   MessageBar,
   MessageBarButton,
-  MessageBarType
+  MessageBarType,
 } from "office-ui-fabric-react";
 import GroupTasks from "./components/GroupTasks";
 import Profile from "./components/Profile";
@@ -32,27 +32,27 @@ class App extends Component {
 
     this.state = {
       loading: true,
-      inTeams: !!params.get("inTeams")
+      inTeams: !!params.get("inTeams") || !!params.get("inTeamsSSO"),
     };
   }
 
   componentDidMount() {
     authService
       .getToken()
-      .then(token => {
-        return authService.getUser().then(user => {
+      .then((token) => {
+        return authService.getUser().then((user) => {
           this.setState({
             user: user,
             loading: false,
-            error: null
+            error: null,
           });
         });
       })
-      .catch(error => {
+      .catch((error) => {
         this.setState({
           user: null,
           loading: false,
-          error: error
+          error: error,
         });
       });
   }
@@ -61,14 +61,14 @@ class App extends Component {
     this.setState({ loading: true });
     authService
       .login()
-      .then(user => {
+      .then((user) => {
         if (user) {
           this.setState({ user, loading: false });
         } else {
           this.setState({ loading: false });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
         this.setState({ loading: false });
       });

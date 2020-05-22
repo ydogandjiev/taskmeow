@@ -26,16 +26,16 @@ class Tasks extends Component {
       conversationOpen: false,
       newTask: { title: "" },
       tasks: [],
-      inTeams: !!params.get("inTeams")
+      inTeams: !!params.get("inTeams") || !!params.get("inTeamsSSO"),
     };
   }
 
   componentDidMount() {
     this.setState({ loading: true });
-    tasksService.get().then(tasks => {
+    tasksService.get().then((tasks) => {
       this.setState({
         tasks: tasks.sort((a, b) => a.order - b.order),
-        loading: false
+        loading: false,
       });
     });
 
@@ -47,9 +47,9 @@ class Tasks extends Component {
   handleTaskCheckedChange = (task, isChecked) => {
     if (isChecked) {
       tasksService.destroy(task._id).then(() => {
-        this.setState(prevState => {
+        this.setState((prevState) => {
           return {
-            tasks: prevState.tasks.filter(item => item._id !== task._id)
+            tasks: prevState.tasks.filter((item) => item._id !== task._id),
           };
         });
       });
@@ -63,12 +63,12 @@ class Tasks extends Component {
     }
     tasksService
       .update({ ...task, order: newOrder, starred: isStarred })
-      .then(updatedTask => {
-        this.setState(prevState => {
+      .then((updatedTask) => {
+        this.setState((prevState) => {
           return {
             tasks: prevState.tasks
-              .map(t => (t._id === updatedTask._id ? updatedTask : t))
-              .sort((a, b) => a.order - b.order)
+              .map((t) => (t._id === updatedTask._id ? updatedTask : t))
+              .sort((a, b) => a.order - b.order),
           };
         });
       });
@@ -78,26 +78,26 @@ class Tasks extends Component {
     this.setState({ newTask: { title: value } });
   };
 
-  handleKeyDown = event => {
+  handleKeyDown = (event) => {
     if (event.key === "Enter") {
       const tasks = this.state.tasks;
       tasksService
         .create({
           ...this.state.newTask,
-          order: tasks.length > 0 ? tasks[0].order + 100 : 100
+          order: tasks.length > 0 ? tasks[0].order + 100 : 100,
         })
-        .then(task => {
-          this.setState(prevState => {
+        .then((task) => {
+          this.setState((prevState) => {
             return {
               newTask: { title: "" },
-              tasks: [task, ...prevState.tasks]
+              tasks: [task, ...prevState.tasks],
             };
           });
         });
     }
   };
 
-  onDragEnd = result => {
+  onDragEnd = (result) => {
     // Dropped outside the list
     if (!result.destination) {
       return;
@@ -123,7 +123,7 @@ class Tasks extends Component {
       tasksService.update(task);
 
       this.setState({
-        tasks
+        tasks,
       });
     }
   };

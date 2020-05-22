@@ -25,7 +25,7 @@ class GroupTasks extends Component {
       conversationOpen: false,
       newTask: { title: "" },
       tasks: [],
-      inTeams: !!params.get("inTeams")
+      inTeams: !!params.get("inTeams") || !!params.get("inTeamsSSO"),
     };
   }
 
@@ -34,15 +34,15 @@ class GroupTasks extends Component {
 
     if (this.state.inTeams) {
       microsoftTeams.initialize();
-      microsoftTeams.getContext(context => {
+      microsoftTeams.getContext((context) => {
         this.setState({
-          threadId: context.teamId || context.chatId
+          threadId: context.teamId || context.chatId,
         });
 
-        tasksService.get(this.state.threadId).then(tasks => {
+        tasksService.get(this.state.threadId).then((tasks) => {
           this.setState({
             tasks: tasks.sort((a, b) => a.order - b.order),
-            loading: false
+            loading: false,
           });
         });
       });
@@ -52,9 +52,9 @@ class GroupTasks extends Component {
   handleTaskCheckedChange = (task, isChecked) => {
     if (isChecked) {
       tasksService.destroy(task._id, this.state.threadId).then(() => {
-        this.setState(prevState => {
+        this.setState((prevState) => {
           return {
-            tasks: prevState.tasks.filter(item => item._id !== task._id)
+            tasks: prevState.tasks.filter((item) => item._id !== task._id),
           };
         });
       });
@@ -71,36 +71,36 @@ class GroupTasks extends Component {
         { ...task, order: newOrder, starred: isStarred },
         this.state.threadId
       )
-      .then(updatedTask => {
-        this.setState(prevState => {
+      .then((updatedTask) => {
+        this.setState((prevState) => {
           return {
             tasks: prevState.tasks
-              .map(t => (t._id === updatedTask._id ? updatedTask : t))
-              .sort((a, b) => a.order - b.order)
+              .map((t) => (t._id === updatedTask._id ? updatedTask : t))
+              .sort((a, b) => a.order - b.order),
           };
         });
       });
   };
 
-  handleOpenConversation = task => {
+  handleOpenConversation = (task) => {
     if (this.state.inTeams) {
       microsoftTeams.conversations.openConversation({
         conversationId: task.conversationId,
         subEntityId: task._id,
         title: task.title,
-        onStartConversation: conversation => {
+        onStartConversation: (conversation) => {
           if (task._id === conversation.subEntityId) {
             tasksService
               .update(
                 { ...task, conversationId: conversation.conversationId },
                 this.state.threadId
               )
-              .then(updatedTask => {
-                this.setState(prevState => {
+              .then((updatedTask) => {
+                this.setState((prevState) => {
                   return {
                     tasks: prevState.tasks
-                      .map(t => (t._id === updatedTask._id ? updatedTask : t))
-                      .sort((a, b) => a.order - b.order)
+                      .map((t) => (t._id === updatedTask._id ? updatedTask : t))
+                      .sort((a, b) => a.order - b.order),
                   };
                 });
               });
@@ -108,29 +108,29 @@ class GroupTasks extends Component {
         },
         onCloseConversation: () => {
           this.setState({
-            tasks: this.state.tasks.map(t => ({
+            tasks: this.state.tasks.map((t) => ({
               ...t,
-              conversationOpen: false
-            }))
+              conversationOpen: false,
+            })),
           });
-        }
+        },
       });
 
       this.setState({
-        tasks: this.state.tasks.map(t => ({
+        tasks: this.state.tasks.map((t) => ({
           ...t,
-          conversationOpen: t._id === task._id
-        }))
+          conversationOpen: t._id === task._id,
+        })),
       });
     }
   };
 
-  handleCloseConversation = task => {
+  handleCloseConversation = (task) => {
     if (this.state.inTeams) {
       microsoftTeams.conversations.closeConversation();
 
       this.setState({
-        tasks: this.state.tasks.map(t => ({ ...t, conversationOpen: false }))
+        tasks: this.state.tasks.map((t) => ({ ...t, conversationOpen: false })),
       });
     }
   };
@@ -139,29 +139,29 @@ class GroupTasks extends Component {
     this.setState({ newTask: { title: value } });
   };
 
-  handleKeyDown = event => {
+  handleKeyDown = (event) => {
     if (event.key === "Enter") {
       const tasks = this.state.tasks;
       tasksService
         .create(
           {
             ...this.state.newTask,
-            order: tasks.length > 0 ? tasks[0].order + 100 : 100
+            order: tasks.length > 0 ? tasks[0].order + 100 : 100,
           },
           this.state.threadId
         )
-        .then(task => {
-          this.setState(prevState => {
+        .then((task) => {
+          this.setState((prevState) => {
             return {
               newTask: { title: "" },
-              tasks: [task, ...prevState.tasks]
+              tasks: [task, ...prevState.tasks],
             };
           });
         });
     }
   };
 
-  onDragEnd = result => {
+  onDragEnd = (result) => {
     // Dropped outside the list
     if (!result.destination) {
       return;
@@ -187,7 +187,7 @@ class GroupTasks extends Component {
       tasksService.update(task, this.state.threadId);
 
       this.setState({
-        tasks
+        tasks,
       });
     }
   };
