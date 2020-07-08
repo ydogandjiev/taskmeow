@@ -131,8 +131,7 @@ class AuthDialog extends builder.IntentDialog {
         await this.handleLoginCallback(session);
       } else if (event.name === "signin/tokenExchange") {
         await this.handleTokenCallback(session);
-      }
-      else {
+      } else {
         console.warn(`Received unrecognized invoke "${event.name}"`);
       }
     } else {
@@ -185,7 +184,7 @@ class AuthDialog extends builder.IntentDialog {
 
       state.securityToken = state.pendingAction = undefined;
       utils.setOAuthState(session, JSON.stringify(state));
-      let token = {
+      const token = {
         verificationCodeValidated: true,
         accessToken: messageAsAny.originalInvoke.value.token
       };
