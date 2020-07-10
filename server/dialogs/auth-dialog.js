@@ -127,9 +127,7 @@ class AuthDialog extends builder.IntentDialog {
     if (messageAsAny.originalInvoke) {
       // This was originally an invoke message, see if it is signin/verifyState
       let event = messageAsAny.originalInvoke;
-      if (event.name === "signin/verifyState") {
-        await this.handleLoginCallback(session);
-      } else if (event.name === "signin/tokenExchange") {
+      if (event.name === "signin/tokenExchange") {
         await this.handleTokenCallback(session);
       } else {
         console.warn(`Received unrecognized invoke "${event.name}"`);
@@ -152,23 +150,6 @@ class AuthDialog extends builder.IntentDialog {
         // Unrecognized input
         this.promptForAction(session);
       }
-    }
-  }
-
-  // Handle user login callback
-  async handleLoginCallback(session) {
-    let messageAsAny = session.message;
-    let verificationCode = messageAsAny.originalInvoke.value.state;
-
-    utils.validateVerificationCode(session, verificationCode);
-
-    // End of auth flow: if the token is marked as validated, then the user is logged in
-    if (utils.getUserToken(session)) {
-      await this.showUserProfile(session);
-    } else {
-      session.send(
-        "Sorry, there was an error signing in to Azure AD. Please try again."
-      );
     }
   }
 
@@ -237,26 +218,8 @@ class AuthDialog extends builder.IntentDialog {
     });
     utils.setOAuthState(session, state);
 
-    // Create the authorization URL
-    const authUrl = this.getAuthorizationUrl(session, state);
-
-    // Build the sign-in url
-    const signinUrl = `${
-      process.env.APPSETTING_AAD_BaseUri
-      }/bot/start?authorizationUrl=${encodeURIComponent(authUrl)}`;
-
-    // The fallbackUrl specifies the page to be opened on mobile, until they support automatically passing the
-    // verification code via notifySuccess(). If you want to support only this protocol, then you can give the
-    // URL of an error page that directs the user to sign in using the desktop app. The flow demonstrated here
-    // gracefully falls back to asking the user to enter the verification code manually, so we use the same
-    // signin URL as the fallback URL.
-    const signinUrlWithFallback = `${signinUrl}&fallbackUrl=${encodeURIComponent(
-      signinUrl
-    )}`;
-
     const cardContent = JSON.parse(`{\"text\":\"Sign in card\",\"title\":\"Sign in card\",\"buttons\":` +
-      `[{\"type\":\"signin\",\"value\":\"${signinUrlWithFallback}\",` +
-      `\"title\":\"Sign in\"}],\"tokenExchangeResource\":{\"id\":\"${requestId}\"}}`);
+      `[],\"tokenExchangeResource\":{\"id\":\"${requestId}\"}}`);
 
     // Send card with signin action
     const msg = new builder.Message(session).addAttachment(
@@ -264,10 +227,7 @@ class AuthDialog extends builder.IntentDialog {
         contentType: "application/vnd.microsoft.card.oauth",
         content: cardContent
       }
-    ).address({
-      ...session.message.address,
-      serviceUrl: "https://canary.botapi.skype.com/amer-df/"
-    });
+    );
     session.send(msg);
 
     // The auth flow resumes when we either get an invoke call with the token or handle the identity provider's OAuth callback in AuthBot.handleOAuthCallback()
