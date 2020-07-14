@@ -8,6 +8,9 @@ const userService = require("../user-service");
 const utils = require("../utils");
 
 class AuthDialog extends builder.IntentDialog {
+  showUserProfileAction = "showUserProfileAction";
+  showTasksAction = "showTasksAction";
+
   // Register the dialog with the bot
   register(bot) {
     bot.dialog("/", this);
@@ -31,50 +34,51 @@ class AuthDialog extends builder.IntentDialog {
 
   // Show the user's profile
   async showUserProfile(session) {
-    let userToken = utils.getUserToken(session);
-    if (userToken) {
-      let profile = await userService.getProfile(userToken.accessToken);
-      let profileCard = new builder.ThumbnailCard()
-        .title(profile.displayName)
-        .subtitle(profile.userPrincipalName).text(`
-            <b>E-mail</b>: ${profile.mail}<br/>
-            <b>Title</b>: ${profile.jobTitle}<br/>
-            <b>Office location</b>: ${profile.officeLocation}`);
-      session.send(new builder.Message().addAttachment(profileCard));
-    } else {
-      session.send("Please sign in to AzureAD so I can access your profile.");
+    if (!utils.getUserToken(session)) {
+      await this.handleSilentLogin(session, this.showUserProfileAction);
+      return;
     }
+
+    const user = await userService.getUser(
+      session.message.address.user.aadObjectId
+    );
+    let userCard = new builder.ThumbnailCard()
+      .title(user.firstname)
+      .text(`
+          <b>Lastname</b>: ${user.lastname}<br/>
+          <b>E-mail</b>: ${user.email}`);
+    session.send(new builder.Message().addAttachment(userCard));
 
     await this.promptForAction(session);
   }
 
   // Show the user's tasks
   async showTasks(session) {
-    const userToken = utils.getUserToken(session);
-    if (userToken) {
-      const user = await userService.getUser(
-        session.message.address.user.aadObjectId
-      );
-      const tasks = await taskService.getForUser(user._id);
-      const msg = new builder.Message(session).addAttachment({
-        contentType: "application/vnd.microsoft.teams.card.list",
-        content: {
-          title: "Tasks",
-          items: tasks.map(task => ({
-            type: "resultItem",
-            icon: `${process.env.APPSETTING_AAD_BaseUri}/checkmark.png`,
-            title: task.title,
-            tap: {
-              type: "openUrl",
-              value: "http://trello.com"
-            }
-          }))
-        }
-      });
-      session.send(msg);
-    } else {
-      session.send("Please sign in to AzureAD so I can access your profile.");
+    if (!utils.getUserToken(session)) {
+      await this.handleSilentLogin(session, this.showTasksAction);
+      return;
     }
+
+    const user = await userService.getUser(
+      session.message.address.user.aadObjectId
+    );
+    const tasks = await taskService.getForUser(user._id);
+    const msg = new builder.Message(session).addAttachment({
+      contentType: "application/vnd.microsoft.teams.card.list",
+      content: {
+        title: "Tasks",
+        items: tasks.map(task => ({
+          type: "resultItem",
+          icon: `${process.env.APPSETTING_AAD_BaseUri}/checkmark.png`,
+          title: task.title,
+          tap: {
+            type: "openUrl",
+            value: "http://trello.com"
+          }
+        }))
+      }
+    });
+    session.send(msg);
 
     await this.promptForAction(session);
   }
@@ -82,7 +86,7 @@ class AuthDialog extends builder.IntentDialog {
   // Show prompt of options
   async promptForAction(session) {
     if (!utils.getUserToken(session)) {
-      await this.handleLogin(session);
+      await this.handleSilentLogin(session);
       return;
     }
 
@@ -123,8 +127,8 @@ class AuthDialog extends builder.IntentDialog {
     if (messageAsAny.originalInvoke) {
       // This was originally an invoke message, see if it is signin/verifyState
       let event = messageAsAny.originalInvoke;
-      if (event.name === "signin/verifyState") {
-        await this.handleLoginCallback(session);
+      if (event.name === "signin/tokenExchange") {
+        await this.handleTokenCallback(session);
       } else {
         console.warn(`Received unrecognized invoke "${event.name}"`);
       }
@@ -150,19 +154,38 @@ class AuthDialog extends builder.IntentDialog {
   }
 
   // Handle user login callback
-  async handleLoginCallback(session) {
-    let messageAsAny = session.message;
-    let verificationCode = messageAsAny.originalInvoke.value.state;
+  async handleTokenCallback(session) {
+    const messageAsAny = session.message;
+    const requestId = messageAsAny.originalInvoke.value.id;
+    const state = JSON.parse(utils.getOAuthState(session));
 
-    utils.validateVerificationCode(session, verificationCode);
+    // check if there is a pending oauth request
+    if (state.securityToken == requestId) {
+      const pendingAction = state.pendingAction;
 
-    // End of auth flow: if the token is marked as validated, then the user is logged in
-    if (utils.getUserToken(session)) {
+      state.securityToken = state.pendingAction = undefined;
+      utils.setOAuthState(session, JSON.stringify(state));
+      const token = {
+        verificationCodeValidated: true,
+        accessToken: messageAsAny.originalInvoke.value.token
+      };
+      utils.setUserToken(session, token);
+
+      await this.executePendingAction(session, pendingAction);
+    } else {
+      console.warn("Received unexpected request id.");
+      return;
+    }
+  }
+
+  // Execute user pending action or default
+  async executePendingAction(session, action) {
+    if (action == this.showTasksAction) {
+      await this.showTasks(session);
+    } else if (action == this.showUserProfileAction) {
       await this.showUserProfile(session);
     } else {
-      session.send(
-        "Sorry, there was an error signing in to Azure AD. Please try again."
-      );
+      await this.promptForAction(session);
     }
   }
 
@@ -174,16 +197,15 @@ class AuthDialog extends builder.IntentDialog {
       utils.setUserToken(session, null);
       session.send("You're now signed out of Azure AD.");
     }
-
-    await this.promptForAction(session);
   }
 
   // Handle user login request
-  async handleLogin(session) {
+  async handleSilentLogin(session, pendingAction) {
     // Create the OAuth state, including a random anti-forgery state token
-    let address = session.message.address;
-    let state = JSON.stringify({
-      securityToken: uuidv4(),
+    const address = session.message.address;
+    const requestId = uuidv4();
+    const state = JSON.stringify({
+      securityToken: requestId,
       address: {
         user: {
           id: address.user.id
@@ -191,41 +213,24 @@ class AuthDialog extends builder.IntentDialog {
         conversation: {
           id: address.conversation.id
         }
-      }
+      },
+      pendingAction: pendingAction
     });
     utils.setOAuthState(session, state);
 
-    // Create the authorization URL
-    let authUrl = this.getAuthorizationUrl(session, state);
-
-    // Build the sign-in url
-    let signinUrl = `${
-      process.env.APPSETTING_AAD_BaseUri
-    }/bot/start?authorizationUrl=${encodeURIComponent(authUrl)}`;
-
-    // The fallbackUrl specifies the page to be opened on mobile, until they support automatically passing the
-    // verification code via notifySuccess(). If you want to support only this protocol, then you can give the
-    // URL of an error page that directs the user to sign in using the desktop app. The flow demonstrated here
-    // gracefully falls back to asking the user to enter the verification code manually, so we use the same
-    // signin URL as the fallback URL.
-    let signinUrlWithFallback = `${signinUrl}&fallbackUrl=${encodeURIComponent(
-      signinUrl
-    )}`;
+    const cardContent = JSON.parse(`{\"text\":\"Sign in card\",\"title\":\"Sign in card\",\"buttons\":` +
+      `[],\"tokenExchangeResource\":{\"id\":\"${requestId}\"}}`);
 
     // Send card with signin action
-    let msg = new builder.Message(session).addAttachment(
-      new builder.HeroCard(session)
-        .text("Click below to sign in to Azure AD")
-        .buttons([
-          new builder.CardAction(session)
-            .type("signin")
-            .value(signinUrlWithFallback)
-            .title("Sign in")
-        ])
+    const msg = new builder.Message(session).addAttachment(
+      {
+        contentType: "application/vnd.microsoft.card.oauth",
+        content: cardContent
+      }
     );
     session.send(msg);
 
-    // The auth flow resumes when we handle the identity provider's OAuth callback in AuthBot.handleOAuthCallback()
+    // The auth flow resumes when we either get an invoke call with the token or handle the identity provider's OAuth callback in AuthBot.handleOAuthCallback()
   }
 }
 
