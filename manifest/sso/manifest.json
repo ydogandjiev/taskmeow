@@ -1,6 +1,6 @@
 ﻿{
-  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.5/MicrosoftTeams.schema.json",
-  "manifestVersion": "1.5",
+  "$schema": "https://raw.githubusercontent.com/OfficeDev/microsoft-teams-app-schema/preview/DevPreview/MicrosoftTeams.schema.json",
+  "manifestVersion": "devPreview",
   "version": "1.0",
   "id": "36b1586d-b1da-45d2-9b32-899c3757b6f8",
   "packageName": "com.taskmeow",
@@ -27,10 +27,8 @@
     {
       "configurationUrl": "https://taskmeow.com/config/?inTeamsSSO=true",
       "canUpdateConfiguration": true,
-      "scopes": [
-        "team",
-        "groupchat"
-      ]
+      "scopes": ["team", "groupchat"],
+      "meetingSurfaces": ["sidePanel"]
     }
   ],
   "staticTabs": [
@@ -38,34 +36,23 @@
       "contentUrl": "https://taskmeow.com/?inTeamsSSO=true",
       "entityId": "myTasks",
       "name": "My Tasks",
-      "scopes": [
-        "personal"
-      ]
+      "scopes": ["personal"]
     },
     {
       "contentUrl": "https://taskmeow.com/profile/?inTeamsSSO=true",
       "entityId": "myProfile",
       "name": "My Profile",
-      "scopes": [
-        "personal"
-      ]
+      "scopes": ["personal"]
     }
   ],
   "bots": [
     {
       "botId": "36b1586d-b1da-45d2-9b32-899c3757b6f8",
-      "scopes": [
-        "personal"
-      ]
+      "scopes": ["personal"]
     }
   ],
-  "permissions": [
-    "messageTeamMembers",
-    "identity"
-  ],
-  "validDomains": [
-    "taskmeow.com"
-  ],
+  "permissions": ["messageTeamMembers", "identity"],
+  "validDomains": ["taskmeow.com"],
   "webApplicationInfo": {
     "id": "36b1586d-b1da-45d2-9b32-899c3757b6f8",
     "resource": "api://taskmeow.com/botid-36b1586d-b1da-45d2-9b32-899c3757b6f8"
