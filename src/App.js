@@ -78,71 +78,77 @@ class App extends Component {
     if (!authService.isCallback()) {
       return (
         <div className="App" style={{ backgroundImage: `url(${background})` }}>
-          <ConsentConsumer>
-            {({ consentRequired, requestConsent }) =>
-              consentRequired && (
-                <MessageBar
-                  messageBarType={MessageBarType.warning}
-                  isMultiline={false}
-                  dismissButtonAriaLabel="Close"
-                  actions={
-                    <div>
-                      <MessageBarButton onClick={requestConsent}>
-                        Go
-                      </MessageBarButton>
-                    </div>
-                  }
-                >
-                  TaskMeow needs your consent in order to do its work.
-                </MessageBar>
-              )
-            }
-          </ConsentConsumer>
-          {this.state.user ? (
-            <Switch>
-              <Route path="/group" component={GroupTasks} />
-              <Route path="/profile" component={Profile} />
-              <Route path="/config" component={Config} />
-              <Route path="/remove" component={Remove} />
-              <Route path="/" component={Tasks} />
-            </Switch>
-          ) : (
-            <div className="App-login">
-              <div className="App-login-image-container">
-                <img
-                  className="App-login-image"
-                  alt="Taskmeow logo"
-                  src={logo}
-                />
-              </div>
-              <div className="App-login-button-container">
-                <DefaultButton
-                  className="App-login-button"
-                  primary="true"
-                  onClick={this.login}
-                >
-                  <img
-                    className="App-login-button-image"
-                    alt="Microsoft logo"
-                    src={microsoftLogo}
-                  />
-                  <span className="ms-Button-label label-46">Sign in</span>
-                </DefaultButton>
-                {!this.state.inTeams && (
-                  <a
-                    className="App-slack-link"
-                    href="https://slack.com/oauth/v2/authorize?scope=chat%3Awrite&client_id=1034113915760.1024551480609"
-                  >
+          {!this.state.loading ? (
+            <div>
+              <ConsentConsumer>
+                {({ consentRequired, requestConsent }) =>
+                  consentRequired && (
+                    <MessageBar
+                      messageBarType={MessageBarType.warning}
+                      isMultiline={false}
+                      dismissButtonAriaLabel="Close"
+                      actions={
+                        <div>
+                          <MessageBarButton onClick={requestConsent}>
+                            Go
+                          </MessageBarButton>
+                        </div>
+                      }
+                    >
+                      TaskMeow needs your consent in order to do its work.
+                    </MessageBar>
+                  )
+                }
+              </ConsentConsumer>
+              {this.state.user ? (
+                <Switch>
+                  <Route path="/group" component={GroupTasks} />
+                  <Route path="/profile" component={Profile} />
+                  <Route path="/config" component={Config} />
+                  <Route path="/remove" component={Remove} />
+                  <Route path="/" component={Tasks} />
+                </Switch>
+              ) : (
+                <div className="App-login">
+                  <div className="App-login-image-container">
                     <img
-                      className="App-slack-img"
-                      alt="Add to Slack"
-                      src="https://platform.slack-edge.com/img/add_to_slack.png"
-                      srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"
+                      className="App-login-image"
+                      alt="Taskmeow logo"
+                      src={logo}
                     />
-                  </a>
-                )}
-              </div>
+                  </div>
+                  <div className="App-login-button-container">
+                    <DefaultButton
+                      className="App-login-button"
+                      primary="true"
+                      onClick={this.login}
+                    >
+                      <img
+                        className="App-login-button-image"
+                        alt="Microsoft logo"
+                        src={microsoftLogo}
+                      />
+                      <span className="ms-Button-label label-46">Sign in</span>
+                    </DefaultButton>
+                    {!this.state.inTeams && (
+                      <a
+                        className="App-slack-link"
+                        href="https://slack.com/oauth/v2/authorize?scope=chat%3Awrite&client_id=1034113915760.1024551480609"
+                      >
+                        <img
+                          className="App-slack-img"
+                          alt="Add to Slack"
+                          src="https://platform.slack-edge.com/img/add_to_slack.png"
+                          srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"
+                        />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
+          ) : (
+            <Spinner label="Authenticating..." />
           )}
         </div>
       );
