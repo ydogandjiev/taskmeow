@@ -5,7 +5,10 @@ import * as Msal from "msal";
 class MsalAuthService {
   constructor() {
     this.applicationConfig = {
-      clientId: "36b1586d-b1da-45d2-9b32-899c3757b6f8"
+      clientId:
+        window.location.hostname === "taskmeow.com"
+          ? "36b1586d-b1da-45d2-9b32-899c3757b6f8"
+          : "ab93102c-869b-4d34-a921-a31d3e7f76ef",
     };
 
     this.app = new Msal.UserAgentApplication(
@@ -13,7 +16,7 @@ class MsalAuthService {
       "",
       null,
       {
-        redirectUri: `${window.location.origin}/callback/v2`
+        redirectUri: `${window.location.origin}/callback/v2`,
       }
     );
   }
@@ -23,10 +26,11 @@ class MsalAuthService {
   }
 
   login() {
-    const scopes = [
-      `api://${this.applicationConfig.clientId}/access_as_user`,
-      "https://graph.microsoft.com/User.Read"
-    ];
+    const api =
+      window.location.hostname === "taskmeow.com"
+        ? "api://taskmeow.com/36b1586d-b1da-45d2-9b32-899c3757b6f8/access_as_user"
+        : "api://taskmeow.ngrok.io/botid-ab93102c-869b-4d34-a921-a31d3e7f76ef/access_as_user";
+    const scopes = [api, "https://graph.microsoft.com/User.Read"];
 
     return (window.navigator.standalone
       ? this.app.loginRedirect(scopes)
@@ -47,13 +51,13 @@ class MsalAuthService {
   getToken() {
     return this.app
       .acquireTokenSilent([this.applicationConfig.clientId])
-      .catch(error => {
+      .catch((error) => {
         return this.app
           .acquireTokenPopup([this.applicationConfig.clientId])
-          .then(accessToken => {
+          .then((accessToken) => {
             return accessToken;
           })
-          .catch(error => {
+          .catch((error) => {
             console.error(error);
           });
       });

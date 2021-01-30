@@ -16,16 +16,21 @@ class TeamsAuthService {
     // TODO: Clear sign in context on user mismatch
     // const userObjectId = params["userObjectId"];
 
+    const clientId =
+      window.location.hostname === "taskmeow.com"
+        ? "36b1586d-b1da-45d2-9b32-899c3757b6f8"
+        : "ab93102c-869b-4d34-a921-a31d3e7f76ef";
+
     // Configure ADAL
     this.applicationConfig = {
       tenant: tenantId,
-      clientId: "36b1586d-b1da-45d2-9b32-899c3757b6f8",
+      clientId: clientId,
       endpoints: {
-        api: "36b1586d-b1da-45d2-9b32-899c3757b6f8"
+        api: clientId,
       },
       redirectUri: `${window.location.origin}/tab/silent-end`,
       cacheLocation: "localStorage",
-      navigateToLoginRequestUrl: false
+      navigateToLoginRequestUrl: false,
     };
 
     this.authContext = new AuthenticationContext(this.applicationConfig);
@@ -44,12 +49,12 @@ class TeamsAuthService {
             url: `${window.location.origin}/tab/silent-start`,
             width: 600,
             height: 535,
-            successCallback: result => {
+            successCallback: () => {
               resolve(this.getUser());
             },
-            failureCallback: reason => {
+            failureCallback: (reason) => {
               reject(reason);
-            }
+            },
           });
         });
       });
@@ -91,8 +96,8 @@ class TeamsAuthService {
   }
 
   ensureLoginHint() {
-    return new Promise((resolve, reject) => {
-      microsoftTeams.getContext(context => {
+    return new Promise((resolve) => {
+      microsoftTeams.getContext((context) => {
         const scopes = encodeURIComponent(
           "email openid profile offline_access User.Read"
         );

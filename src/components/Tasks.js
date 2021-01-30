@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Icon, Spinner, TextField } from "office-ui-fabric-react";
-import { Droppable, DragDropContext } from "react-beautiful-dnd";
 import Task from "./Task";
 import UserTile from "./UserTile";
 import tasksService from "../services/tasks.service";
@@ -8,10 +7,10 @@ import * as microsoftTeams from "@microsoft/teams-js";
 import { ConsentConsumer } from "./ConsentContext";
 
 // A little function to help us with reordering the result
-const reorder = (list, startIndex, endIndex) => {
+const reorder = (list, dragIndex, hoverIndex) => {
   const result = Array.from(list);
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
+  const [removed] = result.splice(dragIndex, 1);
+  result.splice(hoverIndex, 0, removed);
   return result;
 };
 
@@ -97,20 +96,11 @@ class Tasks extends Component {
     }
   };
 
-  onDragEnd = (result) => {
-    // Dropped outside the list
-    if (!result.destination) {
-      return;
-    }
-
-    const tasks = reorder(
-      this.state.tasks,
-      result.source.index,
-      result.destination.index
-    );
+  handleMoveTask = (dragIndex, hoverIndex) => {
+    const tasks = reorder(this.state.tasks, dragIndex, hoverIndex);
 
     if (tasks.length > 1) {
-      const index = result.destination.index;
+      const index = hoverIndex;
       const task = tasks[index];
       if (index === 0) {
         task.order = tasks[1].order / 2;
@@ -142,47 +132,38 @@ class Tasks extends Component {
             )}
           </ConsentConsumer>
         </div>
-        <DragDropContext onDragEnd={this.onDragEnd}>
-          <div className="Tasks">
-            <div className="Tasks-add">
-              <div>
-                <Icon className="Tasks-add-icon" iconName="Add" />
-              </div>
-              <TextField
-                className="Tasks-add-textfield"
-                placeholder="New Task"
-                value={this.state.newTask.title}
-                onChange={this.handleTextChanged}
-                onKeyDown={this.handleKeyDown}
-              />
+        <div className="Tasks">
+          <div className="Tasks-add">
+            <div>
+              <Icon className="Tasks-add-icon" iconName="Add" />
             </div>
-            {this.state.loading ? (
-              <Spinner label="Loading tasks..." />
-            ) : (
-              <Droppable droppableId="tasksDroppable" type="TASK">
-                {(provided, snapshot) => (
-                  <ul
-                    className="Tasks-list"
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                  >
-                    {this.state.tasks.map((task, index) => (
-                      <Task
-                        key={task._id}
-                        index={index}
-                        task={task}
-                        inTeams={this.state.inTeams}
-                        conversationOpen={this.state.conversationOpen}
-                        onCheckedChange={this.handleTaskCheckedChange}
-                        onStarredChange={this.handleTaskStarredChange}
-                      />
-                    ))}
-                  </ul>
-                )}
-              </Droppable>
-            )}
+            <TextField
+              className="Tasks-add-textfield"
+              placeholder="New Task"
+              value={this.state.newTask.title}
+              onChange={this.handleTextChanged}
+              onKeyDown={this.handleKeyDown}
+            />
           </div>
-        </DragDropContext>
+          {this.state.loading ? (
+            <Spinner label="Loading tasks..." />
+          ) : (
+            <ul className="Tasks-list">
+              {this.state.tasks.map((task, index) => (
+                <Task
+                  key={task._id}
+                  index={index}
+                  task={task}
+                  inTeams={this.state.inTeams}
+                  conversationOpen={this.state.conversationOpen}
+                  onCheckedChange={this.handleTaskCheckedChange}
+                  onStarredChange={this.handleTaskStarredChange}
+                  onMoveTask={this.handleMoveTask}
+                />
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     );
   }
