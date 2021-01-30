@@ -1,5 +1,5 @@
 import React from "react";
-import TestRenderer from "react-test-renderer";
+import { render } from "@testing-library/react";
 import { wrapInTestContext } from "react-dnd-test-utils";
 import Task from "./Task";
 
@@ -22,13 +22,16 @@ it("renders starred task snapshot", () => {
   const handleTaskStarredChange = jest.fn();
 
   const TestTask = wrapInTestContext(Task);
-  const task = TestRenderer.create(
+  const { container, getByText } = render(
     <TestTask
       task={mockTask}
       onCheckedChange={handleTaskCheckedChange}
       onStarredChange={handleTaskStarredChange}
     />
   );
+
+  expect(getByText(mockTask.title)).toBeInTheDocument();
+  expect(container.firstChild).toMatchSnapshot();
 
   /*
   const taskTitle = (
@@ -52,8 +55,6 @@ it("renders starred task snapshot", () => {
   task.find("i.Task-starred-icon").simulate("click");
   expect(handleTaskStarredChange).toHaveBeenCalledWith(mockTask, false);
   */
-
-  expect(task).toMatchSnapshot();
 });
 
 it("renders unstarred task snapshot", () => {
@@ -67,13 +68,16 @@ it("renders unstarred task snapshot", () => {
   const handleTaskStarredChange = jest.fn();
 
   const TestTask = wrapInTestContext(Task);
-  const task = TestRenderer.create(
+  const { container, getByText } = render(
     <TestTask
       task={mockTask}
       onCheckedChange={handleTaskCheckedChange}
       onStarredChange={handleTaskStarredChange}
     />
   );
+
+  expect(getByText(mockTask.title)).toBeInTheDocument();
+  expect(container.firstChild).toMatchSnapshot();
 
   /*
   const taskTitle = (
@@ -96,8 +100,6 @@ it("renders unstarred task snapshot", () => {
   task.find("i.Task-unstarred-icon").simulate("click");
   expect(handleTaskStarredChange).toHaveBeenCalledWith(mockTask, true);
   */
-
-  expect(task).toMatchSnapshot();
 });
 
 it("matches starred task with conversation closed snapshot in Teams", () => {
@@ -111,7 +113,7 @@ it("matches starred task with conversation closed snapshot in Teams", () => {
   const handleOpenConversation = jest.fn();
 
   const TestTask = wrapInTestContext(Task);
-  const task = TestRenderer.create(
+  const { container, getByText } = render(
     <TestTask
       task={mockTask}
       inTeams={true}
@@ -120,6 +122,9 @@ it("matches starred task with conversation closed snapshot in Teams", () => {
       openConversation={handleOpenConversation}
     />
   );
+
+  expect(getByText(mockTask.title)).toBeInTheDocument();
+  expect(container.firstChild).toMatchSnapshot();
 
   /*
   const taskTitle = (
@@ -140,8 +145,6 @@ it("matches starred task with conversation closed snapshot in Teams", () => {
   task.find("i.Task-conversation-closed-icon").simulate("click");
   expect(handleOpenConversation).toHaveBeenCalledWith(mockTask);
   */
-
-  expect(task).toMatchSnapshot();
 });
 
 it("matches unstarred task snapshot with conversation open in Teams", () => {
@@ -155,7 +158,7 @@ it("matches unstarred task snapshot with conversation open in Teams", () => {
   const handleCloseConversation = jest.fn();
 
   const TestTask = wrapInTestContext(Task);
-  const task = TestRenderer.create(
+  const { container, getByText } = render(
     <TestTask
       task={mockTask}
       inTeams={true}
@@ -164,6 +167,9 @@ it("matches unstarred task snapshot with conversation open in Teams", () => {
       closeConversation={handleCloseConversation}
     />
   );
+
+  expect(getByText(mockTask.title)).toBeInTheDocument();
+  expect(container.firstChild).toMatchSnapshot();
 
   /*
   const taskTitle = (
@@ -184,6 +190,4 @@ it("matches unstarred task snapshot with conversation open in Teams", () => {
   task.find("i.Task-conversation-open-icon").simulate("click");
   expect(handleCloseConversation).toHaveBeenCalledWith(mockTask);
   */
-
-  expect(task).toMatchSnapshot();
 });

@@ -2,36 +2,29 @@
 
 exports[`matches starred task with conversation closed snapshot in Teams 1`] = `
 <div
-  style={
-    Object {
-      "opacity": 1,
-    }
-  }
+  style="opacity: 1;"
 >
   <li
-    className="Task-listitem"
+    class="Task-listitem"
   >
     <div
-      className="ms-Checkbox is-enabled Task-checkbox root-78"
+      class="ms-Checkbox is-enabled Task-checkbox root-78"
     >
       <input
-        className="input-79"
+        class="input-79"
         id="checkbox-3"
-        onBlur={[Function]}
-        onChange={[Function]}
-        onFocus={[Function]}
         type="checkbox"
       />
       <label
-        className="ms-Checkbox-label label-80"
-        htmlFor="checkbox-3"
+        class="ms-Checkbox-label label-80"
+        for="checkbox-3"
       >
         <div
-          className="ms-Checkbox-checkbox checkbox-81"
+          class="ms-Checkbox-checkbox checkbox-81"
         >
           <i
-            aria-hidden={true}
-            className="ms-Checkbox-checkmark checkmark-85"
+            aria-hidden="true"
+            class="ms-Checkbox-checkmark checkmark-85"
             data-icon-name="CheckMark"
             role="presentation"
           >
@@ -41,37 +34,33 @@ exports[`matches starred task with conversation closed snapshot in Teams 1`] = `
       </label>
     </div>
     <span
-      className="Task-title"
+      class="Task-title"
     >
       <div>
         mockTitle
       </div>
     </span>
     <button
-      className="ms-Link Task-star-link root-86"
-      onClick={[Function]}
+      class="ms-Link Task-star-link root-86"
       type="button"
     >
       <i
-        aria-hidden={true}
-        className="Task-starred-icon root-87"
+        aria-hidden="true"
+        class="Task-starred-icon root-87"
         data-icon-name="FavoriteStarFill"
-        onClick={[Function]}
         role="presentation"
       >
         
       </i>
     </button>
     <button
-      className="ms-Link Task-conversation-link root-86"
-      onClick={[Function]}
+      class="ms-Link Task-conversation-link root-86"
       type="button"
     >
       <i
-        aria-hidden={true}
-        className="Task-conversation-closed-icon root-89"
+        aria-hidden="true"
+        class="Task-conversation-closed-icon root-89"
         data-icon-name="Chat"
-        onClick={[Function]}
         role="presentation"
       >
         
@@ -83,36 +72,29 @@ exports[`matches starred task with conversation closed snapshot in Teams 1`] = `
 
 exports[`matches unstarred task snapshot with conversation open in Teams 1`] = `
 <div
-  style={
-    Object {
-      "opacity": 1,
-    }
-  }
+  style="opacity: 1;"
 >
   <li
-    className="Task-listitem"
+    class="Task-listitem"
   >
     <div
-      className="ms-Checkbox is-enabled Task-checkbox root-78"
+      class="ms-Checkbox is-enabled Task-checkbox root-78"
     >
       <input
-        className="input-79"
+        class="input-79"
         id="checkbox-4"
-        onBlur={[Function]}
-        onChange={[Function]}
-        onFocus={[Function]}
         type="checkbox"
       />
       <label
-        className="ms-Checkbox-label label-80"
-        htmlFor="checkbox-4"
+        class="ms-Checkbox-label label-80"
+        for="checkbox-4"
       >
         <div
-          className="ms-Checkbox-checkbox checkbox-81"
+          class="ms-Checkbox-checkbox checkbox-81"
         >
           <i
-            aria-hidden={true}
-            className="ms-Checkbox-checkmark checkmark-85"
+            aria-hidden="true"
+            class="ms-Checkbox-checkmark checkmark-85"
             data-icon-name="CheckMark"
             role="presentation"
           >
@@ -122,37 +104,33 @@ exports[`matches unstarred task snapshot with conversation open in Teams 1`] = `
       </label>
     </div>
     <span
-      className="Task-title"
+      class="Task-title"
     >
       <div>
         mockTitle
       </div>
     </span>
     <button
-      className="ms-Link Task-star-link root-86"
-      onClick={[Function]}
+      class="ms-Link Task-star-link root-86"
       type="button"
     >
       <i
-        aria-hidden={true}
-        className="Task-starred-icon root-87"
+        aria-hidden="true"
+        class="Task-starred-icon root-87"
         data-icon-name="FavoriteStarFill"
-        onClick={[Function]}
         role="presentation"
       >
         
       </i>
     </button>
     <button
-      className="ms-Link Task-conversation-link root-86"
-      onClick={[Function]}
+      class="ms-Link Task-conversation-link root-86"
       type="button"
     >
       <i
-        aria-hidden={true}
-        className="Task-conversation-open-icon root-91"
+        aria-hidden="true"
+        class="Task-conversation-open-icon root-91"
         data-icon-name="ChatSolid"
-        onClick={[Function]}
         role="presentation"
       >
         
@@ -164,36 +142,29 @@ exports[`matches unstarred task snapshot with conversation open in Teams 1`] = `
 
 exports[`renders starred task snapshot 1`] = `
 <div
-  style={
-    Object {
-      "opacity": 1,
-    }
-  }
+  style="opacity: 1;"
 >
   <li
-    className="Task-listitem"
+    class="Task-listitem"
   >
     <div
-      className="ms-Checkbox is-enabled Task-checkbox root-78"
+      class="ms-Checkbox is-enabled Task-checkbox root-78"
     >
       <input
-        className="input-79"
+        class="input-79"
         id="checkbox-1"
-        onBlur={[Function]}
-        onChange={[Function]}
-        onFocus={[Function]}
         type="checkbox"
       />
       <label
-        className="ms-Checkbox-label label-80"
-        htmlFor="checkbox-1"
+        class="ms-Checkbox-label label-80"
+        for="checkbox-1"
       >
         <div
-          className="ms-Checkbox-checkbox checkbox-81"
+          class="ms-Checkbox-checkbox checkbox-81"
         >
           <i
-            aria-hidden={true}
-            className="ms-Checkbox-checkmark checkmark-85"
+            aria-hidden="true"
+            class="ms-Checkbox-checkmark checkmark-85"
             data-icon-name="CheckMark"
             role="presentation"
           >
@@ -203,22 +174,20 @@ exports[`renders starred task snapshot 1`] = `
       </label>
     </div>
     <span
-      className="Task-title"
+      class="Task-title"
     >
       <div>
         mockTitle
       </div>
     </span>
     <button
-      className="ms-Link Task-star-link root-86"
-      onClick={[Function]}
+      class="ms-Link Task-star-link root-86"
       type="button"
     >
       <i
-        aria-hidden={true}
-        className="Task-starred-icon root-87"
+        aria-hidden="true"
+        class="Task-starred-icon root-87"
         data-icon-name="FavoriteStarFill"
-        onClick={[Function]}
         role="presentation"
       >
         
@@ -230,36 +199,29 @@ exports[`renders starred task snapshot 1`] = `
 
 exports[`renders unstarred task snapshot 1`] = `
 <div
-  style={
-    Object {
-      "opacity": 1,
-    }
-  }
+  style="opacity: 1;"
 >
   <li
-    className="Task-listitem"
+    class="Task-listitem"
   >
     <div
-      className="ms-Checkbox is-enabled Task-checkbox root-78"
+      class="ms-Checkbox is-enabled Task-checkbox root-78"
     >
       <input
-        className="input-79"
+        class="input-79"
         id="checkbox-2"
-        onBlur={[Function]}
-        onChange={[Function]}
-        onFocus={[Function]}
         type="checkbox"
       />
       <label
-        className="ms-Checkbox-label label-80"
-        htmlFor="checkbox-2"
+        class="ms-Checkbox-label label-80"
+        for="checkbox-2"
       >
         <div
-          className="ms-Checkbox-checkbox checkbox-81"
+          class="ms-Checkbox-checkbox checkbox-81"
         >
           <i
-            aria-hidden={true}
-            className="ms-Checkbox-checkmark checkmark-85"
+            aria-hidden="true"
+            class="ms-Checkbox-checkmark checkmark-85"
             data-icon-name="CheckMark"
             role="presentation"
           >
@@ -269,22 +231,20 @@ exports[`renders unstarred task snapshot 1`] = `
       </label>
     </div>
     <span
-      className="Task-title"
+      class="Task-title"
     >
       <div>
         mockTitle
       </div>
     </span>
     <button
-      className="ms-Link Task-star-link root-86"
-      onClick={[Function]}
+      class="ms-Link Task-star-link root-86"
       type="button"
     >
       <i
-        aria-hidden={true}
-        className="Task-unstarred-icon root-87"
+        aria-hidden="true"
+        class="Task-unstarred-icon root-87"
         data-icon-name="FavoriteStar"
-        onClick={[Function]}
         role="presentation"
       >
         
