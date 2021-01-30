@@ -12,9 +12,9 @@
   },
   "dependencies": {
     "@microsoft/teams-js": "^1.6.0",
-    "@slack/events-api": "^2.3.2",
-    "@slack/interactive-messages": "^1.5.0",
-    "@slack/web-api": "^5.8.0",
+    "@slack/events-api": "^3.0.0",
+    "@slack/interactive-messages": "^2.0.0",
+    "@slack/web-api": "^6.0.0",
     "@uifabric/icons": "^6.0.1",
     "adal-angular": "^1.0.17",
     "applicationinsights": "^1.0.3",
