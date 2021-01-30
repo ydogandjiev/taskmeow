@@ -15,10 +15,10 @@ class Profile extends Component {
     this.setState({ loading: true });
     authService
       .getUser()
-      .then(user => {
+      .then((user) => {
         this.setState({ user, loading: false });
       })
-      .catch(err => {
+      .catch((err) => {
         this.setState({ loading: false });
       });
   }
@@ -40,19 +40,29 @@ class Profile extends Component {
         <div>
           {this.state.user ? (
             <div>
-              <TextField
-                label="First name"
-                value={this.state.user.given_name}
-                readOnly={true}
-              />
-              <TextField
-                label="Last name"
-                value={this.state.user.family_name}
-                readOnly={true}
-              />
+              {this.state.user.name ? (
+                <TextField
+                  label="Name"
+                  value={this.state.user.name}
+                  readyOnly={true}
+                />
+              ) : (
+                <div>
+                  <TextField
+                    label="First name"
+                    value={this.state.user.given_name}
+                    readOnly={true}
+                  />
+                  <TextField
+                    label="Last name"
+                    value={this.state.user.family_name}
+                    readOnly={true}
+                  />
+                </div>
+              )}
               <TextField
                 label="E-mail"
-                value={this.state.user.upn}
+                value={this.state.user.displayableId || this.state.user.upn}
                 readOnly={true}
               />
             </div>

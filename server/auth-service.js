@@ -22,10 +22,11 @@ passport.use(
   new OIDCBearerStrategy(
     {
       identityMetadata:
-        "https://login.microsoftonline.com/common/.well-known/openid-configuration",
+        "https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration",
       clientID: process.env.APPSETTING_AAD_ApplicationId,
       validateIssuer: false,
-      passReqToCallback: false
+      passReqToCallback: false,
+      loggingLevel: "warn",
     },
     (token, done) => {
       User.findOne(
@@ -42,11 +43,12 @@ passport.use(
           const newUser = new User();
           const account = { uid: token.oid, provider: "aad" };
           newUser.accounts.push(account);
+          newUser.name = token.name;
           newUser.firstname = token.given_name;
           newUser.lastname = token.family_name;
           newUser.email = token.upn || token.preferred_username;
 
-          newUser.save(function(err) {
+          newUser.save(function (err) {
             if (err) {
               return done(err);
             }
@@ -91,7 +93,7 @@ function exchangeForToken(tid, token, scopes) {
       grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
       assertion: token,
       requested_token_use: "on_behalf_of",
-      scope: scopes.join(" ")
+      scope: scopes.join(" "),
     };
 
     fetch(url, {
@@ -99,16 +101,16 @@ function exchangeForToken(tid, token, scopes) {
       body: querystring.stringify(params),
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/x-www-form-urlencoded"
-      }
-    }).then(result => {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    }).then((result) => {
       if (result.status !== 200) {
-        result.json().then(json => {
+        result.json().then((json) => {
           // TODO: Check explicitly for invalid_grant or interaction_required
           reject(new ServerError(403, "ConsentRequired"));
         });
       } else {
-        result.json().then(json => {
+        result.json().then((json) => {
           resolve(json.access_token);
         });
       }
@@ -126,7 +128,7 @@ function getAuthorizationUrl(state, extraParams, tenant) {
     redirect_uri: `${process.env.APPSETTING_AAD_BaseUri}/auth/azureADv1/callback`,
     resource: "https://graph.microsoft.com",
     scope: "email openid offline_access profile User.Read",
-    state: state
+    state: state,
   };
 
   if (extraParams) {
@@ -149,18 +151,18 @@ async function getAccessTokenAsync(code) {
     client_id: process.env.APPSETTING_AAD_ApplicationId,
     client_secret: process.env.APPSETTING_AAD_ApplicationSecret,
     redirect_uri: `${process.env.APPSETTING_AAD_BaseUri}/auth/azureADv1/callback`,
-    resource: "https://graph.microsoft.com"
+    resource: "https://graph.microsoft.com",
   };
 
   const responseBody = await request.post({
     url: "https://login.microsoftonline.com/common/oauth2/token",
     form: params,
-    json: true
+    json: true,
   });
 
   return {
     accessToken: responseBody.access_token,
-    expirationTime: responseBody.expires_on * 1000
+    expirationTime: responseBody.expires_on * 1000,
   };
 }
 
@@ -170,5 +172,5 @@ module.exports = {
   ensureAuthenticated,
   exchangeForToken,
   getAuthorizationUrl,
-  getAccessTokenAsync
+  getAccessTokenAsync,
 };
