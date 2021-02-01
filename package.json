@@ -12,9 +12,9 @@
   },
   "dependencies": {
     "@microsoft/teams-js": "^1.6.0",
-    "@slack/events-api": "^2.3.2",
-    "@slack/interactive-messages": "^1.5.0",
-    "@slack/web-api": "^5.8.0",
+    "@slack/events-api": "^3.0.0",
+    "@slack/interactive-messages": "^2.0.0",
+    "@slack/web-api": "^6.0.0",
     "@uifabric/icons": "^6.0.1",
     "adal-angular": "^1.0.17",
     "applicationinsights": "^1.0.3",
@@ -39,22 +39,23 @@
     "passport-azure-ad": "^4.1.0",
     "pug": "^2.0.4",
     "random-number-csprng": "^1.0.2",
-    "react": "^16.8.6",
-    "react-beautiful-dnd": "^8.0.4",
+    "react": "^17.0.1",
+    "react-dnd": "^11.1.3",
+    "react-dnd-html5-backend": "^11.1.3",
     "react-dom": "^16.8.6",
     "react-router-dom": "^4.3.1",
     "request": "^2.88.0",
     "request-promise": "^4.2.4"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.11.9",
+    "@testing-library/react": "^11.2.3",
     "concurrently": "^3.5.0",
     "coveralls": "^3.0.1",
-    "enzyme": "^3.10.0",
-    "enzyme-adapter-react-16": "^1.14.0",
-    "jest-enzyme": "^7.0.2",
-    "jest-localstorage-mock": "^2.2.0",
     "nodemon": "^1.19.1",
-    "react-scripts": "3.0.1"
+    "react-dnd-test-backend": "^11.1.3",
+    "react-dnd-test-utils": "^11.1.3",
+    "react-scripts": "4.0.1"
   },
   "scripts": {
     "start": "concurrently \"react-scripts start\" \"nodemon server/server.js\"",

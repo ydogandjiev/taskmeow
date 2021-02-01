@@ -8,16 +8,20 @@ class AdalAuthService {
       "email openid profile offline_access User.Read"
     );
 
+    const clientId =
+      window.location.hostname === "taskmeow.com"
+        ? "36b1586d-b1da-45d2-9b32-899c3757b6f8"
+        : "ab93102c-869b-4d34-a921-a31d3e7f76ef";
     this.applicationConfig = {
-      clientId: "36b1586d-b1da-45d2-9b32-899c3757b6f8",
+      clientId: clientId,
       endpoints: {
-        api: "36b1586d-b1da-45d2-9b32-899c3757b6f8"
+        api: clientId,
       },
       extraQueryParameter: `prompt=consent&scope=${scopes}`,
       redirectUri: `${window.location.origin}/callback/v1`,
       cacheLocation: "localStorage",
       callback: this.loginCallback,
-      popUp: !window.navigator.standalone
+      popUp: !window.navigator.standalone,
     };
 
     this.authContext = new AuthenticationContext(this.applicationConfig);
@@ -27,8 +31,8 @@ class AdalAuthService {
     if (this.loginPromise) {
       if (!error) {
         this.getUser()
-          .then(user => this.loginPromiseResolve(user))
-          .catch(error => {
+          .then((user) => this.loginPromiseResolve(user))
+          .catch((error) => {
             this.loginPromiseReject(error);
             this.loginPromise = undefined;
           });
