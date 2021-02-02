@@ -5,30 +5,32 @@ html
     title Task Meow
 
   body
-    script(src="https://statics.teams.cdn.office.net/sdk/v1.6.0/js/MicrosoftTeams.min.js", integrity="sha384-mhp2E+BLMiZLe7rDIzj19WjgXJeI32NkPvrvvZBrMi5IvWup/1NUfS5xuYN5S3VT", crossorigin="anonymous")
-    script(src="https://secure.aadcdn.microsoftonline-p.com/lib/1.0.17/js/adal.min.js", integrity="sha384-BIOS/65fbAsb2XiCCSTlZSTTl0ZgqkOU522dpyk5meOnN2EOQ3uH+QpqEtoAtmBn", crossorigin="anonymous")
+    script(src="https://statics.teams.cdn.office.net/sdk/v1.9.0/js/MicrosoftTeams.min.js", integrity="sha384-bcRxWKfzRyPxg/waVm3IsOnaH2Inoh5gGIJNOat79+wq22/BZ+mFuSTUmVc7l2el", crossorigin="anonymous")
+    script(scr="https://alcdn.msftauth.net/lib/0.1.5/js/msal.min.js", integrity="sha384-KSEL5Lw2KU3hDQ5shS768AepsDAW0LzJupGsVCcklTE+E83tCE2XXLRNifFil9F/", crossorigin="anonymous")
 
     script.
       microsoftTeams.initialize();
 
-      // ADAL.js configuration
-      const config = {
-        clientId: "#{clientId}",
-        redirectUri: window.location.origin + "/tab/silent-end",
-        cacheLocation: "localStorage",
-        navigateToLoginRequestUrl: false,
-      };
+        const clientId =
+          window.location.hostname === "taskmeow.com"
+            ? "36b1586d-b1da-45d2-9b32-899c3757b6f8"
+            : "ab93102c-869b-4d34-a921-a31d3e7f76ef";
 
-      const authContext = new AuthenticationContext(config);
-      if (authContext.isCallback(window.location.hash)) {
-        authContext.handleWindowCallback(window.location.hash);
-
-        // Only call notifySuccess or notifyFailure if this page is in the authentication popup
-        if (window.opener) {
-          if (authContext.getCachedUser()) {
-            microsoftTeams.authentication.notifySuccess();
-          } else {
-            microsoftTeams.authentication.notifyFailure(authContext.getLoginError());
+        const app = new Msal.UserAgentApplication(
+          clientId,
+          "",
+          (err, token) => {
+            if (window.opener) {
+              if (err) {
+                microsoftTeams.authentication.notifyFailure(err);
+              } else {
+                microsoftTeams.authentication.notifySuccess(token);
+              }
+            }
+          },
+          {
+            redirectUri: `${window.location.origin}/tab/silent-end`,
+            navigateToLoginRequestUrl: false,
+            cacheLocation: "localStorage",
           }
-        }
-      }
+        );
