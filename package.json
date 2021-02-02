@@ -11,7 +11,7 @@
     "url": "https://github.com/ydogandjiev/taskmeow/issues"
   },
   "dependencies": {
-    "@microsoft/teams-js": "^1.6.0",
+    "@microsoft/teams-js": "^1.9.0",
     "@slack/events-api": "^3.0.0",
     "@slack/interactive-messages": "^2.0.0",
     "@slack/web-api": "^6.0.0",
