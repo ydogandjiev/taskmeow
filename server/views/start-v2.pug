@@ -1,0 +1,50 @@
+doctype html
+
+html
+  head
+    title Task Meow
+
+  body
+    script(src="https://statics.teams.cdn.office.net/sdk/v1.9.0/js/MicrosoftTeams.min.js", integrity="sha384-bcRxWKfzRyPxg/waVm3IsOnaH2Inoh5gGIJNOat79+wq22/BZ+mFuSTUmVc7l2el", crossorigin="anonymous")
+    script(src="https://alcdn.msftauth.net/lib/1.4.5/js/msal.min.js", integrity="sha384-35piYQtnCDJZxSbu/KD/4K6J/5vdITyJkoE5PvyejGRdu7qLGxVudvgODY+6lO6E", crossorigin="anonymous")
+
+    script.
+      microsoftTeams.initialize();
+
+      // Get the tab context and use the information to set the domain and login hints
+      microsoftTeams.getContext((context) => {
+
+        // Configure MSAL
+        const app = new Msal.UserAgentApplication({
+          auth: {
+            clientId:
+              window.location.hostname === "taskmeow.com"
+                ? "36b1586d-b1da-45d2-9b32-899c3757b6f8"
+                : "ab93102c-869b-4d34-a921-a31d3e7f76ef",
+            redirectUri: `${window.location.origin}/tab/v2/silent-end`,
+            navigateToLoginRequestUrl: false,
+          },
+          cache: {
+            cacheLocation: "localStorage",
+          },
+        });
+
+        // Configure the scopes that we need
+        const api =
+          window.location.hostname === "taskmeow.com"
+            ? "api://taskmeow.com/36b1586d-b1da-45d2-9b32-899c3757b6f8/access_as_user"
+            : "api://taskmeow.ngrok.io/botid-ab93102c-869b-4d34-a921-a31d3e7f76ef/access_as_user";
+
+        // Configure the domain hint since we are using the /common authority
+        const domainHint =
+          context.tid === "9188040d-6c67-4c5b-b112-36a304b66dad"
+            ? "consumers"
+            : "organizations";
+
+        // Navigate to the login flow
+        app.loginRedirect({
+          loginHint: context.loginHint,
+          scopes: [api, "https://graph.microsoft.com/User.Read"],
+          extraQueryParameters: { domain_hint: domainHint },
+        });
+      });

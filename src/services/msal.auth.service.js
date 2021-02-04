@@ -51,14 +51,9 @@ class MsalAuthService {
         return authResponse.accessToken;
       })
       .catch((error) => {
-        return this.app
-          .acquireTokenPopup({ scopes })
-          .then((authResponse) => {
-            return authResponse.accessToken;
-          })
-          .catch((error) => {
-            console.error(error);
-          });
+        return this.app.acquireTokenPopup({ scopes }).then((authResponse) => {
+          return authResponse.accessToken;
+        });
       });
   }
 }

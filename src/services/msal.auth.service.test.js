@@ -39,12 +39,12 @@ it("can initiate logout", () => {
   expect(app.logout).toHaveBeenCalledTimes(1);
 });
 
-it("can get token", done => {
+it("can get token", (done) => {
   const authService = new MsalAuthService();
   const app = Msal.UserAgentApplication.mock.instances[0];
   app.acquireTokenSilent.mockResolvedValue("fakeToken");
 
-  authService.getToken().then(token => {
+  authService.getToken().then((token) => {
     expect(token).toEqual("fakeToken");
     done();
   });
@@ -52,21 +52,21 @@ it("can get token", done => {
   expect(app.acquireTokenSilent).toHaveBeenCalledTimes(1);
 });
 
-it("can get user", done => {
+it("can get user", (done) => {
   const mockUser = {
     name: "fakeFirst fakeLast",
     given_name: "fakeFirst",
-    oid: "fakeOid"
+    oid: "fakeOid",
   };
 
   const authService = new MsalAuthService();
   const app = Msal.UserAgentApplication.mock.instances[0];
-  app.getUser.mockResolvedValue(mockUser);
+  app.getAccount.mockResolvedValue(mockUser);
 
-  authService.getUser().then(user => {
+  authService.getUser().then((user) => {
     expect(user).toEqual(mockUser);
     done();
   });
 
-  expect(app.getUser).toHaveBeenCalledTimes(1);
+  expect(app.getAccount).toHaveBeenCalledTimes(1);
 });
