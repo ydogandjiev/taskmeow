@@ -6,7 +6,7 @@ html
 
   body
     script(src="https://statics.teams.cdn.office.net/sdk/v1.9.0/js/MicrosoftTeams.min.js", integrity="sha384-bcRxWKfzRyPxg/waVm3IsOnaH2Inoh5gGIJNOat79+wq22/BZ+mFuSTUmVc7l2el", crossorigin="anonymous")
-    script(scr="https://alcdn.msftauth.net/lib/0.1.5/js/msal.min.js", integrity="sha384-KSEL5Lw2KU3hDQ5shS768AepsDAW0LzJupGsVCcklTE+E83tCE2XXLRNifFil9F/", crossorigin="anonymous")
+    script(src="https://secure.aadcdn.microsoftonline-p.com/lib/1.0.17/js/adal.min.js", integrity="sha384-BIOS/65fbAsb2XiCCSTlZSTTl0ZgqkOU522dpyk5meOnN2EOQ3uH+QpqEtoAtmBn", crossorigin="anonymous")
 
     script.
       microsoftTeams.initialize();
@@ -14,27 +14,31 @@ html
       // Get the tab context, and use the information to navigate to Azure AD login page
       microsoftTeams.getContext(function (context) {
 
-        const clientId =
-          window.location.hostname === "taskmeow.com"
-            ? "36b1586d-b1da-45d2-9b32-899c3757b6f8"
-            : "ab93102c-869b-4d34-a921-a31d3e7f76ef";
+        // ADAL.js configuration
+        const config = {
+          // Use the tenant id of the current organization. For guest users, we want an access token for 
+          // the tenant we are currently in, not the home tenant of the guest. 
+          tenant: context.tid,
+          clientId: "#{clientId}",
+          redirectUri: window.location.origin + "/tab/silent-end",
+          cacheLocation: "localStorage",
+          navigateToLoginRequestUrl: false,
+        };
 
-        const app = new Msal.UserAgentApplication(
-          clientId,
-          "",
-          null,
-          {
-            redirectUri: `${window.location.origin}/tab/silent-end`,
-            navigateToLoginRequestUrl: false,
-            cacheLocation: "localStorage",
-          }
+        const scopes = encodeURIComponent(
+          "email openid profile offline_access User.Read"
         );
 
-        const api =
-          window.location.hostname === "taskmeow.com"
-            ? "api://taskmeow.com/36b1586d-b1da-45d2-9b32-899c3757b6f8/access_as_user"
-            : "api://taskmeow.ngrok.io/botid-ab93102c-869b-4d34-a921-a31d3e7f76ef/access_as_user";
-        const scopes = [api, "https://graph.microsoft.com/User.Read"];
+        // Setup extra query parameters for ADAL
+        // - openid and profile scope adds profile information to the id_token
+        // - login_hint provides the expected user name
+        if (context.loginHint) {
+          config.extraQueryParameter = `prompt=consent&scope=${scopes}&login_hint=${encodeURIComponent(context.loginHint)}`;
+        } else {
+          config.extraQueryParameter = `prompt=consent&scope=${scopes}`;
+        }
 
-        app.loginRedirect(scopes)
+        // Navigate to the AzureAD login page
+        const authContext = new AuthenticationContext(config);
+        authContext.login();
       });

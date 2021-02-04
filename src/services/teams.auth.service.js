@@ -41,6 +41,7 @@ class TeamsAuthService {
             resolve(this.getUser());
           },
           failureCallback: (reason) => {
+            this.loginPromise = null;
             reject(reason);
           },
         });
