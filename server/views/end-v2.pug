@@ -27,14 +27,12 @@ html
       });
 
       // Handle the callback
-      if (app.isCallback(window.location.hash)) {
-        app.handleRedirectCallback((err, response) => {
-          if (window.opener) {
-            if (err) {
-              microsoftTeams.authentication.notifyFailure(err);
-            } else {
-              microsoftTeams.authentication.notifySuccess();
-            }
+      app.handleRedirectCallback((err, response) => {
+        if (window.opener) {
+          if (err) {
+            microsoftTeams.authentication.notifyFailure(err);
+          } else {
+            microsoftTeams.authentication.notifySuccess();
           }
-        });
-      }
+        }
+      });
