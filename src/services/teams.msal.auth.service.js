@@ -40,12 +40,14 @@ class TeamsMsalAuthService {
           url: `${window.location.origin}/tab/v2/silent-start`,
           width: 600,
           height: 535,
-          successCallback: () => {
+          successCallback: (response) => {
+            console.log("Login succeeded:" + JSON.stringify(response));
             resolve(this.getUser());
           },
-          failureCallback: (reason) => {
+          failureCallback: (error) => {
+            console.error("Login failed: " + JSON.stringify(error));
             this.loginPromise = null;
-            reject(reason);
+            reject(error);
           },
         });
       });
@@ -77,8 +79,13 @@ class TeamsMsalAuthService {
           scopes: [this.api],
           extraQueryParameters: { domain_hint: domainHint },
         })
-        .then((authResponse) => {
-          return authResponse.accessToken;
+        .then((response) => {
+          console.log("Token refresh succeeded: " + JSON.stringify(response));
+          return response.accessToken;
+        })
+        .catch((error) => {
+          console.error("Token refresh failed: " + JSON.stringify(error));
+          return Promise.reject(error);
         });
     });
   }

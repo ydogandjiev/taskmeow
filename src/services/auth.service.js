@@ -9,7 +9,13 @@ class AuthService {
   constructor() {
     const url = new URL(window.location);
     const params = new URLSearchParams(url.search);
-    const useV2 = params.get("useV2") || url.pathname.indexOf("/callback/v2");
+    const useV2Param = params.get("useV2");
+
+    // Default to using V2 auth endpoints if not specified
+    const useV2 =
+      useV2Param === null ||
+      Boolean(useV2Param) ||
+      url.pathname.indexOf("/callback/v2") >= 0;
 
     if (params.get("useTest")) {
       this.authService = new MockAuthService();

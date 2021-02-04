@@ -41,10 +41,21 @@ html
             ? "consumers"
             : "organizations";
 
+        const loginScopes = [
+          "openid",
+          "email",
+          "profile",
+          "offline_access",
+          api,
+          "User.Read",
+          "Calendars.Read",
+          "Calendars.ReadWrite"
+        ];
+
         // Navigate to the login flow
         app.loginRedirect({
           loginHint: context.loginHint,
           scopes: [api, "https://graph.microsoft.com/User.Read"],
-          extraQueryParameters: { domain_hint: domainHint },
+          extraQueryParameters: { domain_hint: domainHint }
         });
       });
