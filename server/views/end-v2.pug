@@ -32,7 +32,7 @@ html
           if (err) {
             microsoftTeams.authentication.notifyFailure(err);
           } else {
-            microsoftTeams.authentication.notifySuccess();
+            microsoftTeams.authentication.notifySuccess(response);
           }
         }
       });
