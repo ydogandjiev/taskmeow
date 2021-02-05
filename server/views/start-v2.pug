@@ -41,21 +41,26 @@ html
             ? "consumers"
             : "organizations";
 
+        // Configure all the scopes that this app needs
         const loginScopes = [
           "openid",
           "email",
           "profile",
           "offline_access",
           api,
-          "User.Read",
-          "Calendars.Read",
-          "Calendars.ReadWrite"
+          "User.Read"
         ];
+
+        // Add non-production scopes
+        if (window.location.hostname !== "taskmeow.com") {
+          loginScopes.push("Calendars.Read");
+          loginScopes.push("Calendars.ReadWrite");
+        }
 
         // Navigate to the login flow
         app.loginRedirect({
           loginHint: context.loginHint,
-          scopes: [api, "https://graph.microsoft.com/User.Read"],
+          scopes: loginScopes,
           extraQueryParameters: { domain_hint: domainHint }
         });
       });
