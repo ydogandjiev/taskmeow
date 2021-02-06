@@ -42,8 +42,7 @@ class App extends Component {
       .then((isCallback) => {
         if (!isCallback) {
           authService
-            .getToken()
-            .then(() => authService.getUser())
+            .getUser()
             .then((user) => {
               // Signed in the user automatically; we're ready to go
               this.setState({

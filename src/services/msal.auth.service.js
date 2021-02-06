@@ -68,7 +68,15 @@ class MsalAuthService {
   }
 
   getUser() {
-    return Promise.resolve(this.app.getActiveAccount());
+    let activeAccount = this.app.getActiveAccount();
+    if (!activeAccount) {
+      const allAccounts = this.app.getAllAccounts();
+      if (allAccounts.length === 1) {
+        this.app.setActiveAccount(allAccounts[0]);
+        activeAccount = allAccounts[0];
+      }
+    }
+    return Promise.resolve(activeAccount);
   }
 
   getToken() {
