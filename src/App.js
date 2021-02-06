@@ -38,21 +38,32 @@ class App extends Component {
 
   componentDidMount() {
     authService
-      .getToken()
-      .then((token) => {
-        return authService.getUser().then((user) => {
-          this.setState({
-            user: user,
-            loading: false,
-            error: null,
-          });
-        });
+      .isCallback()
+      .then((isCallback) => {
+        if (!isCallback) {
+          authService
+            .getToken()
+            .then(() => authService.getUser())
+            .then((user) => {
+              // Signed in the user automatically; we're ready to go
+              this.setState({
+                user: user,
+                loading: false,
+              });
+            })
+            .catch(() => {
+              // Failed to sign in the user automatically; show login screen
+              this.setState({
+                loading: false,
+              });
+            });
+        }
       })
       .catch((error) => {
+        // Encountered error during redirect login flow; show error screen
         this.setState({
-          user: null,
-          loading: false,
           error: error,
+          loading: false,
         });
       });
   }
@@ -75,94 +86,90 @@ class App extends Component {
   };
 
   render() {
-    if (!authService.isCallback()) {
-      return (
-        <div className="App" style={{ backgroundImage: `url(${background})` }}>
-          {!this.state.loading ? (
-            <div>
-              <ConsentConsumer>
-                {({ consentRequired, requestConsent }) =>
-                  consentRequired && (
-                    <MessageBar
-                      messageBarType={MessageBarType.warning}
-                      isMultiline={false}
-                      dismissButtonAriaLabel="Close"
-                      actions={
-                        <div>
-                          <MessageBarButton onClick={requestConsent}>
-                            Go
-                          </MessageBarButton>
-                        </div>
-                      }
-                    >
-                      TaskMeow needs your consent in order to do its work.
-                    </MessageBar>
-                  )
-                }
-              </ConsentConsumer>
-              {this.state.user ? (
-                <Switch>
-                  <Route path="/group" component={GroupTasks} />
-                  <Route path="/profile" component={Profile} />
-                  <Route path="/config" component={Config} />
-                  <Route path="/remove" component={Remove} />
-                  <Route path="/" component={Tasks} />
-                </Switch>
-              ) : (
-                <div className="App-login">
-                  <div className="App-login-image-container">
+    return (
+      <div className="App" style={{ backgroundImage: `url(${background})` }}>
+        {!this.state.loading && !this.state.error ? (
+          <div>
+            <ConsentConsumer>
+              {({ consentRequired, requestConsent }) =>
+                consentRequired && (
+                  <MessageBar
+                    messageBarType={MessageBarType.warning}
+                    isMultiline={false}
+                    dismissButtonAriaLabel="Close"
+                    actions={
+                      <div>
+                        <MessageBarButton onClick={requestConsent}>
+                          Go
+                        </MessageBarButton>
+                      </div>
+                    }
+                  >
+                    TaskMeow needs your consent in order to do its work.
+                  </MessageBar>
+                )
+              }
+            </ConsentConsumer>
+            {this.state.user ? (
+              <Switch>
+                <Route path="/group" component={GroupTasks} />
+                <Route path="/profile" component={Profile} />
+                <Route path="/config" component={Config} />
+                <Route path="/remove" component={Remove} />
+                <Route path="/" component={Tasks} />
+              </Switch>
+            ) : (
+              <div className="App-login">
+                <div className="App-login-image-container">
+                  <img
+                    className="App-login-image"
+                    alt="Taskmeow logo"
+                    src={logo}
+                  />
+                </div>
+                <div className="App-login-button-container">
+                  <DefaultButton
+                    className="App-login-button"
+                    primary="true"
+                    onClick={this.login}
+                  >
                     <img
-                      className="App-login-image"
-                      alt="Taskmeow logo"
-                      src={logo}
+                      className="App-login-button-image"
+                      alt="Microsoft logo"
+                      src={microsoftLogo}
                     />
-                  </div>
-                  <div className="App-login-button-container">
-                    <DefaultButton
-                      className="App-login-button"
-                      primary="true"
-                      onClick={this.login}
+                    <span className="ms-Button-label label-46">Sign in</span>
+                  </DefaultButton>
+                  {!this.state.inTeams && (
+                    <a
+                      className="App-slack-link"
+                      href="https://slack.com/oauth/v2/authorize?scope=chat%3Awrite&client_id=1034113915760.1024551480609"
                     >
                       <img
-                        className="App-login-button-image"
-                        alt="Microsoft logo"
-                        src={microsoftLogo}
+                        className="App-slack-img"
+                        alt="Add to Slack"
+                        src="https://platform.slack-edge.com/img/add_to_slack.png"
+                        srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"
                       />
-                      <span className="ms-Button-label label-46">Sign in</span>
-                    </DefaultButton>
-                    {!this.state.inTeams && (
-                      <a
-                        className="App-slack-link"
-                        href="https://slack.com/oauth/v2/authorize?scope=chat%3Awrite&client_id=1034113915760.1024551480609"
-                      >
-                        <img
-                          className="App-slack-img"
-                          alt="Add to Slack"
-                          src="https://platform.slack-edge.com/img/add_to_slack.png"
-                          srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"
-                        />
-                      </a>
-                    )}
-                  </div>
+                    </a>
+                  )}
                 </div>
-              )}
-            </div>
-          ) : (
-            <Spinner label="Authenticating..." />
-          )}
-        </div>
-      );
-    } else {
-      return (
-        <div className="App" style={{ backgroundImage: `url(${background})` }}>
-          {this.state.error ? (
-            <div className="App-error">{JSON.stringify(this.state.error)}</div>
-          ) : (
-            <Spinner label="Signing in..." />
-          )}
-        </div>
-      );
-    }
+              </div>
+            )}
+          </div>
+        ) : (
+          <div>
+            {!this.state.error ? (
+              <Spinner label="Loading..." />
+            ) : (
+              <div className="App-error">
+                {JSON.stringify(this.state.error)}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
   }
 }
 

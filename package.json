@@ -11,6 +11,7 @@
     "url": "https://github.com/ydogandjiev/taskmeow/issues"
   },
   "dependencies": {
+    "@azure/msal-browser": "^2.11.0",
     "@microsoft/teams-js": "^1.11.0-beta.4",
     "@slack/events-api": "^3.0.0",
     "@slack/interactive-messages": "^2.0.0",
@@ -33,7 +34,6 @@
     "mongodb": "^3.0.5",
     "mongoose": "^6.2.8",
     "morgan": "^1.9.1",
-    "msal": "^1.4.5",
     "node-fetch": "^2.6.7",
     "office-ui-fabric-react": "^7.10.0",
     "passport": "^0.4.0",

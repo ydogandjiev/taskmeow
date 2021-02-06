@@ -6,7 +6,7 @@ html
 
   body
     script(src="https://statics.teams.cdn.office.net/sdk/v1.9.0/js/MicrosoftTeams.min.js", integrity="sha384-bcRxWKfzRyPxg/waVm3IsOnaH2Inoh5gGIJNOat79+wq22/BZ+mFuSTUmVc7l2el", crossorigin="anonymous")
-    script(src="https://alcdn.msftauth.net/lib/1.4.5/js/msal.min.js", integrity="sha384-35piYQtnCDJZxSbu/KD/4K6J/5vdITyJkoE5PvyejGRdu7qLGxVudvgODY+6lO6E", crossorigin="anonymous")
+    script(src="https://alcdn.msauth.net/browser/2.11.0/js/msal-browser.min.js", integrity="sha384-o+Sncs5XJ3NEAeriM/FV8YGZrh7mZk4GfNutRTbYjsDNJxb7caCLeqiDabistgwW", crossorigin="anonymous")
 
     script.
       microsoftTeams.initialize();
@@ -15,7 +15,7 @@ html
       microsoftTeams.getContext((context) => {
 
         // Configure MSAL
-        const app = new Msal.UserAgentApplication({
+        const app = new msal.PublicClientApplication({
           auth: {
             clientId:
               window.location.hostname === "taskmeow.com"

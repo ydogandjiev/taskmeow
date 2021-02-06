@@ -2,7 +2,6 @@ import MockAuthService from "./mock.auth.service";
 import MsalAuthService from "./msal.auth.service";
 import AdalAuthService from "./adal.auth.service";
 import TeamsAuthService from "./teams.auth.service";
-import TeamsMsalAuthService from "./teams.msal.auth.service";
 import SSOAuthService from "./sso.auth.service";
 
 class AuthService {
@@ -20,11 +19,7 @@ class AuthService {
     if (params.get("useTest")) {
       this.authService = new MockAuthService();
     } else if (params.get("inTeams")) {
-      if (useV2) {
-        this.authService = new TeamsMsalAuthService();
-      } else {
-        this.authService = new TeamsAuthService();
-      }
+      this.authService = new TeamsAuthService();
     } else if (params.get("inTeamsSSO")) {
       this.authService = new SSOAuthService();
     } else if (useV2) {
@@ -35,7 +30,7 @@ class AuthService {
   }
 
   isCallback() {
-    return this.authService.isCallback(window.location.hash);
+    return this.authService.isCallback();
   }
 
   login() {
