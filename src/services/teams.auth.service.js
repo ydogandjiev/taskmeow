@@ -29,9 +29,14 @@ class TeamsAuthService {
   }
 
   isCallback() {
-    return this.app
-      .handleRedirectPromise()
-      .then((authResponse) => !!authResponse);
+    return this.app.handleRedirectPromise().then((authResponse) => {
+      if (authResponse) {
+        this.app.setActiveAccount(authResponse.account);
+        return true;
+      } else {
+        return false;
+      }
+    });
   }
 
   login() {
@@ -44,7 +49,8 @@ class TeamsAuthService {
           height: 535,
           successCallback: (response) => {
             console.log("Login succeeded:" + JSON.stringify(response));
-            resolve(this.getUser());
+            this.app.setActiveAccount(response.account);
+            resolve(response.account);
           },
           failureCallback: (error) => {
             console.error("Login failed: " + JSON.stringify(error));
@@ -62,7 +68,15 @@ class TeamsAuthService {
   }
 
   getUser() {
-    return Promise.resolve(this.app.getActiveAccount());
+    let activeAccount = this.app.getActiveAccount();
+    if (!activeAccount) {
+      const allAccounts = this.app.getAllAccounts();
+      if (allAccounts.length === 1) {
+        this.app.setActiveAccount(allAccounts[0]);
+        activeAccount = allAccounts[0];
+      }
+    }
+    return Promise.resolve(activeAccount);
   }
 
   getToken() {

@@ -6,7 +6,7 @@ html
 
   body
     script(src="https://statics.teams.cdn.office.net/sdk/v1.9.0/js/MicrosoftTeams.min.js", integrity="sha384-bcRxWKfzRyPxg/waVm3IsOnaH2Inoh5gGIJNOat79+wq22/BZ+mFuSTUmVc7l2el", crossorigin="anonymous")
-    script(src="https://alcdn.msauth.net/browser/2.11.0/js/msal-browser.min.js", integrity="sha384-o+Sncs5XJ3NEAeriM/FV8YGZrh7mZk4GfNutRTbYjsDNJxb7caCLeqiDabistgwW", crossorigin="anonymous")
+    script(src="https://alcdn.msauth.net/browser/2.11.0/js/msal-browser.min.js", integrity="sha384-mxc9xXB8zELCYWdhT4JCez24AMsgk+uN7e991ek2TrQy9rBPVlUiuppobVCuja8S", crossorigin="anonymous")
 
     script.
       microsoftTeams.initialize();
@@ -27,12 +27,12 @@ html
       });
 
       // Handle the callback
-      app.handleRedirectPromise
+      app
+        .handleRedirectPromise()
         .then((authResponse) => {
           window.opener &&
             microsoftTeams.authentication.notifySuccess(authResponse);
         })
         .catch((error) => {
-          window.opener &&
-            microsoftTeams.authentication.notifyFailure(error);
+          window.opener && microsoftTeams.authentication.notifyFailure(error);
         });

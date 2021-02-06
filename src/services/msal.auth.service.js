@@ -34,22 +34,23 @@ class MsalAuthService {
   login() {
     // Configure all the scopes that this app needs
     const loginScopes = [
-      // "openid",
-      // "email",
-      // "profile",
-      // "offline_access",
+      "openid",
+      "email",
+      "profile",
+      "offline_access",
       this.api,
-      // "User.Read",
     ];
 
     // Add non-production scopes
-    // if (window.location.hostname !== "taskmeow.com") {
-    //   loginScopes.push("Calendars.Read");
-    //   loginScopes.push("Calendars.ReadWrite");
-    // }
+    const extraScopes = ["User.Read"];
+    if (window.location.hostname !== "taskmeow.com") {
+      extraScopes.push("Calendars.Read");
+      extraScopes.push("Calendars.ReadWrite");
+    }
 
     const authRequest = {
       scopes: loginScopes,
+      extraScopesToConsent: extraScopes,
       prompt: "select_account",
     };
 
