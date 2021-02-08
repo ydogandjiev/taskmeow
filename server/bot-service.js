@@ -154,10 +154,10 @@ class AuthBot extends builder.UniversalBot {
   }
 
   getAdaptiveCardAttachment() {
-    let contentUrl = "https://taskmeow.com/group/?inTeamsSSO=true";
-    let websiteUrl = "https://taskmeow.com/group";
+    const contentUrl = "https://taskmeow.com/group/?inTeamsSSO=true";
+    const websiteUrl = "https://taskmeow.com/group";
 
-    let adaptiveCardJson = {
+    const adaptiveCardJson = {
       contentType: "application/vnd.microsoft.card.adaptive",
       content: {
         type: "AdaptiveCard",
