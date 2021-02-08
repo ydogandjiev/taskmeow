@@ -111,21 +111,154 @@ class AuthBot extends builder.UniversalBot {
   async onInvoke(event, cb) {
     const session = await utils.loadSessionAsync(this, event);
     if (session) {
-      // Simulate a normal message and route it, but remember the original invoke message
-      const payload = event.value;
-      const fakeMessage = {
-        ...event,
-        text: payload.command + " " + JSON.stringify(payload),
-        originalInvoke: event
-      };
 
-      session.message = fakeMessage;
-      session.dispatch(session.sessionState, session.message, () => {
-        session.routeToActiveDialog();
-      });
+      // Check for link unfurling
+      if (event.name === "composeExtension/queryLink") {
+        await this.handleLinkUnfurl(cb);
+      } else {
+        // Simulate a normal message and route it, but remember the original invoke message
+        const payload = event.value;
+        const fakeMessage = {
+          ...event,
+          text: payload.command + " " + JSON.stringify(payload),
+          originalInvoke: event
+        };
+
+        session.message = fakeMessage;
+        session.dispatch(session.sessionState, session.message, () => {
+          session.routeToActiveDialog();
+        });
+      }
     }
 
     cb(null, "");
+  }
+
+  // Handle Link Unfurl
+  async handleLinkUnfurl(cb) {
+
+    const attachment = this.getAdaptiveCardAttachment();
+
+    const result = {
+      attachmentLayout: "list",
+      type: "result",
+      attachments: [attachment],
+      responseType: "composeExtension"
+    };
+
+    const response = {
+      composeExtension: result
+    };
+    // session.send(response);
+    cb(null, response);
+  }
+
+  getAdaptiveCardAttachment() {
+    const contentUrl = "https://taskmeow.com/group/?inTeamsSSO=true";
+    const websiteUrl = "https://taskmeow.com/group";
+
+    const adaptiveCardJson = {
+      contentType: "application/vnd.microsoft.card.adaptive",
+      content: {
+        type: "AdaptiveCard",
+        version: "1.0",
+        body: [
+          {
+            type: "TextBlock",
+            size: "Medium",
+            weight: "Bolder",
+            text: "Publish Adaptive Card Schema"
+          },
+          {
+            type: "ColumnSet",
+            columns: [
+              {
+                type: "Column",
+                items: [
+                  {
+                    type: "TextBlock",
+                    weight: "Bolder",
+                    text: "Name",
+                    wrap: true
+                  },
+                  {
+                    type: "TextBlock",
+                    spacing: "None",
+                    text: "Created today",
+                    isSubtle: true,
+                    wrap: true
+                  }
+                ],
+                width: "stretch"
+              }
+            ]
+          },
+          {
+            type: "TextBlock",
+            text: "Description",
+            wrap: true
+          }
+        ],
+        actions: [
+          {
+            type: "Action.OpenUrl",
+            title: "Outside Teams",
+            url: contentUrl
+          },
+          {
+            type: "Action.Submit",
+            title: "View",
+            data: {
+              msteams: {
+                type: "invoke",
+                value: {
+                  type: "tab/tabInfoAction",
+                  tabInfo: {
+                    contentUrl: contentUrl,
+                    websiteUrl: websiteUrl,
+                    name: "Tasks",
+                    entityId: "entityId"
+                  }
+                }
+              }
+            }
+          },
+          {
+            type: "Action.Submit",
+            title: "Pin as Tab",
+            data: {
+              msteams: {
+                type: "invoke",
+                overflow: "true",
+                value: {
+                  type: "tab/tabInfoAction",
+                  tabInfo: {
+                    contentUrl: contentUrl,
+                    websiteUrl: websiteUrl,
+                    name: "Tasks",
+                    entityId: "entityId",
+                    pinTab: true
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      preview: {
+        content: {
+          title: "Description",
+          text: "Task",
+          images: [
+            {
+              url: "https://taskmeow.com/static/media/logo.28c3e78f.svg"
+            }
+          ]
+        },
+        contentType: "application/vnd.microsoft.card.thumbnail"
+      }
+    };
+    return adaptiveCardJson;
   }
 }
 
