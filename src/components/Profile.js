@@ -62,7 +62,11 @@ class Profile extends Component {
               )}
               <TextField
                 label="E-mail"
-                value={this.state.user.displayableId || this.state.user.upn}
+                value={
+                  this.state.user.displayableId ||
+                  this.state.user.upn ||
+                  this.state.user.username
+                }
                 readOnly={true}
               />
             </div>

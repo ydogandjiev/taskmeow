@@ -44,7 +44,7 @@ class AdalAuthService {
   };
 
   isCallback() {
-    return this.authContext.isCallback(window.location.hash);
+    return Promise.resolve(this.authContext.isCallback(window.location.hash));
   }
 
   login() {

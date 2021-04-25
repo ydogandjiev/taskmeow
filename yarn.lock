@@ -2,6 +2,20 @@
 # yarn lockfile v1
 
 
+"@azure/msal-browser@^2.11.0":
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/@azure/msal-browser/-/msal-browser-2.11.0.tgz#256837aa767358687310fec2fef495cf6ab78cd7"
+  integrity sha512-E3RkdwCOqfsO/lk9AY90xv6mdX7DuSl8PYlihHUaCBWA/QoERwxvmKrlu0WvDX66Z5HmzgUjwHIISZoI7K544w==
+  dependencies:
+    "@azure/msal-common" "^3.1.0"
+
+"@azure/msal-common@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@azure/msal-common/-/msal-common-3.1.0.tgz#8c581f54935a80b6ffcf92989bc86ae63d281f95"
+  integrity sha512-ktV/ns+KL1FBinfnLMdz+zzfgocoAs3gxBK5DqlSfLIR1Y+RjQ9q5zoP/JyodW8611JfqKzdwRwkabY4OeBV6w==
+  dependencies:
+    debug "^4.1.1"
+
 "@babel/code-frame@7.10.4":
   version "7.10.4"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.10.4.tgz#168da1a36e90da68ae8d49c0f1b48c7c6249213a"
@@ -1511,10 +1525,10 @@
   version "1.9.12"
   resolved "https://registry.yarnpkg.com/@microsoft/load-themed-styles/-/load-themed-styles-1.9.12.tgz#b28ba20bc1228d04dba93b4d20505687b01a6657"
 
-"@microsoft/teams-js@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@microsoft/teams-js/-/teams-js-1.6.0.tgz#3f3052f79803be57b68dfb711cb551f30c7ed62a"
-  integrity sha512-6OGjEgyC5C5iyJtTT1FKVHv69ROs/NJUI6McuBAtnsYU79W+ixpMnyRE6VMyMUgA0aPmfSsqxS9GFE/TbGTGmQ==
+"@microsoft/teams-js@^1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@microsoft/teams-js/-/teams-js-1.9.0.tgz#69df32274732ee6f685279c0a9bab9ec3b97769e"
+  integrity sha512-c7VARZOPqhvowxQzhapTb5BsGCfjGjINa7sD7XHN0miBAhYhlAgKJqAI5WrKAEmgcp3m3HeqzHIafyZ1ToIJxg==
 
 "@nodelib/fs.scandir@2.1.4":
   version "2.1.4"
@@ -1976,6 +1990,13 @@
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/@types/html-minifier-terser/-/html-minifier-terser-5.1.1.tgz#3c9ee980f1a10d6021ae6632ca3e79ca2ec4fb50"
   integrity sha512-giAlZwstKbmvMk1OO7WXSj4OZ0keXAcl2TQq4LWHiiPH2ByaH7WeUzng+Qej8UPxxv+8lRTuouo0iaNDBuzIBA==
+
+"@types/http-proxy@^1.17.4":
+  version "1.17.5"
+  resolved "https://registry.yarnpkg.com/@types/http-proxy/-/http-proxy-1.17.5.tgz#c203c5e6e9dc6820d27a40eb1e511c70a220423d"
+  integrity sha512-GNkDE7bTv6Sf8JbV2GksknKOsk7OznNYHSdrtvPJXO0qJ9odZig6IZKUi5RFGi6d1bf6dgIAe4uXi3DBc7069Q==
+  dependencies:
+    "@types/node" "*"
 
 "@types/is-stream@^1.1.0":
   version "1.1.0"
@@ -6564,7 +6585,18 @@ http-proxy-middleware@0.19.1:
     lodash "^4.17.11"
     micromatch "^3.1.10"
 
-http-proxy@^1.17.0:
+http-proxy-middleware@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/http-proxy-middleware/-/http-proxy-middleware-1.0.6.tgz#0618557722f450375d3796d701a8ac5407b3b94e"
+  integrity sha512-NyL6ZB6cVni7pl+/IT2W0ni5ME00xR0sN27AQZZrpKn1b+qRh+mLbBxIq9Cq1oGfmTc7BUq4HB77mxwCaxAYNg==
+  dependencies:
+    "@types/http-proxy" "^1.17.4"
+    http-proxy "^1.18.1"
+    is-glob "^4.0.1"
+    lodash "^4.17.20"
+    micromatch "^4.0.2"
+
+http-proxy@^1.17.0, http-proxy@^1.18.1:
   version "1.18.1"
   resolved "https://registry.yarnpkg.com/http-proxy/-/http-proxy-1.18.1.tgz#401541f0534884bbf95260334e72f88ee3976549"
   integrity sha512-7mz/721AbnJwIVbnaSv1Cz3Am0ZLT/UBwkC92VlxhXv/k/BBQfM2fXElQNC27BVGr0uwUpplYPQM9LnaBMR5NQ==
@@ -8656,12 +8688,6 @@ ms@2.1.1:
 ms@2.1.2, ms@^2.1.1:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
-
-msal@^0.1.5:
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/msal/-/msal-0.1.9.tgz#9367cfbcc98e9849168264f0430d05c4fa3afa01"
-  dependencies:
-    tslib "^1.7.1"
 
 multicast-dns-service-types@^1.1.0:
   version "1.1.0"

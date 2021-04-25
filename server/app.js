@@ -50,6 +50,16 @@ app.get("/tab/silent-end", (req, res) => {
   res.render("end", { clientId: process.env.APPSETTING_AAD_ApplicationId });
 });
 
+app.get("/tab/v2/silent-start", (req, res) => {
+  res.render("start-v2", {
+    clientId: process.env.APPSETTING_AAD_ApplicationId,
+  });
+});
+
+app.get("/tab/v2/silent-end", (req, res) => {
+  res.render("end-v2", { clientId: process.env.APPSETTING_AAD_ApplicationId });
+});
+
 // Static routes
 app.get("/privacypolicy", (req, res) => {
   res.render("privacypolicy");

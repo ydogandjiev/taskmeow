@@ -8,6 +8,13 @@ class AuthService {
   constructor() {
     const url = new URL(window.location);
     const params = new URLSearchParams(url.search);
+    const useV2Param = params.get("useV2");
+
+    // Default to using V2 auth endpoints if not specified
+    const useV2 =
+      useV2Param === null ||
+      Boolean(useV2Param) ||
+      url.pathname.indexOf("/callback/v2") >= 0;
 
     if (params.get("useTest")) {
       this.authService = new MockAuthService();
@@ -15,10 +22,7 @@ class AuthService {
       this.authService = new TeamsAuthService();
     } else if (params.get("inTeamsSSO")) {
       this.authService = new SSOAuthService();
-    } else if (
-      params.get("useV2") ||
-      url.pathname.indexOf("/callback/v2") !== -1
-    ) {
+    } else if (useV2) {
       this.authService = new MsalAuthService();
     } else {
       this.authService = new AdalAuthService();
@@ -26,7 +30,7 @@ class AuthService {
   }
 
   isCallback() {
-    return this.authService.isCallback(window.location.hash);
+    return this.authService.isCallback();
   }
 
   login() {
@@ -47,7 +51,7 @@ class AuthService {
 
   // Does an authenticated fetch by acquiring and appending the Bearer token for our backend
   fetch(url, options) {
-    return this.getToken().then(token => {
+    return this.getToken().then((token) => {
       options = options || {};
       options.headers = options.headers || {};
       options.headers.Authorization = `Bearer ${token}`;
