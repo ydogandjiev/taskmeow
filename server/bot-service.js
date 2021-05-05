@@ -337,26 +337,6 @@ class AuthBot extends builder.UniversalBot {
                 }
               }
             }
-          },
-          {
-            type: "Action.Submit",
-            title: "Pin as Tab",
-            data: {
-              msteams: {
-                type: "invoke",
-                overflow: "true",
-                value: {
-                  type: "tab/tabInfoAction",
-                  tabInfo: {
-                    contentUrl: contentUrl,
-                    websiteUrl: websiteUrl,
-                    name: "Tasks",
-                    entityId: "entityId",
-                    pinTab: true
-                  }
-                }
-              }
-            }
           }
         ]
       },
