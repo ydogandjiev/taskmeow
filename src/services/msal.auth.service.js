@@ -28,13 +28,14 @@ class MsalAuthService {
   login() {
     const api =
       window.location.hostname === "taskmeow.com"
-        ? "api://taskmeow.com/36b1586d-b1da-45d2-9b32-899c3757b6f8/access_as_user"
+        ? "api://taskmeow.com/botid-36b1586d-b1da-45d2-9b32-899c3757b6f8/access_as_user"
         : "api://taskmeow.ngrok.io/botid-ab93102c-869b-4d34-a921-a31d3e7f76ef/access_as_user";
     const scopes = [api, "https://graph.microsoft.com/User.Read"];
 
-    return (window.navigator.standalone
-      ? this.app.loginRedirect(scopes)
-      : this.app.loginPopup(scopes)
+    return (
+      window.navigator.standalone
+        ? this.app.loginRedirect(scopes)
+        : this.app.loginPopup(scopes)
     ).then(() => {
       return this.app.getUser();
     });
