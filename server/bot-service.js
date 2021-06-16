@@ -236,19 +236,39 @@ class AuthBot extends builder.UniversalBot {
     if (!utils.getUserToken(session)) {
       cb(null, this.getSSOResponse());
     }
-    const attachment = this.getAdaptiveCardAttachment();
 
+    const urlObj = new URL(event.value.url);
+    const taskId = urlObj.searchParams.get('task');
+    if (taskId) {
+      const taskObj = await taskService.get(taskId);
+      if (taskObj) {
+        const attachment = this.getAdaptiveCardForTask(event.value.url, taskObj);
+        const result = {
+          attachmentLayout: "list",
+          type: "result",
+          attachments: [attachment],
+          responseType: "composeExtension"
+        };
+        const response = {
+          composeExtension: result
+        };
+        cb(null, response);
+        return;
+      }
+    }
+
+    const attachment = this.getAdaptiveCardAttachment();
     const result = {
       attachmentLayout: "list",
       type: "result",
       attachments: [attachment],
       responseType: "composeExtension"
     };
-
     const response = {
       composeExtension: result
     };
     cb(null, response);
+
   }
 
   storeToken(session, authentication) {
@@ -319,6 +339,69 @@ class AuthBot extends builder.UniversalBot {
             type: "Action.OpenUrl",
             title: "Outside Teams",
             url: contentUrl
+          },
+          {
+            type: "Action.Submit",
+            title: "View",
+            data: {
+              msteams: {
+                type: "invoke",
+                value: {
+                  type: "tab/tabInfoAction",
+                  tabInfo: {
+                    contentUrl: contentUrl,
+                    websiteUrl: websiteUrl,
+                    name: "Tasks",
+                    entityId: "entityId"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      preview: {
+        content: {
+          title: "Description",
+          text: "Task",
+          images: [
+            {
+              url: "https://taskmeow.com/static/media/logo.28c3e78f.svg"
+            }
+          ]
+        },
+        contentType: "application/vnd.microsoft.card.thumbnail"
+      }
+    };
+    return adaptiveCardJson;
+  }
+
+  getAdaptiveCardForTask(url, task) {
+    const contentUrl = `${url}&inTeamsSSO=true`;
+    const websiteUrl = url;
+    const adaptiveCardJson = {
+      contentType: "application/vnd.microsoft.card.adaptive",
+      content: {
+        type: "AdaptiveCard",
+        version: "1.0",
+        body: [
+          {
+            type: "TextBlock",
+            size: "Medium",
+            weight: "Bolder",
+            text: task.title
+          },
+          {
+            type: "TextBlock",
+            text: "Description",
+            wrap: true
+          }
+        ],
+        actions: [
+          {
+            type: "Action.OpenUrl",
+            title: "Outside Teams",
+            url: websiteUrl
           },
           {
             type: "Action.Submit",

@@ -75,7 +75,10 @@ const Task = (props) => {
             props.onCheckedChange(props.task, isChecked)
           }
         />
-        <span className="Task-title">
+        <span
+          className="Task-title"
+          onClick={() => props.selectTask(props.task)}
+        >
           <div>{props.task.title}</div>
         </span>
         <Link className="Task-star-link">

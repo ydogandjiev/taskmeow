@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Icon, Spinner, TextField } from "office-ui-fabric-react";
 import Task from "./Task";
+import TaskPane from "./TaskPane";
 import UserTile from "./UserTile";
 import tasksService from "../services/tasks.service";
 import * as microsoftTeams from "@microsoft/teams-js";
@@ -26,11 +27,13 @@ class Tasks extends Component {
       newTask: { title: "" },
       tasks: [],
       inTeams: !!params.get("inTeams") || !!params.get("inTeamsSSO"),
+      taskId: params.get("task"),
     };
   }
 
   componentDidMount() {
     this.setState({ loading: true });
+
     tasksService.get().then((tasks) => {
       this.setState({
         tasks: tasks.sort((a, b) => a.order - b.order),
@@ -40,7 +43,50 @@ class Tasks extends Component {
 
     if (this.state.inTeams) {
       microsoftTeams.initialize();
+      microsoftTeams.getContext((context) => {
+        this.setState({
+          threadId: context.teamId || context.chatId,
+        });
+
+        tasksService.get(this.state.threadId).then((tasks) => {
+          this.setState({
+            tasks: tasks.sort((a, b) => a.order - b.order),
+            loading: false,
+            taskId: context.subEntityId || this.state.taskId
+          });
+        });
+      });
     }
+  }
+
+  getActiveTask = (taskId, tasks) => {
+    if (taskId) {
+      return tasks.find(t => t._id === taskId);
+    }
+  };
+
+  selectTask = (task) => {
+    this.setState({
+      taskId: task._id
+    });
+  };
+
+  handleCloseTask = () => {
+    this.setState({
+      taskId: undefined
+    });
+  };
+
+  share = (task) => {
+    if (this.state.inTeams) {
+      const href = `https://taskmeow.ngrok.io?task=${task._id}`;
+      microsoftTeams.shareInTeams(href);
+    }
+  }
+
+  shareKnownSite = () => {
+    const href = 'https://www.dogonews.com/2019/6/12/gold-encrusted-fungi-discovered-in-australia';
+    microsoftTeams.shareInTeams(href);
   }
 
   handleTaskCheckedChange = (task, isChecked) => {
@@ -118,11 +164,54 @@ class Tasks extends Component {
     }
   };
 
+  requestDevicePermission = (deviceType, callback) => {
+    microsoftTeams.checkDevicePermission(deviceType, callback);
+  }
+
+  renderTaskList = () => {
+    return (
+      <div className="Tasks">
+        <div className="Tasks-add">
+          <div>
+            <Icon className="Tasks-add-icon" iconName="Add" />
+          </div>
+          <TextField
+            className="Tasks-add-textfield"
+            placeholder="New Task"
+            value={this.state.newTask.title}
+            onChange={this.handleTextChanged}
+            onKeyDown={this.handleKeyDown}
+          />
+        </div>
+        {this.state.loading ? (
+          <Spinner label="Loading tasks..." />
+        ) : (
+          <ul className="Tasks-list">
+            {this.state.tasks.map((task, index) => (
+              <Task
+                key={task._id}
+                index={index}
+                task={task}
+                inTeams={this.state.inTeams}
+                conversationOpen={this.state.conversationOpen}
+                onCheckedChange={this.handleTaskCheckedChange}
+                onStarredChange={this.handleTaskStarredChange}
+                onMoveTask={this.handleMoveTask}
+                selectTask={this.selectTask}
+              />
+            ))}
+          </ul>
+        )}
+      </div>
+    )
+  }
+
   render() {
+    const activeTask = this.state.taskId && this.getActiveTask(this.state.taskId, this.state.tasks);
     return (
       <div className="App-content">
         <div className="App-header">
-          <h1 className="App-header-title">Tasks</h1>
+          <h1 className="App-header-title">{activeTask ? activeTask.title : 'Tasks'}</h1>
           <ConsentConsumer>
             {({ setConsentRequired }) => (
               <UserTile
@@ -132,41 +221,30 @@ class Tasks extends Component {
             )}
           </ConsentConsumer>
         </div>
-        <div className="Tasks">
-          <div className="Tasks-add">
-            <div>
-              <Icon className="Tasks-add-icon" iconName="Add" />
-            </div>
-            <TextField
-              className="Tasks-add-textfield"
-              placeholder="New Task"
-              value={this.state.newTask.title}
-              onChange={this.handleTextChanged}
-              onKeyDown={this.handleKeyDown}
-            />
-          </div>
-          {this.state.loading ? (
-            <Spinner label="Loading tasks..." />
-          ) : (
-            <ul className="Tasks-list">
-              {this.state.tasks.map((task, index) => (
-                <Task
-                  key={task._id}
-                  index={index}
-                  task={task}
-                  inTeams={this.state.inTeams}
-                  conversationOpen={this.state.conversationOpen}
-                  onCheckedChange={this.handleTaskCheckedChange}
-                  onStarredChange={this.handleTaskStarredChange}
-                  onMoveTask={this.handleMoveTask}
-                />
-              ))}
-            </ul>
-          )}
-        </div>
+
+        {activeTask ? (
+          <TaskPane
+            isOpen={activeTask}
+            close={this.handleCloseTask}
+            key={activeTask._id}
+            task={activeTask}
+            inTeams={this.state.inTeams}
+            supportsConversation={true}
+            conversationOpen={this.state.conversationOpen}
+            onCheckedChange={this.handleTaskCheckedChange}
+            onStarredChange={this.handleTaskStarredChange}
+            openConversation={this.handleOpenConversation}
+            closeConversation={this.handleCloseConversation}
+            onDevicePermissionRequest={this.requestDevicePermission}
+            share={this.share}
+          />
+        ) : this.renderTaskList()
+        }
       </div>
     );
   }
 }
+
+
 
 export default Tasks;
