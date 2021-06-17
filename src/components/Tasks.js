@@ -84,11 +84,6 @@ class Tasks extends Component {
     }
   }
 
-  shareKnownSite = () => {
-    const href = 'https://www.dogonews.com/2019/6/12/gold-encrusted-fungi-discovered-in-australia';
-    microsoftTeams.shareInTeams(href);
-  }
-
   handleTaskCheckedChange = (task, isChecked) => {
     if (isChecked) {
       tasksService.destroy(task._id).then(() => {
@@ -164,10 +159,6 @@ class Tasks extends Component {
     }
   };
 
-  requestDevicePermission = (deviceType, callback) => {
-    microsoftTeams.checkDevicePermission(deviceType, callback);
-  }
-
   renderTaskList = () => {
     return (
       <div className="Tasks">
@@ -235,7 +226,6 @@ class Tasks extends Component {
             onStarredChange={this.handleTaskStarredChange}
             openConversation={this.handleOpenConversation}
             closeConversation={this.handleCloseConversation}
-            onDevicePermissionRequest={this.requestDevicePermission}
             share={this.share}
           />
         ) : this.renderTaskList()
