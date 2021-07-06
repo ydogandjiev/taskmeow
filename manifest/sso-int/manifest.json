@@ -1,135 +1,108 @@
 ﻿{
-  "$schema": "https://raw.githubusercontent.com/OfficeDev/microsoft-teams-app-schema/preview/DevPreview/MicrosoftTeams.schema.json",
-  "manifestVersion": "devPreview",
-  "version": "1.0",
-  "id": "ab93102c-869b-4d34-a921-a31d3e7f76ef",
-  "packageName": "com.taskmeow",
-  "developer": {
-    "name": "Yuri Dogandjiev",
-    "websiteUrl": "https://taskmeow.com",
-    "privacyUrl": "https://taskmeow.com/privacypolicy",
-    "termsOfUseUrl": "https://taskmeow.com/termsofuse"
-  },
-  "name": {
-    "short": "Task Meow (SSO-INT)",
-    "full": "Task Meow (SSO-INT) for Microsoft Teams"
-  },
-  "description": {
-    "short": "Task Meow to do list app.",
-    "full": "Task Meow is a simple to do list app that helps you track the important things in your life."
-  },
-  "icons": {
-    "outline": "outline.png",
-    "color": "color.png"
-  },
-  "accentColor": "#ffffff",
-  "configurableTabs": [
-    {
-      "configurationUrl": "https://taskmeow.ngrok.io/config/?inTeamsSSO=true",
-      "canUpdateConfiguration": true,
-      "scopes": [
-        "team",
-        "groupchat"
-      ],
-      "meetingSurfaces": [
-        "sidePanel"
-      ]
-    }
-  ],
-  "staticTabs": [
-    {
-      "contentUrl": "https://taskmeow.ngrok.io/?inTeamsSSO=true",
-      "entityId": "myTasks",
-      "name": "My Tasks",
-      "scopes": [
-        "personal"
-      ]
-    },
-    {
-      "contentUrl": "https://taskmeow.ngrok.io/profile/?inTeamsSSO=true",
-      "entityId": "myProfile",
-      "name": "My Profile",
-      "scopes": [
-        "personal"
-      ]
-    }
-  ],
-  "bots": [
-    {
-      "botId": "ab93102c-869b-4d34-a921-a31d3e7f76ef",
-      "scopes": [
-        "personal",
-        "groupchat",
-        "team"
-      ]
-    }
-  ],
-  "composeExtensions": [
-    {
-      "botId": "ab93102c-869b-4d34-a921-a31d3e7f76ef",
-      "canUpdateConfiguration": true,
-      "commands": [
-        {
-          "id": "searchQuery",
-          "context": [
-            "compose",
-            "commandBox"
-          ],
-          "description": "Test command to run query",
-          "title": "Search",
-          "type": "query",
-          "parameters": [
-            {
-              "name": "searchQuery",
-              "title": "Search Query",
-              "description": "Your search query",
-              "inputType": "text"
-            }
-          ]
-        },
-        {
-          "id": "SignOutCommand",
-          "type": "action",
-          "title": "Sign Out",
-          "description": "Sign out from authenticated services.",
-          "initialRun": false,
-          "fetchTask": true,
-          "context": [
-            "commandBox",
-            "compose"
-          ],
-          "parameters": [
-            {
-              "name": "param",
-              "title": "param",
-              "description": ""
-            }
-          ]
-        }
-      ],
-      "messageHandlers": [
-        {
-          "type": "link",
-          "value": {
-            "domains": [
-              "taskmeow.com",
-              "taskmeow.ngrok.io"
-            ]
-          }
-        }
-      ]
-    }
-  ],
-  "permissions": [
-    "messageTeamMembers",
-    "identity"
-  ],
-  "validDomains": [
-    "taskmeow.com",
-    "taskmeow.ngrok.io"
-  ],
-  "webApplicationInfo": {
-    "id": "ab93102c-869b-4d34-a921-a31d3e7f76ef",
-    "resource": "api://taskmeow.ngrok.io/botid-ab93102c-869b-4d34-a921-a31d3e7f76ef"
-  }
+	"$schema": "https://raw.githubusercontent.com/OfficeDev/microsoft-teams-app-schema/preview/DevPreview/MicrosoftTeams.schema.json",
+	"manifestVersion": "devPreview",
+	"version": "1.0",
+	"id": "ab93102c-869b-4d34-a921-a31d3e7f76ef",
+	"packageName": "com.taskmeow",
+	"developer": {
+		"name": "Yuri Dogandjiev",
+		"websiteUrl": "https://taskmeow.com",
+		"privacyUrl": "https://taskmeow.com/privacypolicy",
+		"termsOfUseUrl": "https://taskmeow.com/termsofuse"
+	},
+	"name": {
+		"short": "Task Meow (SSO-INT)",
+		"full": "Task Meow (SSO-INT) for Microsoft Teams"
+	},
+	"description": {
+		"short": "Task Meow to do list app.",
+		"full": "Task Meow is a simple to do list app that helps you track the important things in your life."
+	},
+	"icons": {
+		"outline": "outline.png",
+		"color": "color.png"
+	},
+	"accentColor": "#ffffff",
+	"configurableTabs": [
+		{
+			"configurationUrl": "https://taskmeow.ngrok.io/config/?inTeamsSSO=true",
+			"canUpdateConfiguration": true,
+			"scopes": ["team", "groupchat"],
+			"meetingSurfaces": ["sidePanel"]
+		}
+	],
+	"staticTabs": [
+		{
+			"contentUrl": "https://taskmeow.ngrok.io/?inTeamsSSO=true",
+			"entityId": "myTasks",
+			"name": "My Tasks",
+			"scopes": ["personal"]
+		},
+		{
+			"contentUrl": "https://taskmeow.ngrok.io/profile/?inTeamsSSO=true",
+			"entityId": "myProfile",
+			"name": "My Profile",
+			"scopes": ["personal"]
+		}
+	],
+	"bots": [
+		{
+			"botId": "ab93102c-869b-4d34-a921-a31d3e7f76ef",
+			"scopes": ["personal", "groupchat", "team"]
+		}
+	],
+	"composeExtensions": [
+		{
+			"botId": "ab93102c-869b-4d34-a921-a31d3e7f76ef",
+			"canUpdateConfiguration": true,
+			"commands": [
+				{
+					"id": "searchQuery",
+					"context": ["compose", "commandBox"],
+					"description": "Test command to run query",
+					"title": "Search",
+					"type": "query",
+					"parameters": [
+						{
+							"name": "searchQuery",
+							"title": "Search Query",
+							"description": "Your search query",
+							"inputType": "text"
+						}
+					]
+				},
+				{
+					"id": "SignOutCommand",
+					"type": "action",
+					"title": "Sign Out",
+					"description": "Sign out from authenticated services.",
+					"initialRun": false,
+					"fetchTask": true,
+					"context": ["commandBox", "compose"],
+					"parameters": [
+						{
+							"name": "param",
+							"title": "param",
+							"description": ""
+						}
+					]
+				}
+			],
+			"messageHandlers": [
+				{
+					"type": "link",
+					"value": {
+						"domains": ["taskmeow.com", "taskmeow.ngrok.io"]
+					}
+				}
+			]
+		}
+	],
+	"permissions": ["messageTeamMembers", "identity"],
+	"validDomains": ["taskmeow.com", "taskmeow.ngrok.io"],
+	"devicePermissions": ["geolocation", "media", "notifications"],
+	"webApplicationInfo": {
+		"id": "ab93102c-869b-4d34-a921-a31d3e7f76ef",
+		"resource": "api://taskmeow.ngrok.io/botid-ab93102c-869b-4d34-a921-a31d3e7f76ef"
+	}
 }
