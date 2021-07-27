@@ -145,9 +145,22 @@ class GroupTasks extends Component {
   };
 
   share = (task) => {
-    const href = `https://taskmeow.ngrok.io/?task=${task._id}`;
-    microsoftTeams.ensureInitialized();
-    microsoftTeams.shareInTeams(href);
+    if (this.state.inTeams) {
+      const url = `https://taskmeow.com?task=${task._id}`;
+      microsoftTeams.sharing.shareWebContent({
+        content: [
+          {
+            type: 'URL',
+            url,
+            preview: true
+          }
+        ]
+      }, (err) => {
+        if (err) {
+          console.log(err.message);
+        }
+      });
+    }
   }
 
   handleCloseConversation = (task) => {
