@@ -79,8 +79,16 @@ class Tasks extends Component {
 
   share = (task) => {
     if (this.state.inTeams) {
-      const url = `https://taskmeow.ngrok.io?task=${task._id}`;
-      microsoftTeams.share.shareLink({url}, (err) => {
+      const url = `https://taskmeow.com?task=${task._id}`;
+      microsoftTeams.sharing.shareWebContent({
+        content: [
+          {
+            type: 'URL',
+            url,
+            preview: true
+          }
+        ]
+      }, (err) => {
         if (err) {
           console.log(err.message);
         }
