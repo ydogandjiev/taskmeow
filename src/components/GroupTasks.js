@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Icon, Spinner, TextField } from "office-ui-fabric-react";
 import Task from "./Task";
+import TaskPane from "./TaskPane";
 import UserTile from "./UserTile";
 import tasksService from "../services/tasks.service";
 import * as microsoftTeams from "@microsoft/teams-js";
@@ -42,11 +43,18 @@ class GroupTasks extends Component {
           this.setState({
             tasks: tasks.sort((a, b) => a.order - b.order),
             loading: false,
+            task: this.getActiveTask(context.subEntityId, tasks)
           });
         });
       });
     }
   }
+
+  getActiveTask = (taskId, tasks) => {
+    if (taskId) {
+      return tasks.find(t => t._id === taskId);
+    }
+  };
 
   handleTaskCheckedChange = (task, isChecked) => {
     if (isChecked) {
@@ -124,6 +132,37 @@ class GroupTasks extends Component {
     }
   };
 
+  selectTask = (task) => {
+    this.setState({
+      task
+    });
+  };
+
+  handleCloseTask = () => {
+    this.setState({
+      task: undefined
+    });
+  };
+
+  share = (task) => {
+    if (this.state.inTeams) {
+      const url = `https://taskmeow.com?task=${task._id}`;
+      microsoftTeams.sharing.shareWebContent({
+        content: [
+          {
+            type: 'URL',
+            url,
+            preview: true
+          }
+        ]
+      }, (err) => {
+        if (err) {
+          console.log(err.message);
+        }
+      });
+    }
+  }
+
   handleCloseConversation = (task) => {
     if (this.state.inTeams) {
       microsoftTeams.conversations.closeConversation();
@@ -183,6 +222,7 @@ class GroupTasks extends Component {
   };
 
   render() {
+    const activeTask = this.state.task;
     return (
       <div className="App-content">
         <div className="App-header">
@@ -219,11 +259,28 @@ class GroupTasks extends Component {
                   openConversation={this.handleOpenConversation}
                   closeConversation={this.handleCloseConversation}
                   onMoveTask={this.handleMoveTask}
+                  selectTask={this.selectTask}
                 />
               ))}
             </ul>
           )}
         </div>
+        {activeTask &&
+          <TaskPane
+            isOpen={activeTask}
+            close={this.handleCloseTask}
+            key={activeTask._id}
+            task={activeTask}
+            inTeams={this.state.inTeams}
+            supportsConversation={true}
+            conversationOpen={this.state.conversationOpen}
+            onCheckedChange={this.handleTaskCheckedChange}
+            onStarredChange={this.handleTaskStarredChange}
+            openConversation={this.handleOpenConversation}
+            closeConversation={this.handleCloseConversation}
+            share={this.share}
+          />
+        }
       </div>
     );
   }

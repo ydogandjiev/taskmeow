@@ -1,6 +1,10 @@
 const Task = require("./task-model");
 const ReadPreference = require("mongodb").ReadPreference;
 
+function get(taskId) {
+  return Task.findOne({ _id: taskId });
+}
+
 function getForUser(userId) {
   return Task.find({ user: userId })
     .read(ReadPreference.NEAREST)
@@ -66,6 +70,7 @@ function removeForGroup(groupId, taskId) {
 }
 
 module.exports = {
+  get,
   getForUser,
   getForGroup,
   createForUser,
