@@ -58,7 +58,8 @@ const Task = (props) => {
   });
 
   const [{ isDragging }, drag] = useDrag({
-    item: { type: ItemTypes.CARD, id: props.task._id, index: props.index },
+    item: { id: props.task._id, index: props.index },
+    type: ItemTypes.CARD,
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),

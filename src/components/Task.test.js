@@ -1,6 +1,6 @@
 import React from "react";
 import { render } from "@testing-library/react";
-import { wrapInTestContext } from "react-dnd-test-utils";
+import { wrapWithBackend } from "react-dnd-test-utils";
 import Task from "./Task";
 
 // Initialize Office Fabric icons for use throughout app
@@ -21,7 +21,7 @@ it("renders starred task snapshot", () => {
   const handleTaskCheckedChange = jest.fn();
   const handleTaskStarredChange = jest.fn();
 
-  const TestTask = wrapInTestContext(Task);
+  const TestTask = wrapWithBackend(Task);
   const { container, getByText } = render(
     <TestTask
       task={mockTask}
@@ -67,7 +67,7 @@ it("renders unstarred task snapshot", () => {
   const handleTaskCheckedChange = jest.fn();
   const handleTaskStarredChange = jest.fn();
 
-  const TestTask = wrapInTestContext(Task);
+  const TestTask = wrapWithBackend(Task);
   const { container, getByText } = render(
     <TestTask
       task={mockTask}
@@ -112,7 +112,7 @@ it("matches starred task with conversation closed snapshot in Teams", () => {
 
   const handleOpenConversation = jest.fn();
 
-  const TestTask = wrapInTestContext(Task);
+  const TestTask = wrapWithBackend(Task);
   const { container, getByText } = render(
     <TestTask
       task={mockTask}
@@ -157,7 +157,7 @@ it("matches unstarred task snapshot with conversation open in Teams", () => {
 
   const handleCloseConversation = jest.fn();
 
-  const TestTask = wrapInTestContext(Task);
+  const TestTask = wrapWithBackend(Task);
   const { container, getByText } = render(
     <TestTask
       task={mockTask}
