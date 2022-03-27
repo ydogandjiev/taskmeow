@@ -3,6 +3,8 @@ const msteams = require("botbuilder-teams");
 
 const authDialog = require("./dialogs/auth-dialog");
 const authService = require("./auth-service");
+const taskService = require("./task-service");
+const userService = require("./user-service");
 const groupService = require("./group-service");
 const utils = require("./utils");
 
@@ -111,21 +113,330 @@ class AuthBot extends builder.UniversalBot {
   async onInvoke(event, cb) {
     const session = await utils.loadSessionAsync(this, event);
     if (session) {
-      // Simulate a normal message and route it, but remember the original invoke message
-      const payload = event.value;
-      const fakeMessage = {
-        ...event,
-        text: payload.command + " " + JSON.stringify(payload),
-        originalInvoke: event
-      };
 
-      session.message = fakeMessage;
-      session.dispatch(session.sessionState, session.message, () => {
-        session.routeToActiveDialog();
-      });
+      // Check for link unfurling
+      if (event.name === "composeExtension/queryLink") {
+        await this.handleLinkUnfurl(cb, event, session);
+      } else if (event.name === "composeExtension/query") {
+        await this.handleQuery(cb, event, session)
+      } else if (event.name === "composeExtension/fetchTask") {
+        await this.handleFetchTask(cb, session);
+      } else if (event.name === "composeExtension/submitAction") {
+        //do nothing when the compose extension close button is pressed
+      } else {
+        // Simulate a normal message and route it, but remember the original invoke message
+        const payload = event.value;
+        const fakeMessage = {
+          ...event,
+          text: payload.command + " " + JSON.stringify(payload),
+          originalInvoke: event
+        };
+
+        session.message = fakeMessage;
+        session.dispatch(session.sessionState, session.message, () => {
+          session.routeToActiveDialog();
+        });
+      }
     }
 
     cb(null, "");
+  }
+
+  // Handle fetch task
+  async handleFetchTask(cb, session) {
+    utils.setUserToken(session, null);
+    const card = {
+      contentType: "application/vnd.microsoft.card.adaptive",
+      content: {
+        version: '1.0.0',
+        type: 'AdaptiveCard',
+        body: [
+          {
+            type: 'TextBlock',
+            text: 'You have been signed out.'
+          },
+        ],
+        actions: [
+          {
+            type: 'Action.Submit',
+            title: 'Close',
+            data: {
+              key: 'close'
+            },
+          },
+        ],
+      }
+    };
+
+    const response = {
+      task: {
+        type: 'continue',
+        value: {
+          card: card,
+          heigth: 200,
+          width: 400,
+          title: 'Adaptive Card: Inputs'
+        },
+      },
+    };
+    cb(null, response);
+  }
+
+  // Handle query
+  async handleQuery(cb, event, session) {
+    //store access token
+    if (event.value.authentication) {
+      this.storeToken(session, event.value.authentication);
+    }
+
+    //check if user is authenticated if not send the sign in request
+    if (!utils.getUserToken(session)) {
+      cb(null, this.getSSOResponse());
+    }
+
+    const user = await userService.getUser(
+      session.message.address.user.aadObjectId
+    );
+    const searchString = event.value.parameters.length > 0 && event.value.parameters[0].value;
+    const tasks = await taskService.getForUser(user._id);
+    const attachments = tasks.filter(task => task.title.indexOf(searchString) >= 0)
+      .map(task => ({
+        content: {
+          title: task.title,
+          images: [
+            {
+              url: `${process.env.APPSETTING_AAD_BaseUri}/checkmark.png`,
+            }
+          ]
+        },
+        contentType: "application/vnd.microsoft.card.thumbnail"
+      }));
+
+    const result = {
+      attachmentLayout: "list",
+      type: "result",
+      attachments: attachments,
+      responseType: "composeExtension"
+    };
+
+    const response = {
+      composeExtension: result
+    };
+    cb(null, response);
+  }
+
+  // Handle Link Unfurl
+  async handleLinkUnfurl(cb, event, session) {
+    //store access token
+    if (event.value.authentication) {
+      this.storeToken(session, event.value.authentication);
+    }
+
+    //check if user is authenticated if not send the sign in request
+    if (!utils.getUserToken(session)) {
+      cb(null, this.getSSOResponse());
+    }
+
+    const urlObj = new URL(event.value.url);
+    const taskId = urlObj.searchParams.get('task');
+    if (taskId) {
+      const taskObj = await taskService.get(taskId);
+      if (taskObj) {
+        const attachment = this.getAdaptiveCardForTask(event.value.url, taskObj);
+        const result = {
+          attachmentLayout: "list",
+          type: "result",
+          attachments: [attachment],
+          responseType: "composeExtension"
+        };
+        const response = {
+          composeExtension: result
+        };
+        cb(null, response);
+        return;
+      }
+    }
+
+    const attachment = this.getAdaptiveCardAttachment();
+    const result = {
+      attachmentLayout: "list",
+      type: "result",
+      attachments: [attachment],
+      responseType: "composeExtension"
+    };
+    const response = {
+      composeExtension: result
+    };
+    cb(null, response);
+
+  }
+
+  storeToken(session, authentication) {
+    const token = {
+      verificationCodeValidated: true,
+      accessToken: authentication.token
+    };
+    utils.setUserToken(session, token);
+  }
+
+  getSSOResponse() {
+    return {
+      composeExtension: {
+        type: "silentAuth",
+        responseType: "composeExtension",
+        suggestedActions: {}
+      }
+    };
+  }
+  getAdaptiveCardAttachment() {
+    const contentUrl = "https://taskmeow.com/group/?inTeamsSSO=true";
+    const websiteUrl = "https://taskmeow.com/group";
+
+    const adaptiveCardJson = {
+      contentType: "application/vnd.microsoft.card.adaptive",
+      content: {
+        type: "AdaptiveCard",
+        version: "1.0",
+        body: [
+          {
+            type: "TextBlock",
+            size: "Medium",
+            weight: "Bolder",
+            text: "Publish Adaptive Card Schema"
+          },
+          {
+            type: "ColumnSet",
+            columns: [
+              {
+                type: "Column",
+                items: [
+                  {
+                    type: "TextBlock",
+                    weight: "Bolder",
+                    text: "Name",
+                    wrap: true
+                  },
+                  {
+                    type: "TextBlock",
+                    spacing: "None",
+                    text: "Created today",
+                    isSubtle: true,
+                    wrap: true
+                  }
+                ],
+                width: "stretch"
+              }
+            ]
+          },
+          {
+            type: "TextBlock",
+            text: "Description",
+            wrap: true
+          }
+        ],
+        actions: [
+          {
+            type: "Action.OpenUrl",
+            title: "Outside Teams",
+            url: contentUrl
+          },
+          {
+            type: "Action.Submit",
+            title: "View",
+            data: {
+              msteams: {
+                type: "invoke",
+                value: {
+                  type: "tab/tabInfoAction",
+                  tabInfo: {
+                    contentUrl: contentUrl,
+                    websiteUrl: websiteUrl,
+                    name: "Tasks",
+                    entityId: "entityId"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      preview: {
+        content: {
+          title: "Description",
+          text: "Task",
+          images: [
+            {
+              url: "https://taskmeow.com/static/media/logo.28c3e78f.svg"
+            }
+          ]
+        },
+        contentType: "application/vnd.microsoft.card.thumbnail"
+      }
+    };
+    return adaptiveCardJson;
+  }
+
+  getAdaptiveCardForTask(url, task) {
+    const contentUrl = `${url}&inTeamsSSO=true`;
+    const websiteUrl = url;
+    const adaptiveCardJson = {
+      contentType: "application/vnd.microsoft.card.adaptive",
+      content: {
+        type: "AdaptiveCard",
+        version: "1.0",
+        body: [
+          {
+            type: "TextBlock",
+            size: "Medium",
+            weight: "Bolder",
+            text: task.title
+          },
+          {
+            type: "TextBlock",
+            text: "Description",
+            wrap: true
+          }
+        ],
+        actions: [
+          {
+            type: "Action.OpenUrl",
+            title: "Outside Teams",
+            url: websiteUrl
+          },
+          {
+            type: "Action.Submit",
+            title: "View",
+            data: {
+              msteams: {
+                type: "invoke",
+                value: {
+                  type: "tab/tabInfoAction",
+                  tabInfo: {
+                    contentUrl: contentUrl,
+                    websiteUrl: websiteUrl,
+                    name: "Tasks",
+                    entityId: "entityId"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      preview: {
+        content: {
+          title: "Description",
+          text: "Task",
+          images: [
+            {
+              url: "https://taskmeow.com/static/media/logo.28c3e78f.svg"
+            }
+          ]
+        },
+        contentType: "application/vnd.microsoft.card.thumbnail"
+      }
+    };
+    return adaptiveCardJson;
   }
 }
 

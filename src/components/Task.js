@@ -58,7 +58,8 @@ const Task = (props) => {
   });
 
   const [{ isDragging }, drag] = useDrag({
-    item: { type: ItemTypes.CARD, id: props.task._id, index: props.index },
+    item: { id: props.task._id, index: props.index },
+    type: ItemTypes.CARD,
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
@@ -75,7 +76,10 @@ const Task = (props) => {
             props.onCheckedChange(props.task, isChecked)
           }
         />
-        <span className="Task-title">
+        <span
+          className="Task-title"
+          onClick={() => props.selectTask(props.task)}
+        >
           <div>{props.task.title}</div>
         </span>
         <Link className="Task-star-link">

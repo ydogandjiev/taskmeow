@@ -2,6 +2,7 @@
 
 exports[`matches starred task with conversation closed snapshot in Teams 1`] = `
 <div
+  draggable="true"
   style="opacity: 1;"
 >
   <li
@@ -72,6 +73,7 @@ exports[`matches starred task with conversation closed snapshot in Teams 1`] = `
 
 exports[`matches unstarred task snapshot with conversation open in Teams 1`] = `
 <div
+  draggable="true"
   style="opacity: 1;"
 >
   <li
@@ -142,6 +144,7 @@ exports[`matches unstarred task snapshot with conversation open in Teams 1`] = `
 
 exports[`renders starred task snapshot 1`] = `
 <div
+  draggable="true"
   style="opacity: 1;"
 >
   <li
@@ -199,6 +202,7 @@ exports[`renders starred task snapshot 1`] = `
 
 exports[`renders unstarred task snapshot 1`] = `
 <div
+  draggable="true"
   style="opacity: 1;"
 >
   <li

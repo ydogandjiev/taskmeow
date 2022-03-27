@@ -140,6 +140,10 @@ body,
   align-items: center;
 }
 
+.Tasks-list .Task-listitem .Task-title:hover {
+  cursor: pointer;
+}
+
 .Tasks-list .Task-listitem .Task-title div {
   display: block;
   overflow: hidden;
@@ -156,6 +160,14 @@ body,
   padding-left: 0.5rem;
 }
 
+.dialog-content {
+  min-height: 400px;
+}
+
+.task-field {
+  margin-bottom: 20px;
+}
+
 .ms-Persona-initials {
   padding-top: 2px;
   height: 46px;
@@ -168,4 +180,8 @@ body,
 
 .ms-ContextualMenu-Callout {
   background: white;
+}
+
+.back-link {
+  margin-bottom: 20px;
 }
