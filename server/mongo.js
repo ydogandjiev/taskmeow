@@ -12,7 +12,7 @@ function connect() {
       uri,
       {
         auth: {
-          user: username,
+          username: username,
           password: password
         },
         config: {
