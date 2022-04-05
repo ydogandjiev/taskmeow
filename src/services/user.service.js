@@ -1,10 +1,10 @@
 import authService from "./auth.service";
 
 class UserService {
-  getImage(useV2) {
+  getImage() {
     if (!this.userImagePromise) {
       this.userImagePromise = authService
-        .fetch(`/api/user/image?useV2=${useV2}`)
+        .fetch(`/api/user/image`)
         .then(result => {
           if (result.status !== 200) {
             return Promise.reject({

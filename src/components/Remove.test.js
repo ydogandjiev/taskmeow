@@ -12,10 +12,10 @@ jest.mock("../services/auth.service");
 jest.mock("../services/user.service");
 
 it("renders remove", () => {
+  authService.isCallback.mockResolvedValue(false);
+
   const user = {
-    name: "mockName",
-    given_name: "mockGivenName",
-    family_name: "mockFamilyName"
+    name: "mockName"
   };
   authService.getUser.mockResolvedValue(user);
 

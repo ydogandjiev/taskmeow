@@ -16,10 +16,10 @@ import userService from "../services/user.service";
 jest.mock("../services/user.service");
 
 it("renders tasks", () => {
+  jsdom.reconfigure({ url: "https://taskmeow.com?useTest=true" });
+
   const user = {
-    name: "mockName",
-    given_name: "mockGivenName",
-    family_name: "mockFamilyName"
+    name: "mockName"
   };
   authService.getUser.mockResolvedValue(user);
 

@@ -13,21 +13,16 @@ class UserTile extends Component {
   constructor(props) {
     super(props);
 
-    const url = new URL(window.location);
-    const params = new URLSearchParams(url.search);
-
-    this.state = {
-      useV2: !!params.get("useV2")
-    };
+    this.state = {};
   }
 
   componentDidMount() {
-    authService.getUser(this.state.useV2).then(user => {
+    authService.getUser().then(user => {
       this.setState({ user });
     });
 
     userService
-      .getImage(this.state.useV2)
+      .getImage()
       .then(userImage => {
         this.setState({ userImage });
       })
@@ -88,7 +83,7 @@ class UserTile extends Component {
           }}
         >
           <span className="ms-Persona-primaryText primaryText-63">
-            {this.state.user.given_name}
+            {this.state.user.name}
           </span>
           <Persona
             imageUrl={this.state.userImage}

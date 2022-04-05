@@ -1,5 +1,5 @@
-import * as Msal from "msal";
-jest.mock("msal");
+import * as msal from "@azure/msal-browser";
+jest.mock("@azure/msal-browser");
 
 import MsalAuthService from "./msal.auth.service";
 
@@ -10,63 +10,80 @@ afterEach(() => {
 it("can be constructed", () => {
   const authService = new MsalAuthService();
   expect(authService).toBeDefined();
-  expect(Msal.UserAgentApplication.mock.instances.length).toEqual(1);
+  expect(msal.PublicClientApplication.mock.instances.length).toEqual(1);
 });
 
-it("can check for callback", () => {
+it("can check for callback", done => {
   const authService = new MsalAuthService();
-  const app = Msal.UserAgentApplication.mock.instances[0];
-  app.isCallback.mockReturnValue(true);
+  const app = msal.PublicClientApplication.mock.instances[0];
+  const mockAuthResponse = {
+    account: {
+      name: "John Doe"
+    }
+  };
+  app.handleRedirectPromise.mockResolvedValue(mockAuthResponse);
 
-  expect(authService.isCallback()).toEqual(true);
-  expect(app.isCallback).toHaveBeenCalledTimes(1);
+  authService.isCallback().then(isCallback => {
+    expect(isCallback).toEqual(true);
+    expect(app.handleRedirectPromise).toHaveBeenCalledTimes(1);
+    expect(app.setActiveAccount).toHaveBeenCalledWith(mockAuthResponse.account);
+    done();
+  });
 });
 
-it("can initiate login", () => {
+it("can initiate login", done => {
   const authService = new MsalAuthService();
-  const app = Msal.UserAgentApplication.mock.instances[0];
-  app.loginPopup.mockResolvedValue();
+  const app = msal.PublicClientApplication.mock.instances[0];
+  const mockAuthResponse = {
+    account: {
+      name: "John Doe"
+    }
+  };
+  app.loginPopup.mockResolvedValue(mockAuthResponse);
 
-  authService.login();
-  expect(app.loginPopup).toHaveBeenCalledTimes(1);
+  authService.login().then(account => {
+    expect(account).toEqual(mockAuthResponse.account);
+    expect(app.loginPopup).toHaveBeenCalledTimes(1);
+    expect(app.setActiveAccount).toHaveBeenCalledWith(mockAuthResponse.account);
+    done();
+  });
 });
 
 it("can initiate logout", () => {
   const authService = new MsalAuthService();
-  const app = Msal.UserAgentApplication.mock.instances[0];
+  const app = msal.PublicClientApplication.mock.instances[0];
 
   authService.logout();
   expect(app.logout).toHaveBeenCalledTimes(1);
 });
 
-it("can get token", (done) => {
+it("can get token", done => {
   const authService = new MsalAuthService();
-  const app = Msal.UserAgentApplication.mock.instances[0];
-  app.acquireTokenSilent.mockResolvedValue("fakeToken");
+  const app = msal.PublicClientApplication.mock.instances[0];
+  const mockAuthResponse = {
+    accessToken: "fakeToken"
+  };
+  app.acquireTokenSilent.mockResolvedValue(mockAuthResponse);
 
   authService.getToken().then((token) => {
-    expect(token).toEqual("fakeToken");
+    expect(app.acquireTokenSilent).toHaveBeenCalledTimes(1);
+    expect(token).toEqual(mockAuthResponse.accessToken);
     done();
   });
-
-  expect(app.acquireTokenSilent).toHaveBeenCalledTimes(1);
 });
 
-it("can get user", (done) => {
-  const mockUser = {
+it("can get user", done => {
+  const authService = new MsalAuthService();
+  const app = msal.PublicClientApplication.mock.instances[0];
+  const mockAccount = {
     name: "fakeFirst fakeLast",
-    given_name: "fakeFirst",
     oid: "fakeOid",
   };
-
-  const authService = new MsalAuthService();
-  const app = Msal.UserAgentApplication.mock.instances[0];
-  app.getAccount.mockResolvedValue(mockUser);
+  app.getActiveAccount.mockResolvedValue(mockAccount);
 
   authService.getUser().then((user) => {
-    expect(user).toEqual(mockUser);
+    expect(app.getActiveAccount).toHaveBeenCalledTimes(1);
+    expect(user).toEqual(mockAccount);
     done();
   });
-
-  expect(app.getAccount).toHaveBeenCalledTimes(1);
 });

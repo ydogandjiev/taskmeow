@@ -11,6 +11,10 @@ beforeEach(() => {
 });
 
 it("renders logged out view", done => {
+  authService.isCallback.mockResolvedValue(false);
+
+  authService.getUser.mockResolvedValue(null);
+
   authService.getToken.mockResolvedValue(null);
 
   const div = document.createElement("div");

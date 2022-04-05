@@ -16,7 +16,11 @@ beforeEach(() => {
   jest.resetModules();
 });
 
-it("renders logged out view", done => {
+it("renders logged out view", async () => {
+  authService.isCallback.mockResolvedValue(false);
+
+  authService.getUser.mockResolvedValue(null);
+
   authService.getToken.mockResolvedValue(null);
 
   const div = document.createElement("div");
@@ -27,16 +31,16 @@ it("renders logged out view", done => {
     div
   );
 
-  setTimeout(() => {
-    expect(div.getElementsByClassName("App-login").length).toEqual(1);
-    done();
-  });
+  await new Promise(process.nextTick);
+
+  expect(div.getElementsByClassName("App-login").length).toEqual(1);
 });
 
-it("renders logged in view", done => {
+it("renders logged in view", async () => {
+  authService.isCallback.mockResolvedValue(false);
+
   const user = {
     name: "mockName",
-    given_name: "mockGivenName",
     oid: "mockOid"
   };
   authService.getUser.mockResolvedValue(user);
@@ -57,9 +61,8 @@ it("renders logged in view", done => {
     div
   );
 
-  setTimeout(() => {
-    expect(div.getElementsByClassName("App-content").length).toEqual(1);
-    done();
-  });
+  await new Promise(process.nextTick);
+
+  expect(div.getElementsByClassName("App-content").length).toEqual(1);
 });
 
