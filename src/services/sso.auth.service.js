@@ -30,7 +30,6 @@ class SSOAuthService {
     var base64Url = token.split(".")[1];
     var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
     var parsedToken = JSON.parse(window.atob(base64));
-    var nameParts = parsedToken.name.split(" ");
     return {
       upn: parsedToken.preferred_username,
       name: parsedToken.name
