@@ -4,11 +4,11 @@ import authService from "../services/auth.service";
 const ConsentContext = createContext({
   consentRequired: "",
   setConsentRequired: () => {},
-  requestConsent: () => {}
+  requestConsent: () => {},
 });
 
 export class ConsentProvider extends React.Component {
-  setConsentRequired = consentRequired => {
+  setConsentRequired = (consentRequired) => {
     this.setState({ consentRequired: consentRequired });
   };
 
@@ -19,7 +19,7 @@ export class ConsentProvider extends React.Component {
   state = {
     consentRequired: false,
     setConsentRequired: this.setConsentRequired,
-    requestConsent: this.requestConsent
+    requestConsent: this.requestConsent,
   };
 
   render() {

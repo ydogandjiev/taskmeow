@@ -6,26 +6,25 @@ afterEach(() => {
   jest.resetAllMocks();
 });
 
-it("can get tasks", done => {
+it("can get tasks", (done) => {
   const mockResponse = new Response(
     JSON.stringify({
       data: {
         tasks: [
-          { _id: "fakeId", title: "fakeTitle", order: 100, starred: true }
-        ]
-      }
+          { _id: "fakeId", title: "fakeTitle", order: 100, starred: true },
+        ],
+      },
     })
   );
   authService.fetch.mockResolvedValue(mockResponse);
 
   const tasksService = new GraphTasksService();
-  tasksService.get().then(tasks => {
+  tasksService.get().then((tasks) => {
     expect(authService.fetch).toHaveBeenCalledTimes(1);
     expect(authService.fetch).toHaveBeenCalledWith("/graphql", {
       method: "POST",
-      body:
-        '{"query":"query { tasks { _id title starred order conversationId } }"}',
-      headers: { "Content-Type": "application/json" }
+      body: '{"query":"query { tasks { _id title starred order conversationId } }"}',
+      headers: { "Content-Type": "application/json" },
     });
 
     expect(tasks.length).toEqual(1);
@@ -37,11 +36,11 @@ it("can get tasks", done => {
   });
 });
 
-it("can create task", done => {
+it("can create task", (done) => {
   const mockTask = {
     title: "fakeTitle",
     order: 100,
-    starred: false
+    starred: false,
   };
 
   const mockResponse = new Response(
@@ -49,21 +48,20 @@ it("can create task", done => {
       data: {
         createTask: {
           _id: "fakeId",
-          ...mockTask
-        }
-      }
+          ...mockTask,
+        },
+      },
     })
   );
   authService.fetch.mockResolvedValue(mockResponse);
 
   const tasksService = new GraphTasksService();
-  tasksService.create(mockTask).then(task => {
+  tasksService.create(mockTask).then((task) => {
     expect(authService.fetch).toHaveBeenCalledTimes(1);
     expect(authService.fetch).toHaveBeenCalledWith("/graphql", {
       method: "POST",
-      body:
-        '{"query":"mutation { createTask(title: \\"fakeTitle\\", order: 100, starred: false) { _id title starred order conversationId } }"}',
-      headers: { "Content-Type": "application/json" }
+      body: '{"query":"mutation { createTask(title: \\"fakeTitle\\", order: 100, starred: false) { _id title starred order conversationId } }"}',
+      headers: { "Content-Type": "application/json" },
     });
 
     expect(task._id).toEqual("fakeId");
@@ -74,12 +72,12 @@ it("can create task", done => {
   });
 });
 
-it("can update task", done => {
+it("can update task", (done) => {
   const mockTask = {
     _id: "fakeId",
     title: "fakeTitle",
     order: 100,
-    starred: false
+    starred: false,
   };
 
   const mockResponse = new Response(
@@ -88,13 +86,12 @@ it("can update task", done => {
   authService.fetch.mockResolvedValue(mockResponse);
 
   const tasksService = new GraphTasksService();
-  tasksService.update(mockTask).then(task => {
+  tasksService.update(mockTask).then((task) => {
     expect(authService.fetch).toHaveBeenCalledTimes(1);
     expect(authService.fetch).toHaveBeenCalledWith("/graphql", {
       method: "POST",
-      body:
-        '{"query":"mutation { updateTask(id: \\"fakeId\\", title: \\"fakeTitle\\", order: 100, starred: false) { _id title starred order conversationId } }"}',
-      headers: { "Content-Type": "application/json" }
+      body: '{"query":"mutation { updateTask(id: \\"fakeId\\", title: \\"fakeTitle\\", order: 100, starred: false) { _id title starred order conversationId } }"}',
+      headers: { "Content-Type": "application/json" },
     });
 
     expect(task._id).toEqual("fakeId");
@@ -105,7 +102,7 @@ it("can update task", done => {
   });
 });
 
-it("can destroy task", done => {
+it("can destroy task", (done) => {
   const mockResponse = new Response(
     JSON.stringify({
       data: {
@@ -113,21 +110,20 @@ it("can destroy task", done => {
           _id: "fakeId",
           title: "fakeTitle",
           order: 100,
-          starred: true
-        }
-      }
+          starred: true,
+        },
+      },
     })
   );
   authService.fetch.mockResolvedValue(mockResponse);
 
   const tasksService = new GraphTasksService();
-  tasksService.destroy("fakeId").then(task => {
+  tasksService.destroy("fakeId").then((task) => {
     expect(authService.fetch).toHaveBeenCalledTimes(1);
     expect(authService.fetch).toHaveBeenCalledWith("/graphql", {
       method: "POST",
-      body:
-        '{"query":"mutation { deleteTask(id: \\"fakeId\\") { _id title starred order conversationId } }"}',
-      headers: { "Content-Type": "application/json" }
+      body: '{"query":"mutation { deleteTask(id: \\"fakeId\\") { _id title starred order conversationId } }"}',
+      headers: { "Content-Type": "application/json" },
     });
 
     expect(task._id).toEqual("fakeId");

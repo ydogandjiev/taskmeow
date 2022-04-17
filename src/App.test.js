@@ -41,7 +41,7 @@ it("renders logged in view", async () => {
 
   const user = {
     name: "mockName",
-    oid: "mockOid"
+    oid: "mockOid",
   };
   authService.getUser.mockResolvedValue(user);
 
@@ -65,4 +65,3 @@ it("renders logged in view", async () => {
 
   expect(div.getElementsByClassName("App-content").length).toEqual(1);
 });
-

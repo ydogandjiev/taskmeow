@@ -52,7 +52,7 @@ class Tasks extends Component {
           this.setState({
             tasks: tasks.sort((a, b) => a.order - b.order),
             loading: false,
-            taskId: context.subEntityId || this.state.taskId
+            taskId: context.subEntityId || this.state.taskId,
           });
         });
       });
@@ -61,40 +61,43 @@ class Tasks extends Component {
 
   getActiveTask = (taskId, tasks) => {
     if (taskId) {
-      return tasks.find(t => t._id === taskId);
+      return tasks.find((t) => t._id === taskId);
     }
   };
 
   selectTask = (task) => {
     this.setState({
-      taskId: task._id
+      taskId: task._id,
     });
   };
 
   handleCloseTask = () => {
     this.setState({
-      taskId: undefined
+      taskId: undefined,
     });
   };
 
   share = (task) => {
     if (this.state.inTeams) {
       const url = `https://taskmeow.com?task=${task._id}`;
-      microsoftTeams.sharing.shareWebContent({
-        content: [
-          {
-            type: 'URL',
-            url,
-            preview: true
+      microsoftTeams.sharing.shareWebContent(
+        {
+          content: [
+            {
+              type: "URL",
+              url,
+              preview: true,
+            },
+          ],
+        },
+        (err) => {
+          if (err) {
+            console.log(err.message);
           }
-        ]
-      }, (err) => {
-        if (err) {
-          console.log(err.message);
         }
-      });
+      );
     }
-  }
+  };
 
   handleTaskCheckedChange = (task, isChecked) => {
     if (isChecked) {
@@ -206,15 +209,19 @@ class Tasks extends Component {
           </ul>
         )}
       </div>
-    )
-  }
+    );
+  };
 
   render() {
-    const activeTask = this.state.taskId && this.getActiveTask(this.state.taskId, this.state.tasks);
+    const activeTask =
+      this.state.taskId &&
+      this.getActiveTask(this.state.taskId, this.state.tasks);
     return (
       <div className="App-content">
         <div className="App-header">
-          <h1 className="App-header-title">{activeTask ? activeTask.title : 'Tasks'}</h1>
+          <h1 className="App-header-title">
+            {activeTask ? activeTask.title : "Tasks"}
+          </h1>
           <ConsentConsumer>
             {({ setConsentRequired }) => (
               <UserTile
@@ -240,13 +247,12 @@ class Tasks extends Component {
             closeConversation={this.handleCloseConversation}
             share={this.share}
           />
-        ) : this.renderTaskList()
-        }
+        ) : (
+          this.renderTaskList()
+        )}
       </div>
     );
   }
 }
-
-
 
 export default Tasks;

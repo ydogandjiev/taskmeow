@@ -13,17 +13,17 @@ class Remove extends Component {
 
   componentDidMount() {
     microsoftTeams.initialize();
-    microsoftTeams.settings.registerOnRemoveHandler(removeEvent => {
+    microsoftTeams.settings.registerOnRemoveHandler((removeEvent) => {
       removeEvent.notifySuccess();
     });
 
     this.setState({ loading: true });
     authService
       .getUser()
-      .then(user => {
+      .then((user) => {
         this.setState({ user, loading: false });
       })
-      .catch(err => {
+      .catch((err) => {
         this.setState({ loading: false });
       });
   }

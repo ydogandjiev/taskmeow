@@ -20,7 +20,7 @@ if (
   let todos = [
     { title: "To do 1", id: "to_do_1" },
     { title: "To do 2", id: "to_do_2" },
-    { title: "To do 3", id: "to_do_3" }
+    { title: "To do 3", id: "to_do_3" },
   ];
 
   // Configure slack routes
@@ -28,11 +28,11 @@ if (
   router.use("/slack/actions", slackInteractions.requestListener());
   router.get("/slack/auth/redirect", handleOAuthCallback);
 
-  slackEvents.on("app_home_opened", event => {
+  slackEvents.on("app_home_opened", (event) => {
     web.views.publish({ user_id: event.user, view: getHomeView() });
   });
 
-  slackInteractions.action({ type: "button" }, payload => {
+  slackInteractions.action({ type: "button" }, (payload) => {
     if (payload && payload.actions && payload.actions.length) {
       for (let i = 0; i < todos.length; i++) {
         if (todos[i].id === payload.actions[0].value) {
@@ -50,7 +50,7 @@ if (
     const result = await web.oauth.v2.access({
       client_id: process.env.APPSETTING_SLACK_ClientId,
       client_secret: process.env.APPSETTING_SLACK_ClientSecret,
-      code: req.query.code
+      code: req.query.code,
     });
 
     // It's now a good idea to save the access token to your database
@@ -64,45 +64,44 @@ if (
         type: "section",
         text: {
           type: "mrkdwn",
-          text:
-            "Meowcome to a world of getting things done!\n\n *Here are your todos:*"
-        }
+          text: "Meowcome to a world of getting things done!\n\n *Here are your todos:*",
+        },
       },
       {
-        type: "divider"
-      }
+        type: "divider",
+      },
     ];
 
-    todos.forEach(todo => {
+    todos.forEach((todo) => {
       blocks = blocks.concat({
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `*${todo.title}*`
+          text: `*${todo.title}*`,
         },
         accessory: {
           type: "button",
           text: {
             type: "plain_text",
             text: "Complete",
-            emoji: true
+            emoji: true,
           },
-          value: todo.id
-        }
+          value: todo.id,
+        },
       });
     });
 
     blocks = blocks.concat({
-      type: "divider"
+      type: "divider",
     });
 
     return {
       type: "home",
       title: {
         type: "plain_text",
-        text: "Keep notes!"
+        text: "Keep notes!",
       },
-      blocks: blocks
+      blocks: blocks,
     };
   }
 }

@@ -23,10 +23,12 @@ class Config extends Component {
   componentDidMount() {
     microsoftTeams.initialize();
     microsoftTeams.settings.registerOnSaveHandler((saveEvent) => {
-      let contentUrl = `${window.location.origin}/group/?${this.state.inTeamsSSO ? "inTeamsSSO=true" : "inTeams=true"
-        }`;
-      let removeUrl = `${window.location.origin}/remove/?${this.state.inTeamsSSO ? "inTeamsSSO=true" : "inTeams=true"
-        }`;
+      let contentUrl = `${window.location.origin}/group/?${
+        this.state.inTeamsSSO ? "inTeamsSSO=true" : "inTeams=true"
+      }`;
+      let removeUrl = `${window.location.origin}/remove/?${
+        this.state.inTeamsSSO ? "inTeamsSSO=true" : "inTeams=true"
+      }`;
 
       microsoftTeams.settings.setSettings({
         entityId: "meowTasks",

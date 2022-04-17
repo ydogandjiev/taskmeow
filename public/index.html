@@ -12,7 +12,10 @@
     <meta name="apple-mobile-web-app-title" content="Task Meow" />
     <meta name="msapplication-starturl" content="/index.html" />
     <meta property="og:image" content="%PUBLIC_URL%/favicon.png" />
-    <meta property="og:description" content="A simple app for organizing your tasks" />
+    <meta
+      property="og:description"
+      content="A simple app for organizing your tasks"
+    />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.png" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/icon-192.png" />
@@ -20,11 +23,11 @@
     <script type="text/javascript">
       var appInsights =
         window.appInsights ||
-        (function(a) {
+        (function (a) {
           function b(a) {
-            c[a] = function() {
+            c[a] = function () {
               var b = arguments;
-              c.queue.push(function() {
+              c.queue.push(function () {
                 c[a].apply(c, b);
               });
             };
@@ -32,7 +35,7 @@
           var c = { config: a },
             d = document,
             e = window;
-          setTimeout(function() {
+          setTimeout(function () {
             var b = d.createElement("script");
             (b.src =
               a.url || "https://az416426.vo.msecnd.net/scripts/a/ai.0.js"),
@@ -49,7 +52,7 @@
               "Metric",
               "PageView",
               "Trace",
-              "Dependency"
+              "Dependency",
             ];
             f.length;
 
@@ -67,14 +70,14 @@
           ) {
             (f = "onerror"), b("_" + f);
             var g = e[f];
-            e[f] = function(a, b, d, e, h) {
+            e[f] = function (a, b, d, e, h) {
               var i = g && g(a, b, d, e, h);
               return !0 !== i && c["_" + f](a, b, d, e, h), i;
             };
           }
           return c;
         })({
-          instrumentationKey: "cfc79ea7-9c34-4fd6-89db-59d0a647afd5"
+          instrumentationKey: "cfc79ea7-9c34-4fd6-89db-59d0a647afd5",
         });
 
       (window.appInsights = appInsights),
@@ -85,9 +88,7 @@
   </head>
 
   <body>
-    <noscript>
-      You need to enable JavaScript to run this app.
-    </noscript>
+    <noscript> You need to enable JavaScript to run this app. </noscript>
     <div id="root"></div>
   </body>
 </html>

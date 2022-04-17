@@ -18,16 +18,16 @@ class AuthDialog extends builder.IntentDialog {
     this.onBegin((session, args, next) => {
       this.onDialogBegin(session, args, next);
     });
-    this.onDefault(session => {
+    this.onDefault((session) => {
       this.onMessageReceived(session);
     });
-    this.matches(/ShowProfile/, session => {
+    this.matches(/ShowProfile/, (session) => {
       this.showUserProfile(session);
     });
-    this.matches(/ShowTasks/, session => {
+    this.matches(/ShowTasks/, (session) => {
       this.showTasks(session);
     });
-    this.matches(/SignOut/, session => {
+    this.matches(/SignOut/, (session) => {
       this.handleLogout(session);
     });
   }
@@ -42,9 +42,7 @@ class AuthDialog extends builder.IntentDialog {
     const user = await userService.getUser(
       session.message.address.user.aadObjectId
     );
-    let userCard = new builder.ThumbnailCard()
-      .title(user.firstname)
-      .text(`
+    let userCard = new builder.ThumbnailCard().title(user.firstname).text(`
           <b>Lastname</b>: ${user.lastname}<br/>
           <b>E-mail</b>: ${user.email}`);
     session.send(new builder.Message().addAttachment(userCard));
@@ -67,16 +65,16 @@ class AuthDialog extends builder.IntentDialog {
       contentType: "application/vnd.microsoft.teams.card.list",
       content: {
         title: "Tasks",
-        items: tasks.map(task => ({
+        items: tasks.map((task) => ({
           type: "resultItem",
           icon: `${process.env.APPSETTING_AAD_BaseUri}/checkmark.png`,
           title: task.title,
           tap: {
             type: "openUrl",
-            value: "http://trello.com"
-          }
-        }))
-      }
+            value: "http://trello.com",
+          },
+        })),
+      },
     });
     session.send(msg);
 
@@ -91,17 +89,19 @@ class AuthDialog extends builder.IntentDialog {
     }
 
     let msg = new builder.Message(session).addAttachment(
-      new builder.ThumbnailCard(session).title("Azure AD").buttons([
-        builder.CardAction.messageBack(session, "{}", "Show profile")
-          .text("ShowProfile")
-          .displayText("Show profile"),
-        builder.CardAction.messageBack(session, "{}", "Show tasks")
-          .text("ShowTasks")
-          .displayText("Show tasks"),
-        builder.CardAction.messageBack(session, "{}", "Sign out")
-          .text("SignOut")
-          .displayText("Sign out")
-      ])
+      new builder.ThumbnailCard(session)
+        .title("Azure AD")
+        .buttons([
+          builder.CardAction.messageBack(session, "{}", "Show profile")
+            .text("ShowProfile")
+            .displayText("Show profile"),
+          builder.CardAction.messageBack(session, "{}", "Show tasks")
+            .text("ShowTasks")
+            .displayText("Show tasks"),
+          builder.CardAction.messageBack(session, "{}", "Sign out")
+            .text("SignOut")
+            .displayText("Sign out"),
+        ])
     );
     session.send(msg);
   }
@@ -167,7 +167,7 @@ class AuthDialog extends builder.IntentDialog {
       utils.setOAuthState(session, JSON.stringify(state));
       const token = {
         verificationCodeValidated: true,
-        accessToken: messageAsAny.originalInvoke.value.token
+        accessToken: messageAsAny.originalInvoke.value.token,
       };
       utils.setUserToken(session, token);
 
@@ -208,26 +208,26 @@ class AuthDialog extends builder.IntentDialog {
       securityToken: requestId,
       address: {
         user: {
-          id: address.user.id
+          id: address.user.id,
         },
         conversation: {
-          id: address.conversation.id
-        }
+          id: address.conversation.id,
+        },
       },
-      pendingAction: pendingAction
+      pendingAction: pendingAction,
     });
     utils.setOAuthState(session, state);
 
-    const cardContent = JSON.parse(`{\"text\":\"Sign in card\",\"title\":\"Sign in card\",\"buttons\":` +
-      `[],\"tokenExchangeResource\":{\"id\":\"${requestId}\"}}`);
+    const cardContent = JSON.parse(
+      `{\"text\":\"Sign in card\",\"title\":\"Sign in card\",\"buttons\":` +
+        `[],\"tokenExchangeResource\":{\"id\":\"${requestId}\"}}`
+    );
 
     // Send card with signin action
-    const msg = new builder.Message(session).addAttachment(
-      {
-        contentType: "application/vnd.microsoft.card.oauth",
-        content: cardContent
-      }
-    );
+    const msg = new builder.Message(session).addAttachment({
+      contentType: "application/vnd.microsoft.card.oauth",
+      content: cardContent,
+    });
     session.send(msg);
 
     // The auth flow resumes when we either get an invoke call with the token or handle the identity provider's OAuth callback in AuthBot.handleOAuthCallback()

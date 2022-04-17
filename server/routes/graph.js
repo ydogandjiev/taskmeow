@@ -42,9 +42,9 @@ const resolvers = {
       _id: request.user._id,
       email: request.user.email,
       firstname: request.user.firstname,
-      lastname: request.user.lastname
+      lastname: request.user.lastname,
     };
-  }
+  },
 };
 
 router.use(
@@ -52,7 +52,7 @@ router.use(
   graphqlHTTP({
     schema: schema,
     rootValue: resolvers,
-    graphiql: true
+    graphiql: true,
   })
 );
 

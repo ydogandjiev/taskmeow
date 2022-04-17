@@ -7,19 +7,19 @@ afterEach(() => {
   jest.resetAllMocks();
 });
 
-it("can get tasks", done => {
+it("can get tasks", (done) => {
   const mockResponse = new Response(
     JSON.stringify([
-      { _id: "fakeId", title: "fakeTitle", order: 100, starred: true }
+      { _id: "fakeId", title: "fakeTitle", order: 100, starred: true },
     ])
   );
   authService.fetch.mockResolvedValue(mockResponse);
 
   const tasksService = new RestTasksService();
-  tasksService.get().then(tasks => {
+  tasksService.get().then((tasks) => {
     expect(authService.fetch).toHaveBeenCalledTimes(1);
     expect(authService.fetch).toHaveBeenCalledWith("/api/tasks", {
-      method: "GET"
+      method: "GET",
     });
     expect(tasks.length).toEqual(1);
     expect(tasks[0]._id).toEqual("fakeId");
@@ -30,31 +30,31 @@ it("can get tasks", done => {
   });
 });
 
-it("can create task", done => {
+it("can create task", (done) => {
   const mockTask = {
     title: "fakeTitle",
     order: 100,
-    starred: false
+    starred: false,
   };
 
   const mockResponse = new Response(
     JSON.stringify({
       _id: "fakeId",
-      ...mockTask
+      ...mockTask,
     })
   );
   authService.fetch.mockResolvedValue(mockResponse);
 
   const tasksService = new RestTasksService();
-  tasksService.create(mockTask).then(task => {
+  tasksService.create(mockTask).then((task) => {
     expect(authService.fetch).toHaveBeenCalledTimes(1);
     expect(authService.fetch).toHaveBeenCalledWith("/api/tasks", {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(mockTask)
+      body: JSON.stringify(mockTask),
     });
     expect(task._id).toEqual("fakeId");
     expect(task.title).toEqual("fakeTitle");
@@ -64,27 +64,27 @@ it("can create task", done => {
   });
 });
 
-it("can update task", done => {
+it("can update task", (done) => {
   const mockTask = {
     _id: "fakeId",
     title: "fakeTitle",
     order: 100,
-    starred: false
+    starred: false,
   };
 
   const mockResponse = new Response(JSON.stringify(mockTask));
   authService.fetch.mockResolvedValue(mockResponse);
 
   const tasksService = new RestTasksService();
-  tasksService.update(mockTask).then(task => {
+  tasksService.update(mockTask).then((task) => {
     expect(authService.fetch).toHaveBeenCalledTimes(1);
     expect(authService.fetch).toHaveBeenCalledWith("/api/tasks/fakeId", {
       method: "PUT",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(mockTask)
+      body: JSON.stringify(mockTask),
     });
     expect(task._id).toEqual("fakeId");
     expect(task.title).toEqual("fakeTitle");
@@ -94,22 +94,22 @@ it("can update task", done => {
   });
 });
 
-it("can destroy task", done => {
+it("can destroy task", (done) => {
   const mockResponse = new Response(
     JSON.stringify({
       _id: "fakeId",
       title: "fakeTitle",
       order: 100,
-      starred: true
+      starred: true,
     })
   );
   authService.fetch.mockResolvedValue(mockResponse);
 
   const tasksService = new RestTasksService();
-  tasksService.destroy("fakeId").then(task => {
+  tasksService.destroy("fakeId").then((task) => {
     expect(authService.fetch).toHaveBeenCalledTimes(1);
     expect(authService.fetch).toHaveBeenCalledWith("/api/tasks/fakeId", {
-      method: "DELETE"
+      method: "DELETE",
     });
     expect(task._id).toEqual("fakeId");
     expect(task.title).toEqual("fakeTitle");
