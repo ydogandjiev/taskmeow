@@ -43,10 +43,10 @@ class SSOAuthService {
         resolve(this.parseTokenToUser(this.authToken));
       } else {
         this.getToken()
-          .resolve(token => {
+          .then(token => {
             resolve(this.parseTokenToUser(token));
           })
-          .reject(reason => {
+          .catch(reason => {
             reject(reason);
           });
       }

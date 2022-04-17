@@ -8,7 +8,7 @@ class AuthService {
     const url = new URL(window.location);
     const params = new URLSearchParams(url.search);
 
-    if (params.get("useTest") || (typeof ("jest") !== undefined)) {
+    if (params.get("useTest") || (typeof jest !== 'undefined')) {
       this.authService = new MockAuthService();
     } else if (params.get("inTeams")) {
       this.authService = new TeamsAuthService();

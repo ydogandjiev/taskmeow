@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Navigate } from "react-router-dom";
 import { ActionButton, Persona, Spinner } from "office-ui-fabric-react";
 import authService from "../services/auth.service";
 import userService from "../services/user.service";
@@ -38,11 +39,13 @@ class UserTile extends Component {
   }
 
   viewTasks = () => {
-    this.props.history.push("/");
+    this.setState({ route: "/" });
+    // this.props.history.push("/");
   };
 
   viewProfile = () => {
-    this.props.history.push("/profile");
+    this.setState({ route: "/profile" });
+    // this.props.history.push("/profile");
   };
 
   logout = () => {
@@ -50,7 +53,11 @@ class UserTile extends Component {
   };
 
   render() {
-    if (!this.state.user) {
+    if (this.state.route) {
+      return (
+        <Navigate to={this.state.route} replace={true} />
+      );
+    } else if (!this.state.user) {
       return <Spinner label="Loading user..." />;
     } else {
       return (

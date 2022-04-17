@@ -237,7 +237,6 @@ class GroupTasks extends Component {
             <TextField
               className="Tasks-add-textfield"
               placeholder="New Task"
-              value={this.state.newTask.title}
               onChange={this.handleTextChanged}
               onKeyDown={this.handleKeyDown}
             />

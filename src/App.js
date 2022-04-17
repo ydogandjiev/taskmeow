@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Switch, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import {
   DefaultButton,
   Spinner,
@@ -110,13 +110,13 @@ class App extends Component {
               }
             </ConsentConsumer>
             {this.state.user ? (
-              <Switch>
-                <Route path="/group" component={GroupTasks} />
-                <Route path="/profile" component={Profile} />
-                <Route path="/config" component={Config} />
-                <Route path="/remove" component={Remove} />
-                <Route path="/" component={Tasks} />
-              </Switch>
+              <Routes>
+                <Route path="/group" element={<GroupTasks />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/config" element={<Config />} />
+                <Route path="/remove" element={<Remove />} />
+                <Route path="/" element={<Tasks />} />
+              </Routes>
             ) : (
               <div className="App-login">
                 <div className="App-login-image-container">
