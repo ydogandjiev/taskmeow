@@ -52,6 +52,10 @@
     "@testing-library/react": "^11.2.3",
     "concurrently": "^3.5.0",
     "coveralls": "^3.0.1",
+    "eslint": "^8.13.0",
+    "eslint-plugin-jest": "^26.1.4",
+    "eslint-plugin-jest-dom": "^4.0.1",
+    "eslint-plugin-react": "^7.29.4",
     "nodemon": "^1.19.1",
     "prettier": "2.6.2",
     "react-dnd-test-backend": "^15.1.1",
@@ -66,7 +70,10 @@
     "test": "react-scripts test --env=jest-environment-jsdom-global --watchAll=false",
     "coverage": "react-scripts test --env=jest-environment-jsdom-global --coverage --watchAll=false",
     "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint .",
+    "lint:fix": "npm run lint -- --fix",
+    "format": "prettier --write ."
   },
   "proxy": "http://localhost:3001",
   "browserslist": {

@@ -13,14 +13,30 @@ it("can check for callback", (done) => {
   });
 });
 
-it("can initiate login", () => {
+it("can initiate login", (done) => {
   const authService = new MockAuthService();
-  authService.login();
+  authService.login().then((user) => {
+    expect(user).toEqual({
+      name: "Mock User",
+      objectId: "mock.user.id",
+    });
+    done();
+  });
 });
 
-it("can initiate logout", () => {
+it("can initiate logout", (done) => {
   const authService = new MockAuthService();
   authService.logout();
+
+  authService
+    .getUser()
+    .then(() => {
+      done.fail();
+    })
+    .catch((error) => {
+      expect(error).toEqual("User information is not available");
+      done();
+    });
 });
 
 it("can get token", (done) => {

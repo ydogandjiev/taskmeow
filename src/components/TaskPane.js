@@ -24,13 +24,13 @@ const TaskPane = (props) => {
             <Icon
               className="Task-starred-icon"
               iconName="FavoriteStarFill"
-              onClick={(event) => props.onStarredChange(props.task, false)}
+              onClick={() => props.onStarredChange(props.task, false)}
             />
           ) : (
             <Icon
               className="Task-unstarred-icon"
               iconName="FavoriteStar"
-              onClick={(event) => props.onStarredChange(props.task, true)}
+              onClick={() => props.onStarredChange(props.task, true)}
             />
           )}
         </Link>

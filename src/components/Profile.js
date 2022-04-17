@@ -19,6 +19,7 @@ class Profile extends Component {
         this.setState({ user, loading: false });
       })
       .catch((err) => {
+        console.warn(`Error getting user: ${err}`);
         this.setState({ loading: false });
       });
   }

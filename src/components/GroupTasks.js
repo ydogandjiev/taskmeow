@@ -166,7 +166,7 @@ class GroupTasks extends Component {
     }
   };
 
-  handleCloseConversation = (task) => {
+  handleCloseConversation = () => {
     if (this.state.inTeams) {
       microsoftTeams.conversations.closeConversation();
 
