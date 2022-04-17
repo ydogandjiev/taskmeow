@@ -30,10 +30,7 @@ class SSOAuthService {
     var base64Url = token.split(".")[1];
     var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
     var parsedToken = JSON.parse(window.atob(base64));
-    var nameParts = parsedToken.name.split(" ");
     return {
-      family_name: nameParts.length > 1 ? nameParts[1] : "n/a",
-      given_name: nameParts.length > 0 ? nameParts[0] : "n/a",
       upn: parsedToken.preferred_username,
       name: parsedToken.name
     };
@@ -45,10 +42,10 @@ class SSOAuthService {
         resolve(this.parseTokenToUser(this.authToken));
       } else {
         this.getToken()
-          .resolve(token => {
+          .then(token => {
             resolve(this.parseTokenToUser(token));
           })
-          .reject(reason => {
+          .catch(reason => {
             reject(reason);
           });
       }

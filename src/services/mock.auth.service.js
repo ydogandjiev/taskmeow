@@ -1,7 +1,7 @@
 // A mock authentication service used for testing
 class MockAuthService {
   isCallback = () => {
-    return false;
+    return Promise.resolve(false);
   };
 
   login = () => {
@@ -9,7 +9,7 @@ class MockAuthService {
     if (!mockUser) {
       mockUser = {
         name: "Mock User",
-        objectId: "mock.user.id"
+        objectId: "mock.user.id",
       };
       localStorage.setItem("mock.user", JSON.stringify(mockUser));
     }

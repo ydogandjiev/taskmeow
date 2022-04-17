@@ -16,7 +16,6 @@ class Config extends Component {
     const params = new URLSearchParams(url.search);
 
     this.state = {
-      useV2: !!params.get("useV2"),
       inTeamsSSO: !!params.get("inTeamsSSO"),
     };
   }
@@ -24,17 +23,10 @@ class Config extends Component {
   componentDidMount() {
     microsoftTeams.initialize();
     microsoftTeams.settings.registerOnSaveHandler((saveEvent) => {
-      let contentUrl = `${window.location.origin}/group/?${
-        this.state.inTeamsSSO ? "inTeamsSSO=true" : "inTeams=true"
-      }`;
-      let removeUrl = `${window.location.origin}/remove/?${
-        this.state.inTeamsSSO ? "inTeamsSSO=true" : "inTeams=true"
-      }`;
-
-      if (this.state.useV2) {
-        contentUrl += "&useV2=true";
-        removeUrl += "&useV2=true";
-      }
+      let contentUrl = `${window.location.origin}/group/?${this.state.inTeamsSSO ? "inTeamsSSO=true" : "inTeams=true"
+        }`;
+      let removeUrl = `${window.location.origin}/remove/?${this.state.inTeamsSSO ? "inTeamsSSO=true" : "inTeams=true"
+        }`;
 
       microsoftTeams.settings.setSettings({
         entityId: "meowTasks",

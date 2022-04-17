@@ -1,6 +1,5 @@
 import MockAuthService from "./mock.auth.service";
 import MsalAuthService from "./msal.auth.service";
-import AdalAuthService from "./adal.auth.service";
 import TeamsAuthService from "./teams.auth.service";
 import SSOAuthService from "./sso.auth.service";
 
@@ -9,24 +8,19 @@ class AuthService {
     const url = new URL(window.location);
     const params = new URLSearchParams(url.search);
 
-    if (params.get("useTest")) {
+    if (params.get("useTest") || (typeof jest !== 'undefined')) {
       this.authService = new MockAuthService();
     } else if (params.get("inTeams")) {
       this.authService = new TeamsAuthService();
     } else if (params.get("inTeamsSSO")) {
       this.authService = new SSOAuthService();
-    } else if (
-      params.get("useV2") ||
-      url.pathname.indexOf("/callback/v2") !== -1
-    ) {
-      this.authService = new MsalAuthService();
     } else {
-      this.authService = new AdalAuthService();
+      this.authService = new MsalAuthService();
     }
   }
 
   isCallback() {
-    return this.authService.isCallback(window.location.hash);
+    return this.authService.isCallback();
   }
 
   login() {
@@ -47,7 +41,7 @@ class AuthService {
 
   // Does an authenticated fetch by acquiring and appending the Bearer token for our backend
   fetch(url, options) {
-    return this.getToken().then(token => {
+    return this.getToken().then((token) => {
       options = options || {};
       options.headers = options.headers || {};
       options.headers.Authorization = `Bearer ${token}`;

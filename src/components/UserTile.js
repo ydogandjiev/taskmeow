@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Navigate } from "react-router-dom";
 import { ActionButton, Persona, Spinner } from "office-ui-fabric-react";
 import authService from "../services/auth.service";
 import userService from "../services/user.service";
@@ -13,21 +14,16 @@ class UserTile extends Component {
   constructor(props) {
     super(props);
 
-    const url = new URL(window.location);
-    const params = new URLSearchParams(url.search);
-
-    this.state = {
-      useV2: !!params.get("useV2")
-    };
+    this.state = {};
   }
 
   componentDidMount() {
-    authService.getUser(this.state.useV2).then(user => {
+    authService.getUser().then(user => {
       this.setState({ user });
     });
 
     userService
-      .getImage(this.state.useV2)
+      .getImage()
       .then(userImage => {
         this.setState({ userImage });
       })
@@ -43,11 +39,13 @@ class UserTile extends Component {
   }
 
   viewTasks = () => {
-    this.props.history.push("/");
+    this.setState({ route: "/" });
+    // this.props.history.push("/");
   };
 
   viewProfile = () => {
-    this.props.history.push("/profile");
+    this.setState({ route: "/profile" });
+    // this.props.history.push("/profile");
   };
 
   logout = () => {
@@ -55,7 +53,11 @@ class UserTile extends Component {
   };
 
   render() {
-    if (!this.state.user) {
+    if (this.state.route) {
+      return (
+        <Navigate to={this.state.route} replace={true} />
+      );
+    } else if (!this.state.user) {
       return <Spinner label="Loading user..." />;
     } else {
       return (
@@ -88,7 +90,7 @@ class UserTile extends Component {
           }}
         >
           <span className="ms-Persona-primaryText primaryText-63">
-            {this.state.user.given_name}
+            {this.state.user.name}
           </span>
           <Persona
             imageUrl={this.state.userImage}

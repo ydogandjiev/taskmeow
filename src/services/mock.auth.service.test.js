@@ -5,9 +5,12 @@ it("can be constructed", () => {
   expect(authService).toBeDefined();
 });
 
-it("can check for callback", () => {
+it("can check for callback", done => {
   const authService = new MockAuthService();
-  expect(authService.isCallback()).toEqual(false);
+  authService.isCallback().then(isCallback => {
+    expect(isCallback).toEqual(false);
+    done();
+  });
 });
 
 it("can initiate login", () => {
