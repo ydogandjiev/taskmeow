@@ -1,5 +1,5 @@
 # Base image
-FROM node:carbon
+FROM node:12.22.12-stretch
 
 # Create app directory
 WORKDIR /usr/src/app
