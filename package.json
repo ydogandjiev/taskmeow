@@ -56,6 +56,8 @@
     "eslint-plugin-jest": "^26.1.4",
     "eslint-plugin-jest-dom": "^4.0.1",
     "eslint-plugin-react": "^7.29.4",
+    "husky": ">=6",
+    "lint-staged": ">=10",
     "nodemon": "^1.19.1",
     "prettier": "2.6.2",
     "react-dnd-test-backend": "^15.1.1",
@@ -73,7 +75,8 @@
     "eject": "react-scripts eject",
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepare": "husky install"
   },
   "proxy": "http://localhost:3001",
   "browserslist": {
@@ -88,5 +91,9 @@
       "Firefox ESR",
       "not ie < 11"
     ]
+  },
+  "lint-staged": {
+    "*.js": "eslint --cache --fix",
+    "*.{js,css,md}": "prettier --write"
   }
 }
