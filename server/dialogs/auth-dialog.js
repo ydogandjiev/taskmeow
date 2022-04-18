@@ -219,8 +219,8 @@ class AuthDialog extends builder.IntentDialog {
     utils.setOAuthState(session, state);
 
     const cardContent = JSON.parse(
-      `{\"text\":\"Sign in card\",\"title\":\"Sign in card\",\"buttons\":` +
-        `[],\"tokenExchangeResource\":{\"id\":\"${requestId}\"}}`
+      `{"text":"Sign in card","title":"Sign in card","buttons":` +
+        `[],"tokenExchangeResource":{"id":"${requestId}"}}`
     );
 
     // Send card with signin action

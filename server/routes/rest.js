@@ -6,11 +6,11 @@ const taskService = require("../task-service");
 const userService = require("../user-service");
 const groupService = require("../group-service");
 
-router.get("/user/image", (req, res, next) => {
+router.get("/user/image", (req, res) => {
   userService.getImage(req, res);
 });
 
-router.get("/tasks", (req, res, next) => {
+router.get("/tasks", (req, res) => {
   taskService
     .getForUser(req.user._id)
     .then((tasks) => {
@@ -21,7 +21,7 @@ router.get("/tasks", (req, res, next) => {
     });
 });
 
-router.post("/tasks", (req, res, next) => {
+router.post("/tasks", (req, res) => {
   taskService
     .createForUser(
       req.user._id,
@@ -38,7 +38,7 @@ router.post("/tasks", (req, res, next) => {
     });
 });
 
-router.put("/tasks/:taskId", (req, res, next) => {
+router.put("/tasks/:taskId", (req, res) => {
   taskService
     .updateForUser(
       req.user._id,
@@ -56,7 +56,7 @@ router.put("/tasks/:taskId", (req, res, next) => {
     });
 });
 
-router.delete("/tasks/:taskId", (req, res, next) => {
+router.delete("/tasks/:taskId", (req, res) => {
   taskService
     .removeForUser(req.user._id, req.params.taskId)
     .then((task) => {
@@ -67,7 +67,7 @@ router.delete("/tasks/:taskId", (req, res, next) => {
     });
 });
 
-router.get("/groups/:threadId/tasks", (req, res, next) => {
+router.get("/groups/:threadId/tasks", (req, res) => {
   const threadId = req.params.threadId;
   groupService
     .get(threadId)
@@ -99,7 +99,7 @@ router.get("/groups/:threadId/tasks", (req, res, next) => {
     });
 });
 
-router.post("/groups/:threadId/tasks", (req, res, next) => {
+router.post("/groups/:threadId/tasks", (req, res) => {
   const threadId = req.params.threadId;
   groupService
     .get(threadId)
@@ -137,7 +137,7 @@ router.post("/groups/:threadId/tasks", (req, res, next) => {
     });
 });
 
-router.put("/groups/:threadId/tasks/:taskId", (req, res, next) => {
+router.put("/groups/:threadId/tasks/:taskId", (req, res) => {
   const threadId = req.params.threadId;
   groupService
     .get(threadId)
@@ -176,7 +176,7 @@ router.put("/groups/:threadId/tasks/:taskId", (req, res, next) => {
     });
 });
 
-router.delete("/groups/:threadId/tasks/:taskId", (req, res, next) => {
+router.delete("/groups/:threadId/tasks/:taskId", (req, res) => {
   const threadId = req.params.threadId;
   groupService
     .get(threadId)

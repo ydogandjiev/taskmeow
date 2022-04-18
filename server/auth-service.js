@@ -70,7 +70,7 @@ function authenticateUser(req, res, next) {
   return passport.authenticate(
     "oauth-bearer",
     { session: false },
-    (err, user, info) => {
+    (err, user) => {
       if (err) throw err;
       req.user = user;
       next();
@@ -105,7 +105,7 @@ function exchangeForToken(tid, token, scopes) {
       },
     }).then((result) => {
       if (result.status !== 200) {
-        result.json().then((json) => {
+        result.json().then(() => {
           // TODO: Check explicitly for invalid_grant or interaction_required
           reject(new ServerError(403, "ConsentRequired"));
         });

@@ -10,7 +10,6 @@ coverage
 # production
 server/build
 build
-server
 
 # secrets
 .env
