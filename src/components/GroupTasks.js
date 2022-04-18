@@ -43,7 +43,7 @@ class GroupTasks extends Component {
           this.setState({
             tasks: tasks.sort((a, b) => a.order - b.order),
             loading: false,
-            task: this.getActiveTask(context.subEntityId, tasks)
+            task: this.getActiveTask(context.subEntityId, tasks),
           });
         });
       });
@@ -52,7 +52,7 @@ class GroupTasks extends Component {
 
   getActiveTask = (taskId, tasks) => {
     if (taskId) {
-      return tasks.find(t => t._id === taskId);
+      return tasks.find((t) => t._id === taskId);
     }
   };
 
@@ -134,36 +134,39 @@ class GroupTasks extends Component {
 
   selectTask = (task) => {
     this.setState({
-      task
+      task,
     });
   };
 
   handleCloseTask = () => {
     this.setState({
-      task: undefined
+      task: undefined,
     });
   };
 
   share = (task) => {
     if (this.state.inTeams) {
       const url = `https://taskmeow.com?task=${task._id}`;
-      microsoftTeams.sharing.shareWebContent({
-        content: [
-          {
-            type: 'URL',
-            url,
-            preview: true
+      microsoftTeams.sharing.shareWebContent(
+        {
+          content: [
+            {
+              type: "URL",
+              url,
+              preview: true,
+            },
+          ],
+        },
+        (err) => {
+          if (err) {
+            console.log(err.message);
           }
-        ]
-      }, (err) => {
-        if (err) {
-          console.log(err.message);
         }
-      });
+      );
     }
-  }
+  };
 
-  handleCloseConversation = (task) => {
+  handleCloseConversation = () => {
     if (this.state.inTeams) {
       microsoftTeams.conversations.closeConversation();
 
@@ -264,7 +267,7 @@ class GroupTasks extends Component {
             </ul>
           )}
         </div>
-        {activeTask &&
+        {activeTask && (
           <TaskPane
             isOpen={activeTask}
             close={this.handleCloseTask}
@@ -279,7 +282,7 @@ class GroupTasks extends Component {
             closeConversation={this.handleCloseConversation}
             share={this.share}
           />
-        }
+        )}
       </div>
     );
   }

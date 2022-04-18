@@ -6,7 +6,7 @@ const User = require("./user-model");
 async function getUser(oid) {
   return await User.findOne({
     "accounts.uid": oid,
-    "accounts.provider": "aad"
+    "accounts.provider": "aad",
   })
     .read(ReadPreference.NEAREST)
     .exec();
@@ -24,14 +24,14 @@ async function getImage(req, res) {
       "https://graph.microsoft.com/v1.0/me/photo/$value",
       {
         headers: { Authorization: `Bearer ${token}` },
-        encoding: null
+        encoding: null,
       }
     );
 
     res.contentType("image/jpeg");
     res.end(img);
   } catch (error) {
-    console.error(error);
+    console.error(`Error getting user image: ${error}`);
     res.statusMessage = error.statusMessage || error.response.statusMessage;
     res.status(error.statusCode).send();
   }
@@ -42,13 +42,13 @@ async function getProfile(accessToken) {
     url: "https://graph.microsoft.com/v1.0/me",
     json: true,
     headers: {
-      Authorization: `Bearer ${accessToken}`
-    }
+      Authorization: `Bearer ${accessToken}`,
+    },
   });
 }
 
 module.exports = {
   getUser,
   getImage,
-  getProfile
+  getProfile,
 };

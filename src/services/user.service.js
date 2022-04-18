@@ -5,17 +5,17 @@ class UserService {
     if (!this.userImagePromise) {
       this.userImagePromise = authService
         .fetch(`/api/user/image`)
-        .then(result => {
+        .then((result) => {
           if (result.status !== 200) {
             return Promise.reject({
               statusCode: result.status,
-              statusMessage: result.statusText
+              statusMessage: result.statusText,
             });
           } else {
             return result.blob();
           }
         })
-        .then(blob => {
+        .then((blob) => {
           return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -28,7 +28,7 @@ class UserService {
             reader.readAsDataURL(blob);
           });
         })
-        .catch(error => {
+        .catch((error) => {
           this.userImagePromise = null;
           return Promise.reject(error);
         });

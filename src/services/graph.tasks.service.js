@@ -7,16 +7,16 @@ class GraphTasksService {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          query: "query { tasks { _id title starred order conversationId } }"
-        })
+          query: "query { tasks { _id title starred order conversationId } }",
+        }),
       })
-      .then(result => result.json())
-      .then(result => {
+      .then((result) => result.json())
+      .then((result) => {
         return result.errors
           ? Promise.reject(result.errors[0].message)
           : result.data.tasks;
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
   }
@@ -29,16 +29,16 @@ class GraphTasksService {
         body: JSON.stringify({
           query: `mutation { createTask(title: "${task.title}", order: ${
             task.order
-          }, starred: ${!!task.starred}) { _id title starred order conversationId } }`
-        })
+          }, starred: ${!!task.starred}) { _id title starred order conversationId } }`,
+        }),
       })
-      .then(result => result.json())
-      .then(result => {
+      .then((result) => result.json())
+      .then((result) => {
         return result.errors
           ? Promise.reject(result.errors[0].message)
           : result.data.createTask;
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
   }
@@ -53,16 +53,16 @@ class GraphTasksService {
             task.title
           }", order: ${
             task.order
-          }, starred: ${!!task.starred}) { _id title starred order conversationId } }`
-        })
+          }, starred: ${!!task.starred}) { _id title starred order conversationId } }`,
+        }),
       })
-      .then(result => result.json())
-      .then(result => {
+      .then((result) => result.json())
+      .then((result) => {
         return result.errors
           ? Promise.reject(result.errors[0].message)
           : result.data.updateTask;
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
   }
@@ -73,16 +73,16 @@ class GraphTasksService {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          query: `mutation { deleteTask(id: "${id}") { _id title starred order conversationId } }`
-        })
+          query: `mutation { deleteTask(id: "${id}") { _id title starred order conversationId } }`,
+        }),
       })
-      .then(result => result.json())
-      .then(result => {
+      .then((result) => result.json())
+      .then((result) => {
         return result.errors
           ? Promise.reject(result.errors[0].message)
           : result.data.deleteTask;
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
   }

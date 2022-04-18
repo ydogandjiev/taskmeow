@@ -2,10 +2,11 @@ import React from "react";
 import { Checkbox, Button, Icon, Link, Label } from "office-ui-fabric-react";
 
 const TaskPane = (props) => {
-
   return (
     <div clasName="Task-pane">
-      <Link className="back-link" onClick={props.close}>Back to list</Link>
+      <Link className="back-link" onClick={props.close}>
+        Back to list
+      </Link>
 
       <div className="task-field">
         <Label>Completed</Label>
@@ -23,13 +24,13 @@ const TaskPane = (props) => {
             <Icon
               className="Task-starred-icon"
               iconName="FavoriteStarFill"
-              onClick={(event) => props.onStarredChange(props.task, false)}
+              onClick={() => props.onStarredChange(props.task, false)}
             />
           ) : (
             <Icon
               className="Task-unstarred-icon"
               iconName="FavoriteStar"
-              onClick={(event) => props.onStarredChange(props.task, true)}
+              onClick={() => props.onStarredChange(props.task, true)}
             />
           )}
         </Link>
@@ -40,9 +41,7 @@ const TaskPane = (props) => {
 
       {props.inTeams && props.supportsConversation && (
         <div className="task-field">
-          <Label>
-            Chat
-            </Label>
+          <Label>Chat</Label>
           <Link className="Task-conversation-link">
             {props.task.conversationOpen ? (
               <Icon
@@ -61,7 +60,9 @@ const TaskPane = (props) => {
         </div>
       )}
       <div className="task-field">
-        <Button onClick={() => props.share(props.task)}>{props.inTeams ? 'Share in Teams' : 'Share to Teams'}</Button>
+        <Button onClick={() => props.share(props.task)}>
+          {props.inTeams ? "Share in Teams" : "Share to Teams"}
+        </Button>
       </div>
     </div>
   );

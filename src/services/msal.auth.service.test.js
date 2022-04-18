@@ -13,17 +13,17 @@ it("can be constructed", () => {
   expect(msal.PublicClientApplication.mock.instances.length).toEqual(1);
 });
 
-it("can check for callback", done => {
+it("can check for callback", (done) => {
   const authService = new MsalAuthService();
   const app = msal.PublicClientApplication.mock.instances[0];
   const mockAuthResponse = {
     account: {
-      name: "John Doe"
-    }
+      name: "John Doe",
+    },
   };
   app.handleRedirectPromise.mockResolvedValue(mockAuthResponse);
 
-  authService.isCallback().then(isCallback => {
+  authService.isCallback().then((isCallback) => {
     expect(isCallback).toEqual(true);
     expect(app.handleRedirectPromise).toHaveBeenCalledTimes(1);
     expect(app.setActiveAccount).toHaveBeenCalledWith(mockAuthResponse.account);
@@ -31,17 +31,17 @@ it("can check for callback", done => {
   });
 });
 
-it("can initiate login", done => {
+it("can initiate login", (done) => {
   const authService = new MsalAuthService();
   const app = msal.PublicClientApplication.mock.instances[0];
   const mockAuthResponse = {
     account: {
-      name: "John Doe"
-    }
+      name: "John Doe",
+    },
   };
   app.loginPopup.mockResolvedValue(mockAuthResponse);
 
-  authService.login().then(account => {
+  authService.login().then((account) => {
     expect(account).toEqual(mockAuthResponse.account);
     expect(app.loginPopup).toHaveBeenCalledTimes(1);
     expect(app.setActiveAccount).toHaveBeenCalledWith(mockAuthResponse.account);
@@ -57,11 +57,11 @@ it("can initiate logout", () => {
   expect(app.logout).toHaveBeenCalledTimes(1);
 });
 
-it("can get token", done => {
+it("can get token", (done) => {
   const authService = new MsalAuthService();
   const app = msal.PublicClientApplication.mock.instances[0];
   const mockAuthResponse = {
-    accessToken: "fakeToken"
+    accessToken: "fakeToken",
   };
   app.acquireTokenSilent.mockResolvedValue(mockAuthResponse);
 
@@ -72,7 +72,7 @@ it("can get token", done => {
   });
 });
 
-it("can get user", done => {
+it("can get user", (done) => {
   const authService = new MsalAuthService();
   const app = msal.PublicClientApplication.mock.instances[0];
   const mockAccount = {

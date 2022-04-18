@@ -15,17 +15,17 @@ it("can be constructed", () => {
   expect(authService).toBeDefined();
 });
 
-it("can check for callback", done => {
+it("can check for callback", (done) => {
   const authService = new TeamsAuthService();
   const app = msal.PublicClientApplication.mock.instances[0];
   const mockAuthResponse = {
     account: {
-      name: "John Doe"
-    }
+      name: "John Doe",
+    },
   };
   app.handleRedirectPromise.mockResolvedValue(mockAuthResponse);
 
-  authService.isCallback().then(isCallback => {
+  authService.isCallback().then((isCallback) => {
     expect(isCallback).toEqual(true);
     expect(app.handleRedirectPromise).toHaveBeenCalledTimes(1);
     expect(app.setActiveAccount).toHaveBeenCalledWith(mockAuthResponse.account);
@@ -33,26 +33,28 @@ it("can check for callback", done => {
   });
 });
 
-it("can initiate login", done => {
+it("can initiate login", (done) => {
   const mockAuthResponse = {
     account: {
-      name: "John Doe"
-    }
+      name: "John Doe",
+    },
   };
 
   const authService = new TeamsAuthService();
   const app = msal.PublicClientApplication.mock.instances[0];
   app.getActiveAccount.mockResolvedValue();
 
-  microsoftTeams.getContext.mockImplementationOnce(callback => {
+  microsoftTeams.getContext.mockImplementationOnce((callback) => {
     callback({ loginHint: "fakeUser" });
   });
 
-  microsoftTeams.authentication.authenticate.mockImplementationOnce(request => {
-    request.successCallback(mockAuthResponse);
-  });
+  microsoftTeams.authentication.authenticate.mockImplementationOnce(
+    (request) => {
+      request.successCallback(mockAuthResponse);
+    }
+  );
 
-  authService.login().then(user => {
+  authService.login().then((user) => {
     expect(microsoftTeams.authentication.authenticate).toHaveBeenCalledTimes(1);
     expect(app.setActiveAccount).toHaveBeenCalledWith(mockAuthResponse.account);
     expect(user).toEqual(mockAuthResponse.account);
@@ -68,15 +70,15 @@ it("can initiate logout", () => {
   expect(app.logout).toHaveBeenCalledTimes(1);
 });
 
-it("can get token", done => {
+it("can get token", (done) => {
   const authService = new TeamsAuthService();
   const app = msal.PublicClientApplication.mock.instances[0];
   const mockAuthResponse = {
-    accessToken: "fakeToken"
+    accessToken: "fakeToken",
   };
   app.acquireTokenSilent.mockResolvedValue(mockAuthResponse);
 
-  microsoftTeams.getContext.mockImplementation(callback => {
+  microsoftTeams.getContext.mockImplementation((callback) => {
     callback({ loginHint: "fakeUser" });
   });
 
@@ -87,7 +89,7 @@ it("can get token", done => {
   });
 });
 
-it("can get user", done => {
+it("can get user", (done) => {
   const authService = new TeamsAuthService();
   const app = msal.PublicClientApplication.mock.instances[0];
   const mockAccount = {

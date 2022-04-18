@@ -8,27 +8,24 @@ mongoose.Promise = global.Promise;
 
 function connect() {
   return mongoose
-    .connect(
-      uri,
-      {
-        auth: {
-          username: username,
-          password: password
-        },
-        config: {
-          autoIndex: false
-        }
-      }
-    )
+    .connect(uri, {
+      auth: {
+        username: username,
+        password: password,
+      },
+      config: {
+        autoIndex: false,
+      },
+    })
     .then(() => {
       console.log(`Successfully connected to ${uri}`);
     })
-    .catch(err => {
+    .catch((err) => {
       console.error(err);
     });
 }
 
 module.exports = {
   connect,
-  mongoose
+  mongoose,
 };

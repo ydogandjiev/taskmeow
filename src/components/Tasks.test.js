@@ -19,7 +19,7 @@ it("renders tasks", () => {
   jsdom.reconfigure({ url: "https://taskmeow.com?useTest=true" });
 
   const user = {
-    name: "mockName"
+    name: "mockName",
   };
   authService.getUser.mockResolvedValue(user);
 

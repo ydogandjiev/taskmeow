@@ -32,7 +32,7 @@ class SSOAuthService {
     var parsedToken = JSON.parse(window.atob(base64));
     return {
       upn: parsedToken.preferred_username,
-      name: parsedToken.name
+      name: parsedToken.name,
     };
   }
 
@@ -42,10 +42,10 @@ class SSOAuthService {
         resolve(this.parseTokenToUser(this.authToken));
       } else {
         this.getToken()
-          .then(token => {
+          .then((token) => {
             resolve(this.parseTokenToUser(token));
           })
-          .catch(reason => {
+          .catch((reason) => {
             reject(reason);
           });
       }
@@ -58,13 +58,13 @@ class SSOAuthService {
         resolve(this.authToken);
       } else {
         microsoftTeams.authentication.getAuthToken({
-          successCallback: result => {
+          successCallback: (result) => {
             this.authToken = result;
             resolve(result);
           },
-          failureCallback: reason => {
+          failureCallback: (reason) => {
             reject(reason);
-          }
+          },
         });
       }
     });

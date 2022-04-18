@@ -15,7 +15,7 @@ it("renders remove", () => {
   authService.isCallback.mockResolvedValue(false);
 
   const user = {
-    name: "mockName"
+    name: "mockName",
   };
   authService.getUser.mockResolvedValue(user);
 

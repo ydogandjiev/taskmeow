@@ -10,7 +10,7 @@ beforeEach(() => {
   jest.resetModules();
 });
 
-it("renders logged out view", done => {
+it("renders logged out view", (done) => {
   authService.isCallback.mockResolvedValue(false);
 
   authService.getUser.mockResolvedValue(null);

@@ -114,7 +114,7 @@ function getUserTokenUnsafe(session) {
 function getLocale(event) {
   if (event.entities && event.entities.length) {
     let clientInfo = event.entities.find(
-      e => e.type && e.type === "clientInfo"
+      (e) => e.type && e.type === "clientInfo"
     );
     return clientInfo.locale;
   }
@@ -126,22 +126,22 @@ function loadSessionAsync(bot, event) {
   return new Promise((resolve, reject) => {
     bot.loadSession(event.address, (err, session) => {
       if (err) {
-        winston.error("Failed to load session", {
+        console.error("Failed to load session", {
           error: err,
-          address: event.address
+          address: event.address,
         });
         reject(err);
       } else if (!session) {
-        winston.error("Loaded null session", { address: event.address });
+        console.error("Loaded null session", { address: event.address });
         reject(new Error("Failed to load session"));
       } else {
         let locale = getLocale(event);
         if (locale) {
           session._locale = locale;
-          session.localizer.load(locale, err2 => {
+          session.localizer.load(locale, (err2) => {
             // Log errors but resolve session anyway
             if (err2) {
-              winston.error(`Failed to load localizer for ${locale}`, err2);
+              console.error(`Failed to load localizer for ${locale}`, err2);
             }
             resolve(session);
           });
@@ -162,5 +162,5 @@ module.exports = {
   prepareTokenForVerification,
   findVerificationCode,
   validateVerificationCode,
-  loadSessionAsync
+  loadSessionAsync,
 };

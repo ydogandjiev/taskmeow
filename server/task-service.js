@@ -6,15 +6,11 @@ function get(taskId) {
 }
 
 function getForUser(userId) {
-  return Task.find({ user: userId })
-    .read(ReadPreference.NEAREST)
-    .exec();
+  return Task.find({ user: userId }).read(ReadPreference.NEAREST).exec();
 }
 
 function getForGroup(groupId) {
-  return Task.find({ group: groupId })
-    .read(ReadPreference.NEAREST)
-    .exec();
+  return Task.find({ group: groupId }).read(ReadPreference.NEAREST).exec();
 }
 
 function createForUser(userId, title) {
@@ -26,7 +22,7 @@ function createForGroup(groupId, title) {
 }
 
 function updateForUser(userId, taskId, title, order, starred, conversationId) {
-  return Task.findOne({ _id: taskId, user: userId }).then(task => {
+  return Task.findOne({ _id: taskId, user: userId }).then((task) => {
     if (typeof title !== "undefined") {
       task.title = title;
     }
@@ -44,7 +40,7 @@ function updateForUser(userId, taskId, title, order, starred, conversationId) {
 }
 
 function updateForGroup(groupId, id, title, order, starred, conversationId) {
-  return Task.findOne({ _id: id, group: groupId }).then(task => {
+  return Task.findOne({ _id: id, group: groupId }).then((task) => {
     if (typeof title !== "undefined") {
       task.title = title;
     }
@@ -78,5 +74,5 @@ module.exports = {
   updateForUser,
   updateForGroup,
   removeForUser,
-  removeForGroup
+  removeForGroup,
 };

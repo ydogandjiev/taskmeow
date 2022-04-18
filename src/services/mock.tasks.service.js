@@ -12,10 +12,10 @@ class MockTasksService {
     return Promise.resolve(tasks);
   };
 
-  create = task => {
+  create = (task) => {
     const newTask = {
       _id: `task-${this.taskIndex++}`,
-      ...task
+      ...task,
     };
     this.tasks.push(newTask);
     localStorage.setItem("mock.tasks", JSON.stringify(this.tasks));
@@ -23,8 +23,8 @@ class MockTasksService {
     return Promise.resolve(newTask);
   };
 
-  update = task => {
-    let taskIndex = this.tasks.findIndex(t => t._id === task._id);
+  update = (task) => {
+    let taskIndex = this.tasks.findIndex((t) => t._id === task._id);
     if (taskIndex !== -1) {
       this.tasks.splice(taskIndex, 1, task);
       localStorage.setItem("mock.tasks", JSON.stringify(this.tasks));
@@ -34,8 +34,8 @@ class MockTasksService {
     }
   };
 
-  destroy = id => {
-    let taskIndex = this.tasks.findIndex(t => t._id === id);
+  destroy = (id) => {
+    let taskIndex = this.tasks.findIndex((t) => t._id === id);
     if (taskIndex !== -1) {
       const oldTask = this.tasks.splice(taskIndex, 1)[0];
       localStorage.setItem("mock.tasks", JSON.stringify(this.tasks));

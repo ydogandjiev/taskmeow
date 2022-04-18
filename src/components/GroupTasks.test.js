@@ -16,7 +16,7 @@ jest.mock("../services/user.service");
 
 it("renders tasks", () => {
   const user = {
-    name: "mockName"
+    name: "mockName",
   };
   authService.getUser.mockResolvedValue(user);
 

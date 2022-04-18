@@ -18,16 +18,16 @@ class UserTile extends Component {
   }
 
   componentDidMount() {
-    authService.getUser().then(user => {
+    authService.getUser().then((user) => {
       this.setState({ user });
     });
 
     userService
       .getImage()
-      .then(userImage => {
+      .then((userImage) => {
         this.setState({ userImage });
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
         if (
           error.statusCode === 403 &&
@@ -54,9 +54,7 @@ class UserTile extends Component {
 
   render() {
     if (this.state.route) {
-      return (
-        <Navigate to={this.state.route} replace={true} />
-      );
+      return <Navigate to={this.state.route} replace={true} />;
     } else if (!this.state.user) {
       return <Spinner label="Loading user..." />;
     } else {
@@ -74,19 +72,19 @@ class UserTile extends Component {
               {
                 key: "tasks",
                 name: "Tasks",
-                onClick: this.viewTasks
+                onClick: this.viewTasks,
               },
               {
                 key: "profile",
                 name: "Profile",
-                onClick: this.viewProfile
+                onClick: this.viewProfile,
               },
               {
                 key: "logout",
                 name: "Logout",
-                onClick: this.logout
-              }
-            ]
+                onClick: this.logout,
+              },
+            ],
           }}
         >
           <span className="ms-Persona-primaryText primaryText-63">

@@ -6,7 +6,7 @@ class RestTasksService {
 
     return authService
       .fetch(route, { method: "GET" })
-      .then(result => result.json());
+      .then((result) => result.json());
   }
 
   create(task, threadId) {
@@ -18,10 +18,10 @@ class RestTasksService {
         body: JSON.stringify(task),
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       })
-      .then(result => result.json());
+      .then((result) => result.json());
   }
 
   update(task, threadId) {
@@ -35,10 +35,10 @@ class RestTasksService {
         body: JSON.stringify(task),
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       })
-      .then(result => result.json());
+      .then((result) => result.json());
   }
 
   destroy(taskId, threadId) {
@@ -48,9 +48,9 @@ class RestTasksService {
 
     return authService
       .fetch(route, {
-        method: "DELETE"
+        method: "DELETE",
       })
-      .then(result => result.json());
+      .then((result) => result.json());
   }
 }
 

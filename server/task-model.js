@@ -8,7 +8,7 @@ const taskSchema = new Schema({
   conversationId: { type: String },
   date: { type: Date, default: Date.now },
   user: { type: Schema.Types.ObjectId, ref: "User" },
-  group: { type: Schema.Types.ObjectId, ref: "Group" }
+  group: { type: Schema.Types.ObjectId, ref: "Group" },
 });
 
 const Task = mongoose.model("Task", taskSchema);

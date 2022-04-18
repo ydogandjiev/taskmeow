@@ -87,13 +87,13 @@ const Task = (props) => {
             <Icon
               className="Task-starred-icon"
               iconName="FavoriteStarFill"
-              onClick={(event) => props.onStarredChange(props.task, false)}
+              onClick={() => props.onStarredChange(props.task, false)}
             />
           ) : (
             <Icon
               className="Task-unstarred-icon"
               iconName="FavoriteStar"
-              onClick={(event) => props.onStarredChange(props.task, true)}
+              onClick={() => props.onStarredChange(props.task, true)}
             />
           )}
         </Link>
@@ -103,13 +103,13 @@ const Task = (props) => {
               <Icon
                 className="Task-conversation-open-icon"
                 iconName="ChatSolid"
-                onClick={(event) => props.closeConversation(props.task)}
+                onClick={() => props.closeConversation(props.task)}
               />
             ) : (
               <Icon
                 className="Task-conversation-closed-icon"
                 iconName="Chat"
-                onClick={(event) => props.openConversation(props.task)}
+                onClick={() => props.openConversation(props.task)}
               />
             )}
           </Link>

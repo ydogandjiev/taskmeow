@@ -26,10 +26,7 @@
   "configurableTabs": [
     {
       "configurationUrl": "https://taskmeow.ngrok.io/config/?inTeams=true",
-      "scopes": [
-        "team",
-        "groupchat"
-      ]
+      "scopes": ["team", "groupchat"]
     }
   ],
   "staticTabs": [
@@ -37,34 +34,21 @@
       "contentUrl": "https://taskmeow.ngrok.io/?inTeams=true",
       "entityId": "myTasks",
       "name": "My Tasks",
-      "scopes": [
-        "personal"
-      ]
+      "scopes": ["personal"]
     },
     {
       "contentUrl": "https://taskmeow.ngrok.io/profile/?inTeams=true",
       "entityId": "myProfile",
       "name": "My Profile",
-      "scopes": [
-        "personal"
-      ]
+      "scopes": ["personal"]
     }
   ],
   "bots": [
     {
       "botId": "ab93102c-869b-4d34-a921-a31d3e7f76ef",
-      "scopes": [
-        "personal",
-        "team",
-        "groupchat"
-      ]
+      "scopes": ["personal", "team", "groupchat"]
     }
   ],
-  "permissions": [
-    "messageTeamMembers",
-    "identity"
-  ],
-  "validDomains": [
-    "taskmeow.ngrok.io"
-  ]
+  "permissions": ["messageTeamMembers", "identity"],
+  "validDomains": ["taskmeow.ngrok.io"]
 }
