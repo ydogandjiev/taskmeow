@@ -1,5 +1,5 @@
 # Base image
-FROM node:12.22.12-stretch
+FROM node:gallium
 
 # Create app directory
 WORKDIR /usr/src/app
