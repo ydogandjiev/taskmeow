@@ -1,5 +1,5 @@
 # Base image
-FROM node:carbon
+FROM node:gallium
 
 # Create app directory
 WORKDIR /usr/src/app
