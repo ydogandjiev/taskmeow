@@ -9,24 +9,24 @@ exports[`matches starred task with conversation closed snapshot in Teams 1`] = `
     class="Task-listitem"
   >
     <div
-      class="ms-Checkbox is-enabled Task-checkbox root-73"
+      class="ms-Checkbox is-enabled Task-checkbox root-40"
     >
       <input
         aria-checked="false"
-        class="input-74"
+        class="input-41"
         id="checkbox-2"
         type="checkbox"
       />
       <label
-        class="ms-Checkbox-label label-75"
+        class="ms-Checkbox-label label-42"
         for="checkbox-2"
       >
         <div
-          class="ms-Checkbox-checkbox checkbox-76"
+          class="ms-Checkbox-checkbox checkbox-43"
         >
           <i
             aria-hidden="true"
-            class="ms-Checkbox-checkmark checkmark-80"
+            class="ms-Checkbox-checkmark checkmark-47"
             data-icon-name="CheckMark"
           >
             
@@ -42,24 +42,24 @@ exports[`matches starred task with conversation closed snapshot in Teams 1`] = `
       </div>
     </span>
     <button
-      class="ms-Link Task-star-link root-81"
+      class="ms-Link Task-star-link root-48"
       type="button"
     >
       <i
         aria-hidden="true"
-        class="Task-starred-icon root-82"
+        class="Task-starred-icon root-49"
         data-icon-name="FavoriteStarFill"
       >
         
       </i>
     </button>
     <button
-      class="ms-Link Task-conversation-link root-81"
+      class="ms-Link Task-conversation-link root-48"
       type="button"
     >
       <i
         aria-hidden="true"
-        class="Task-conversation-closed-icon root-84"
+        class="Task-conversation-closed-icon root-51"
         data-icon-name="Chat"
       >
         
@@ -78,24 +78,24 @@ exports[`matches unstarred task snapshot with conversation open in Teams 1`] = `
     class="Task-listitem"
   >
     <div
-      class="ms-Checkbox is-enabled Task-checkbox root-73"
+      class="ms-Checkbox is-enabled Task-checkbox root-40"
     >
       <input
         aria-checked="false"
-        class="input-74"
+        class="input-41"
         id="checkbox-3"
         type="checkbox"
       />
       <label
-        class="ms-Checkbox-label label-75"
+        class="ms-Checkbox-label label-42"
         for="checkbox-3"
       >
         <div
-          class="ms-Checkbox-checkbox checkbox-76"
+          class="ms-Checkbox-checkbox checkbox-43"
         >
           <i
             aria-hidden="true"
-            class="ms-Checkbox-checkmark checkmark-80"
+            class="ms-Checkbox-checkmark checkmark-47"
             data-icon-name="CheckMark"
           >
             
@@ -111,24 +111,24 @@ exports[`matches unstarred task snapshot with conversation open in Teams 1`] = `
       </div>
     </span>
     <button
-      class="ms-Link Task-star-link root-81"
+      class="ms-Link Task-star-link root-48"
       type="button"
     >
       <i
         aria-hidden="true"
-        class="Task-starred-icon root-82"
+        class="Task-starred-icon root-49"
         data-icon-name="FavoriteStarFill"
       >
         
       </i>
     </button>
     <button
-      class="ms-Link Task-conversation-link root-81"
+      class="ms-Link Task-conversation-link root-48"
       type="button"
     >
       <i
         aria-hidden="true"
-        class="Task-conversation-open-icon root-86"
+        class="Task-conversation-open-icon root-53"
         data-icon-name="ChatSolid"
       >
         
@@ -147,24 +147,24 @@ exports[`renders starred task snapshot 1`] = `
     class="Task-listitem"
   >
     <div
-      class="ms-Checkbox is-enabled Task-checkbox root-73"
+      class="ms-Checkbox is-enabled Task-checkbox root-40"
     >
       <input
         aria-checked="false"
-        class="input-74"
+        class="input-41"
         id="checkbox-0"
         type="checkbox"
       />
       <label
-        class="ms-Checkbox-label label-75"
+        class="ms-Checkbox-label label-42"
         for="checkbox-0"
       >
         <div
-          class="ms-Checkbox-checkbox checkbox-76"
+          class="ms-Checkbox-checkbox checkbox-43"
         >
           <i
             aria-hidden="true"
-            class="ms-Checkbox-checkmark checkmark-80"
+            class="ms-Checkbox-checkmark checkmark-47"
             data-icon-name="CheckMark"
           >
             
@@ -180,12 +180,12 @@ exports[`renders starred task snapshot 1`] = `
       </div>
     </span>
     <button
-      class="ms-Link Task-star-link root-81"
+      class="ms-Link Task-star-link root-48"
       type="button"
     >
       <i
         aria-hidden="true"
-        class="Task-starred-icon root-82"
+        class="Task-starred-icon root-49"
         data-icon-name="FavoriteStarFill"
       >
         
@@ -204,24 +204,24 @@ exports[`renders unstarred task snapshot 1`] = `
     class="Task-listitem"
   >
     <div
-      class="ms-Checkbox is-enabled Task-checkbox root-73"
+      class="ms-Checkbox is-enabled Task-checkbox root-40"
     >
       <input
         aria-checked="false"
-        class="input-74"
+        class="input-41"
         id="checkbox-1"
         type="checkbox"
       />
       <label
-        class="ms-Checkbox-label label-75"
+        class="ms-Checkbox-label label-42"
         for="checkbox-1"
       >
         <div
-          class="ms-Checkbox-checkbox checkbox-76"
+          class="ms-Checkbox-checkbox checkbox-43"
         >
           <i
             aria-hidden="true"
-            class="ms-Checkbox-checkmark checkmark-80"
+            class="ms-Checkbox-checkmark checkmark-47"
             data-icon-name="CheckMark"
           >
             
@@ -237,12 +237,12 @@ exports[`renders unstarred task snapshot 1`] = `
       </div>
     </span>
     <button
-      class="ms-Link Task-star-link root-81"
+      class="ms-Link Task-star-link root-48"
       type="button"
     >
       <i
         aria-hidden="true"
-        class="Task-unstarred-icon root-82"
+        class="Task-unstarred-icon root-49"
         data-icon-name="FavoriteStar"
       >
         
