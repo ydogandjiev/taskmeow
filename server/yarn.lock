@@ -39,10 +39,10 @@
   optionalDependencies:
     express "^4.0.0"
 
-"@slack/interactive-messages@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@slack/interactive-messages/-/interactive-messages-2.0.0.tgz#97a66d52fb91abb09b0365d2c38facc24ebe3a11"
-  integrity sha512-wGB2bfCbGfDbdbw5Nrt7gF1+Zq5jQhA5lZcwv/UwsWv2K1K1tkziVP0LnlI5u3zc0zJXN642GW6nZepQi+ygJw==
+"@slack/interactive-messages@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@slack/interactive-messages/-/interactive-messages-2.0.2.tgz#13242b66d59bf916f1f327eb21bf8d63f19d33dc"
+  integrity sha512-evwv7XJ8Lf4nxTbW57tfRi9uQq56GDFoOljHzZpTD+EvHVO5B9TKhGyZwS8e0G4734cREfR94gdi5fP+yHLRVg==
   dependencies:
     "@types/debug" "^4.1.4"
     "@types/express" "^4.17.0"
