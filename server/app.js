@@ -4,6 +4,7 @@ const logger = require("morgan");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const bearerToken = require("express-bearer-token");
+const session = require("express-session");
 
 const authService = require("./auth-service");
 const bot = require("./routes/bot");
@@ -21,6 +22,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(bearerToken());
 app.use(express.static(path.join(__dirname, "build")));
+app.use(session({ secret: process.env.APPSETTING_SessionSecret }));
 
 authService.initialize(app);
 
