@@ -42,9 +42,21 @@ class AuthDialog extends builder.IntentDialog {
     const user = await userService.getUser(
       session.message.address.user.aadObjectId
     );
-    let userCard = new builder.ThumbnailCard().title(user.firstname).text(`
-          <b>Lastname</b>: ${user.lastname}<br/>
-          <b>E-mail</b>: ${user.email}`);
+
+    const cardText = user.name
+      ? `
+      <b>Name</b>: ${user.name}<br/>
+      <b>E-mail</b>: ${user.email}`
+      : `
+      <b>First name</b>: ${user.firstname}<br/>
+      <b>Last name</b>: ${user.lastname}<br/>
+      <b>E-mail</b>: ${user.email}
+      `;
+
+    const userCard = new builder.ThumbnailCard()
+      .title(user.firstname)
+      .text(cardText);
+
     session.send(new builder.Message().addAttachment(userCard));
 
     await this.promptForAction(session);
