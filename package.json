@@ -44,6 +44,7 @@
     "react-dnd": "^15.1.1",
     "react-dnd-html5-backend": "^15.1.2",
     "react-dom": "^16.8.6",
+    "react-json-view": "^1.21.3",
     "react-router-dom": "^6.3.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.4"

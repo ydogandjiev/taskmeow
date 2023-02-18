@@ -1,11 +1,12 @@
 import React, { Component } from "react";
-import { Icon, Spinner, TextField } from "office-ui-fabric-react";
+import { Icon, IconButton, Spinner, TextField } from "office-ui-fabric-react";
 import Task from "./Task";
 import TaskPane from "./TaskPane";
 import UserTile from "./UserTile";
 import tasksService from "../services/tasks.service";
 import * as microsoftTeams from "@microsoft/teams-js";
 import { ConsentConsumer } from "./ConsentContext";
+import { baseUrl } from "./utils";
 
 // A little function to help us with reordering the result
 const reorder = (list, dragIndex, hoverIndex) => {
@@ -34,26 +35,27 @@ class Tasks extends Component {
   componentDidMount() {
     this.setState({ loading: true });
 
-    tasksService.get().then((tasks) => {
-      this.setState({
-        tasks: tasks.sort((a, b) => a.order - b.order),
-        loading: false,
-      });
-    });
-
     if (this.state.inTeams) {
       microsoftTeams.initialize();
       microsoftTeams.getContext((context) => {
-        this.setState({
-          threadId: context.teamId || context.chatId,
-        });
-
-        tasksService.get(this.state.threadId).then((tasks) => {
+        const threadId = context.teamId || context.chatId;
+        const fetchTaskPromise = this.props.isGroup
+          ? tasksService.get(threadId)
+          : tasksService.get();
+        fetchTaskPromise.then((tasks) => {
           this.setState({
+            threadId,
             tasks: tasks.sort((a, b) => a.order - b.order),
             loading: false,
             taskId: context.subEntityId || this.state.taskId,
           });
+        });
+      });
+    } else {
+      tasksService.get().then((tasks) => {
+        this.setState({
+          tasks: tasks.sort((a, b) => a.order - b.order),
+          loading: false,
         });
       });
     }
@@ -78,8 +80,8 @@ class Tasks extends Component {
   };
 
   share = (task) => {
-    if (this.state.inTeams) {
-      const url = `https://taskmeow.com?task=${task._id}`;
+    if (this.state.inTeams && this.props.isGroup) {
+      const url = `${baseUrl}/group?task=${task._id}`;
       microsoftTeams.sharing.shareWebContent(
         {
           content: [
@@ -92,41 +94,11 @@ class Tasks extends Component {
         },
         (err) => {
           if (err) {
-            console.log(err.message);
+            console.error(err.message);
           }
         }
       );
     }
-  };
-
-  handleTaskCheckedChange = (task, isChecked) => {
-    if (isChecked) {
-      tasksService.destroy(task._id).then(() => {
-        this.setState((prevState) => {
-          return {
-            tasks: prevState.tasks.filter((item) => item._id !== task._id),
-          };
-        });
-      });
-    }
-  };
-
-  handleTaskStarredChange = (task, isStarred) => {
-    let newOrder = task.order;
-    if (isStarred && this.state.tasks.length > 0) {
-      newOrder = this.state.tasks[0].order - 100;
-    }
-    tasksService
-      .update({ ...task, order: newOrder, starred: isStarred })
-      .then((updatedTask) => {
-        this.setState((prevState) => {
-          return {
-            tasks: prevState.tasks
-              .map((t) => (t._id === updatedTask._id ? updatedTask : t))
-              .sort((a, b) => a.order - b.order),
-          };
-        });
-      });
   };
 
   handleTextChanged = (event, value) => {
@@ -166,13 +138,92 @@ class Tasks extends Component {
         task.order = (tasks[index - 1].order + tasks[index + 1].order) / 2;
       }
 
-      tasksService.update(task);
-
-      this.setState({
-        tasks,
+      this.saveUpdate(task, true).then(() => {
+        this.setState({
+          tasks,
+        });
       });
     }
   };
+
+  handleOpenConversation = (task) => {
+    if (this.state.inTeams) {
+      microsoftTeams.conversations.openConversation({
+        conversationId: task.conversationId,
+        subEntityId: task._id,
+        title: task.title,
+        onStartConversation: (conversation) => {
+          if (task._id === conversation.subEntityId) {
+            this.saveUpdate({
+              ...task,
+              conversationId: conversation.conversationId,
+            }).then((updatedTask) => {
+              this.setState((prevState) => {
+                return {
+                  tasks: prevState.tasks
+                    .map((t) => (t._id === updatedTask._id ? updatedTask : t))
+                    .sort((a, b) => a.order - b.order),
+                };
+              });
+            });
+          }
+        },
+        onCloseConversation: () => {
+          this.setState({
+            tasks: this.state.tasks.map((t) => ({
+              ...t,
+              conversationOpen: false,
+            })),
+          });
+        },
+      });
+
+      this.setState({
+        tasks: this.state.tasks.map((t) => ({
+          ...t,
+          conversationOpen: t._id === task._id,
+        })),
+      });
+    }
+  };
+
+  handleCloseConversation = () => {
+    if (this.state.inTeams) {
+      microsoftTeams.conversations.closeConversation();
+
+      this.setState({
+        tasks: this.state.tasks.map((t) => ({ ...t, conversationOpen: false })),
+      });
+    }
+  };
+
+  async onTaskComplete(task) {
+    return tasksService.destroy(task._id).then(() => {
+      this.setState({
+        tasks: this.state.tasks.filter((item) => item._id !== task._id),
+        taskId: undefined,
+      });
+    });
+  }
+
+  async onStarredChange(task, isStarred) {
+    return this.saveUpdate({ ...task, starred: isStarred });
+  }
+
+  async saveUpdate(task, skipStateUpdate) {
+    const threadId = this.props.isGroup ? this.state.threadId : undefined;
+    const index = this.state.tasks.findIndex((item) => item._id === task._id);
+    const updatedList = [...this.state.tasks];
+    updatedList[index] = task;
+    return tasksService.update(task, threadId).then(() => {
+      if (!skipStateUpdate) {
+        this.setState({
+          taskId: undefined,
+          tasks: updatedList,
+        });
+      }
+    });
+  }
 
   renderTaskList = () => {
     return (
@@ -200,10 +251,14 @@ class Tasks extends Component {
                 task={task}
                 inTeams={this.state.inTeams}
                 conversationOpen={this.state.conversationOpen}
-                onCheckedChange={this.handleTaskCheckedChange}
-                onStarredChange={this.handleTaskStarredChange}
-                onMoveTask={this.handleMoveTask}
-                selectTask={this.selectTask}
+                onMoveTask={(dragIndex, hoverIndex) =>
+                  this.handleMoveTask(dragIndex, hoverIndex)
+                }
+                selectTask={(task) => this.selectTask(task)}
+                onStarredChange={(task, isStarred) =>
+                  this.onStarredChange(task, isStarred)
+                }
+                onCheckedChange={(task) => this.onTaskComplete(task)}
               />
             ))}
           </ul>
@@ -220,7 +275,20 @@ class Tasks extends Component {
       <div className="App-content">
         <div className="App-header">
           <h1 className="App-header-title">
-            {activeTask ? activeTask.title : "Tasks"}
+            {activeTask ? (
+              <span>
+                <IconButton
+                  onClick={() => this.handleCloseTask()}
+                  title="Back to list"
+                  iconProps={{
+                    iconName: "DoubleChevronLeft8",
+                  }}
+                />{" "}
+                Task
+              </span>
+            ) : (
+              "Tasks"
+            )}
           </h1>
           <ConsentConsumer>
             {({ setConsentRequired }) => (
@@ -234,18 +302,17 @@ class Tasks extends Component {
 
         {activeTask ? (
           <TaskPane
-            isOpen={activeTask}
-            close={this.handleCloseTask}
+            isGroupTask={this.props.isGroup}
             key={activeTask._id}
             task={activeTask}
             inTeams={this.state.inTeams}
             supportsConversation={true}
             conversationOpen={this.state.conversationOpen}
-            onCheckedChange={this.handleTaskCheckedChange}
-            onStarredChange={this.handleTaskStarredChange}
-            openConversation={this.handleOpenConversation}
-            closeConversation={this.handleCloseConversation}
-            share={this.share}
+            openConversation={(task) => this.handleOpenConversation(task)}
+            closeConversation={() => this.handleCloseConversation()}
+            share={(task) => this.share(task)}
+            saveEdit={(task) => this.saveUpdate(task)}
+            onSaveTaskComplete={(task) => this.onTaskComplete(task)}
           />
         ) : (
           this.renderTaskList()

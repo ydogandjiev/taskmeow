@@ -7,7 +7,6 @@ import {
   MessageBarButton,
   MessageBarType,
 } from "office-ui-fabric-react";
-import GroupTasks from "./components/GroupTasks";
 import Profile from "./components/Profile";
 import Tasks from "./components/Tasks";
 import Config from "./components/Config";
@@ -16,6 +15,7 @@ import authService from "./services/auth.service";
 import microsoftLogo from "./microsoft.png";
 import background from "./background.png";
 import logo from "./logo.svg";
+import Debug from "./components/Debug";
 import "./App.css";
 
 // Initialize Office Fabric icons for use throughout app
@@ -87,6 +87,7 @@ class App extends Component {
   render() {
     return (
       <div className="App" style={{ backgroundImage: `url(${background})` }}>
+        <Debug />
         {!this.state.loading && !this.state.error ? (
           <div>
             <ConsentConsumer>
@@ -111,7 +112,7 @@ class App extends Component {
             </ConsentConsumer>
             {this.state.user ? (
               <Routes>
-                <Route path="/group" element={<GroupTasks />} />
+                <Route path="/group" element={<Tasks isGroup={true} />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/config" element={<Config />} />
                 <Route path="/remove" element={<Remove />} />
