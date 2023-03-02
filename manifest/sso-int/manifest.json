@@ -129,12 +129,12 @@
           "title": "Create Task",
           "description": "Create and share a new task in this chat.",
           "context": ["compose", "commandBox"],
+          "fetchTask": true,
           "parameters": [
             {
-              "name": "title",
-              "title": "Create a task",
-              "description": "Create and share a new task in this chat.",
-              "inputType": "text"
+              "name": "param",
+              "title": "param",
+              "description": ""
             }
           ]
         },

@@ -192,8 +192,8 @@ class AuthBot extends builder.UniversalBot {
         }
         const members = await getMembers(group.serviceUrl, threadId);
         if (members && members.some((member) => member.objectId === userId)) {
-          const task = await taskService.createForGroup(group._id, taskTitle);
-          const card = this.getAdaptiveCardForTask(task, true);
+          const task = await taskService.createForGroup(group.id, taskTitle);
+          const card = this.getAdaptiveCardForTask(task, undefined, true);
           response.composeExtension.attachments = [card];
           return response;
         } else {
@@ -217,9 +217,53 @@ class AuthBot extends builder.UniversalBot {
   async handleFetchTask(cb, event, session) {
     if (event.value.commandId === "SignOutCommand") {
       this.handleSignOutCommand(cb, session);
+    } else if (event.value.commandId === "createTask") {
+      this.handleCreateTaskCommand(cb);
     } else {
       cb(null);
     }
+  }
+
+  handleCreateTaskCommand(cb) {
+    const card = {
+      contentType: "application/vnd.microsoft.card.adaptive",
+      content: {
+        version: "1.0.0",
+        type: "AdaptiveCard",
+        body: [
+          {
+            type: "TextBlock",
+            size: "Medium",
+            weight: "Bolder",
+            text: "Create a task",
+          },
+          { type: "TextBlock", text: "Title" },
+          { id: "title", placeholder: "New Task", type: "Input.Text" },
+        ],
+        actions: [
+          {
+            type: "Action.Submit",
+            title: "Create",
+            data: {
+              submitLocation: "messagingExtensionFetchTask",
+            },
+          },
+        ],
+      },
+    };
+
+    const response = {
+      task: {
+        type: "continue",
+        value: {
+          card: card,
+          heigth: 500,
+          width: 400,
+          title: "Create a Task",
+        },
+      },
+    };
+    cb(null, response);
   }
 
   handleSignOutCommand(cb, session) {
@@ -279,7 +323,7 @@ class AuthBot extends builder.UniversalBot {
 
     const searchString =
       event.value.parameters.length > 0 && event.value.parameters[0].value;
-    const tasks = await taskService.getForUser(user._id);
+    const tasks = await taskService.getForUser(user.id);
 
     const attachments = tasks
       .filter(
@@ -376,9 +420,10 @@ class AuthBot extends builder.UniversalBot {
 
     const urlObj = new URL(event.value.url);
     const taskId = urlObj.searchParams.get("task");
+    const shareTag = urlObj.searchParams.get("shareTag");
     if (taskId) {
       const taskObj = await taskService.get(taskId);
-      const attachment = this.getAdaptiveCardForTask(taskObj, true);
+      const attachment = this.getAdaptiveCardForTask(taskObj, shareTag, true);
       const result = {
         attachmentLayout: "list",
         type: "result",
@@ -511,11 +556,12 @@ class AuthBot extends builder.UniversalBot {
     return adaptiveCardJson;
   }
 
-  getAdaptiveCardForTask(task, isGroup) {
-    const websiteUrl = isGroup
-      ? `${this.baseUrl}/group?task=${task.id}`
-      : `${this.baseUrl}?task=${task.id}`;
-    const contentUrl = `${websiteUrl}&inTeamsSSO=true`;
+  getAdaptiveCardForTask(task, shareTag, isGroup) {
+    const shareParam = shareTag ? `&shareTag=${shareTag}` : "";
+    const websiteUrl = `${this.baseUrl}?task=${task.id}${shareParam}`;
+    const contentUrl = isGroup
+      ? `${this.baseUrl}/group?task=${task.id}${shareParam}&inTeamsSSO=true`
+      : `${this.baseUrl}?task=${task.id}${shareParam}&inTeamsSSO=true`;
     const actions = [
       {
         type: "Action.Submit",

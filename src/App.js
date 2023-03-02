@@ -33,6 +33,8 @@ class App extends Component {
     this.state = {
       loading: true,
       inTeams: !!params.get("inTeams") || !!params.get("inTeamsSSO"),
+      taskId: params.get("task"),
+      shareTag: params.get("shareTag"),
     };
   }
 
@@ -85,10 +87,11 @@ class App extends Component {
   };
 
   render() {
+    const { inTeams, taskId, shareTag, user, loading, error } = this.state;
     return (
       <div className="App" style={{ backgroundImage: `url(${background})` }}>
         <Debug />
-        {!this.state.loading && !this.state.error ? (
+        {!loading && !error ? (
           <div>
             <ConsentConsumer>
               {({ consentRequired, requestConsent }) =>
@@ -110,13 +113,32 @@ class App extends Component {
                 )
               }
             </ConsentConsumer>
-            {this.state.user ? (
+            {user ? (
               <Routes>
-                <Route path="/group" element={<Tasks isGroup={true} />} />
+                <Route
+                  path="/group"
+                  element={
+                    <Tasks
+                      isGroup={true}
+                      inTeams={inTeams}
+                      taskId={taskId}
+                      shareTag={shareTag}
+                    />
+                  }
+                />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/config" element={<Config />} />
                 <Route path="/remove" element={<Remove />} />
-                <Route path="/" element={<Tasks />} />
+                <Route
+                  path="/"
+                  element={
+                    <Tasks
+                      inTeams={inTeams}
+                      taskId={taskId}
+                      shareTag={shareTag}
+                    />
+                  }
+                />
               </Routes>
             ) : (
               <div className="App-login">
