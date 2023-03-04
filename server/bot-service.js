@@ -170,7 +170,9 @@ class AuthBot extends builder.UniversalBot {
   async handleCreateTask(data, address, sourceEvent) {
     const response = {
       composeExtension: {
+        attachmentLayout: "list",
         type: "result",
+        attachments: [],
       },
     };
 
@@ -317,13 +319,13 @@ class AuthBot extends builder.UniversalBot {
       cb(null, this.getSSOResponse());
     }
 
-    const user = await userService.getUser(
-      session.message.address.user.aadObjectId
-    );
-
     const searchString =
       event.value.parameters.length > 0 && event.value.parameters[0].value;
-    const tasks = await taskService.getForUser(user.id);
+
+    const tasks = await getTasksInContext(session, event);
+
+    const groupPath =
+      event.address.conversationType == "personal" ? "" : "/group";
 
     const attachments = tasks
       .filter(
@@ -353,11 +355,6 @@ class AuthBot extends builder.UniversalBot {
               type: "ActionSet",
               actions: [
                 {
-                  type: "Action.OpenUrl",
-                  title: "Outside Teams",
-                  url: `${this.baseUrl}?task=${task?.id}`,
-                },
-                {
                   type: "Action.Submit",
                   title: "View",
                   data: {
@@ -366,7 +363,7 @@ class AuthBot extends builder.UniversalBot {
                       value: {
                         type: "tab/tabInfoAction",
                         tabInfo: {
-                          contentUrl: `${this.baseUrl}?task=${task?.id}&inTeamsSSO=true`,
+                          contentUrl: `${this.baseUrl}${groupPath}?task=${task?.id}&inTeamsSSO=true`,
                           websiteUrl: `${this.baseUrl}?task=${task?.id}`,
                           name: "Tasks",
                           entityId: "entityId",
@@ -629,6 +626,26 @@ class AuthBot extends builder.UniversalBot {
     return adaptiveCardJson;
   }
 }
+
+const getTasksInContext = async (session, event) => {
+  const { address, sourceEvent } = event;
+  if (address.conversationType !== "personal") {
+    // Since tasks are organized at the team level (no channel tasks), use team id for channel posts,
+    // otherwise, use conversation ID.
+    const threadId =
+      address.conversationType == "channel"
+        ? sourceEvent?.team?.id
+        : address?.conversation?.id;
+
+    return groupService
+      .get(threadId)
+      .then((group) => taskService.getForGroup(group._id));
+  } else {
+    return userService
+      .getUser(session.message.address.user.aadObjectId)
+      .then((user) => taskService.getForUser(user.id));
+  }
+};
 
 // Create chat bot
 const connector = new msteams.TeamsChatConnector({

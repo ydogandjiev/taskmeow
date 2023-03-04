@@ -184,7 +184,7 @@ const TaskPane = (props) => {
           )}
         </ConsentConsumer>
       </div>
-      {loading ? (
+      {loading || isListLoading ? (
         <Spinner label="Loading task..." />
       ) : (
         <div>

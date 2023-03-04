@@ -128,15 +128,9 @@
           "type": "action",
           "title": "Create Task",
           "description": "Create and share a new task in this chat.",
-          "context": ["compose", "commandBox"],
+          "initialRun": false,
           "fetchTask": true,
-          "parameters": [
-            {
-              "name": "param",
-              "title": "param",
-              "description": ""
-            }
-          ]
+          "context": ["commandBox", "compose"]
         },
         {
           "id": "SignOutCommand",
@@ -145,14 +139,7 @@
           "description": "Sign out from authenticated services.",
           "initialRun": false,
           "fetchTask": true,
-          "context": ["commandBox", "compose"],
-          "parameters": [
-            {
-              "name": "param",
-              "title": "param",
-              "description": ""
-            }
-          ]
+          "context": ["commandBox", "compose"]
         }
       ],
       "messageHandlers": [
