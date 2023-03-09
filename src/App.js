@@ -12,6 +12,7 @@ import Profile from "./components/Profile";
 import Tasks from "./components/Tasks";
 import Config from "./components/Config";
 import Remove from "./components/Remove";
+import Debug from "./components/Debug";
 import authService from "./services/auth.service";
 import microsoftLogo from "./microsoft.png";
 import background from "./background.png";
@@ -87,6 +88,7 @@ class App extends Component {
   render() {
     return (
       <div className="App" style={{ backgroundImage: `url(${background})` }}>
+        {this.state.inTeams && <Debug />}
         {!this.state.loading && !this.state.error ? (
           <div>
             <ConsentConsumer>
