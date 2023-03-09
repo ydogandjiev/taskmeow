@@ -7,7 +7,6 @@ const taskSchema = new Schema({
   starred: { type: Boolean, default: false },
   conversationId: { type: String },
   date: { type: Date, default: Date.now },
-  shareTag: { type: String, default: undefined, required: false },
   user: { type: Schema.Types.ObjectId, ref: "User" },
   group: { type: Schema.Types.ObjectId, ref: "Group" },
 });

@@ -10,36 +10,6 @@
     "privacyUrl": "https://taskmeow.com/privacypolicy",
     "termsOfUseUrl": "https://taskmeow.com/termsofuse"
   },
-  "authorization": {
-    "permissions": {
-      "resourceSpecific": [
-        {
-          "name": "OnlineMeeting.ReadBasic.Chat",
-          "type": "Delegated"
-        },
-        {
-          "name": "MeetingStage.Write.Chat",
-          "type": "Delegated"
-        },
-        {
-          "name": "OnlineMeetingParticipant.Read.Chat",
-          "type": "Delegated"
-        },
-        {
-          "name": "OnlineMeetingParticipant.ToggleIncomingAudio.Chat",
-          "type": "Delegated"
-        },
-        {
-          "name": "ChannelMeetingStage.Write.Group",
-          "type": "Delegated"
-        },
-        {
-          "name": "ChannelMeeting.ReadBasic.Group",
-          "type": "Delegated"
-        }
-      ]
-    }
-  },
   "name": {
     "short": "Task Meow (SSO-INT)",
     "full": "Task Meow (SSO-INT) for Microsoft Teams"
@@ -57,33 +27,11 @@
     {
       "configurationUrl": "https://taskmeow.ngrok.io/config/?inTeamsSSO=true",
       "canUpdateConfiguration": true,
-      "scopes": ["team", "groupChat"],
-      "meetingSurfaces": ["sidePanel", "stage"],
-      "context": [
-        "privateChatTab",
-        "channelTab",
-        "meetingChatTab",
-        "meetingDetailsTab",
-        "meetingSidePanel",
-        "meetingStage"
-      ]
+      "scopes": ["team", "groupchat"],
+      "meetingSurfaces": ["sidePanel"]
     }
   ],
   "staticTabs": [
-    {
-      "contentUrl": "https://taskmeow.ngrok.io/group/?inTeamsSSO=true",
-      "entityId": "groupTasks",
-      "name": "Tasks",
-      "scopes": ["groupChat", "team"],
-      "context": [
-        "privateChatTab",
-        "channelTab",
-        "meetingChatTab",
-        "meetingDetailsTab",
-        "meetingSidePanel",
-        "meetingStage"
-      ]
-    },
     {
       "contentUrl": "https://taskmeow.ngrok.io/?inTeamsSSO=true",
       "entityId": "myTasks",
@@ -100,7 +48,7 @@
   "bots": [
     {
       "botId": "ab93102c-869b-4d34-a921-a31d3e7f76ef",
-      "scopes": ["personal", "groupChat", "team"]
+      "scopes": ["personal", "groupchat", "team"]
     }
   ],
   "composeExtensions": [
@@ -124,22 +72,20 @@
           ]
         },
         {
-          "id": "createTask",
-          "type": "action",
-          "title": "Create Task",
-          "description": "Create and share a new task in this chat.",
-          "initialRun": false,
-          "fetchTask": true,
-          "context": ["commandBox", "compose"]
-        },
-        {
           "id": "SignOutCommand",
           "type": "action",
-          "title": "Sign out",
+          "title": "Sign Out",
           "description": "Sign out from authenticated services.",
           "initialRun": false,
           "fetchTask": true,
-          "context": ["commandBox", "compose"]
+          "context": ["commandBox", "compose"],
+          "parameters": [
+            {
+              "name": "param",
+              "title": "param",
+              "description": ""
+            }
+          ]
         }
       ],
       "messageHandlers": [
