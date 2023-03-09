@@ -7,6 +7,7 @@ import {
   MessageBarButton,
   MessageBarType,
 } from "office-ui-fabric-react";
+import GroupTasks from "./components/GroupTasks";
 import Profile from "./components/Profile";
 import Tasks from "./components/Tasks";
 import Config from "./components/Config";
@@ -15,7 +16,6 @@ import authService from "./services/auth.service";
 import microsoftLogo from "./microsoft.png";
 import background from "./background.png";
 import logo from "./logo.svg";
-import Debug from "./components/Debug";
 import "./App.css";
 
 // Initialize Office Fabric icons for use throughout app
@@ -33,8 +33,6 @@ class App extends Component {
     this.state = {
       loading: true,
       inTeams: !!params.get("inTeams") || !!params.get("inTeamsSSO"),
-      taskId: params.get("task"),
-      shareTag: params.get("shareTag"),
     };
   }
 
@@ -87,11 +85,9 @@ class App extends Component {
   };
 
   render() {
-    const { inTeams, taskId, shareTag, user, loading, error } = this.state;
     return (
       <div className="App" style={{ backgroundImage: `url(${background})` }}>
-        <Debug />
-        {!loading && !error ? (
+        {!this.state.loading && !this.state.error ? (
           <div>
             <ConsentConsumer>
               {({ consentRequired, requestConsent }) =>
@@ -113,32 +109,13 @@ class App extends Component {
                 )
               }
             </ConsentConsumer>
-            {user ? (
+            {this.state.user ? (
               <Routes>
-                <Route
-                  path="/group"
-                  element={
-                    <Tasks
-                      isGroup={true}
-                      inTeams={inTeams}
-                      taskId={taskId}
-                      shareTag={shareTag}
-                    />
-                  }
-                />
+                <Route path="/group" element={<GroupTasks />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/config" element={<Config />} />
                 <Route path="/remove" element={<Remove />} />
-                <Route
-                  path="/"
-                  element={
-                    <Tasks
-                      inTeams={inTeams}
-                      taskId={taskId}
-                      shareTag={shareTag}
-                    />
-                  }
-                />
+                <Route path="/" element={<Tasks />} />
               </Routes>
             ) : (
               <div className="App-login">

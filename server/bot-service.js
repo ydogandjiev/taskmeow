@@ -9,20 +9,8 @@ const groupService = require("./group-service");
 const utils = require("./utils");
 
 class AuthBot extends builder.UniversalBot {
-  baseUrl;
-
   constructor(_connector, botSettings) {
     super(_connector, botSettings);
-
-    const isInt = process.env.REACT_APP_RUN_MODE === "int";
-    this.baseUrl = isInt ? "https://taskmeow.ngrok.io" : "https://taskmeow.com";
-    if (isInt) {
-      console.warn("***Int Mode is for local development only!!!***");
-      console.warn(
-        `Base URL is set to ${this.baseUrl}. Messages and adaptive cards sent with this URL will not work in production.`
-      );
-      console.warn("******");
-    }
 
     // Persist conversationData
     this.set("persistConversationData", true);
@@ -131,9 +119,9 @@ class AuthBot extends builder.UniversalBot {
       } else if (event.name === "composeExtension/query") {
         await this.handleQuery(cb, event, session);
       } else if (event.name === "composeExtension/fetchTask") {
-        await this.handleFetchTask(cb, event, session);
+        await this.handleFetchTask(cb, session);
       } else if (event.name === "composeExtension/submitAction") {
-        await this.handleSubmitAction(cb, event);
+        //do nothing when the compose extension close button is pressed
       } else {
         // Simulate a normal message and route it, but remember the original invoke message
         const payload = event.value;
@@ -153,122 +141,8 @@ class AuthBot extends builder.UniversalBot {
     cb(null, "");
   }
 
-  async handleSubmitAction(cb, event) {
-    const { value, address, sourceEvent } = event;
-    if (value?.commandId === "createTask" && value?.data?.title && address) {
-      const result = await this.handleCreateTask(
-        value.data,
-        address,
-        sourceEvent
-      );
-      cb(null, result);
-    } else {
-      cb(null);
-    }
-  }
-
-  async handleCreateTask(data, address, sourceEvent) {
-    const response = {
-      composeExtension: {
-        attachmentLayout: "list",
-        type: "result",
-        attachments: [],
-      },
-    };
-
-    const taskTitle = data.title;
-    const userId = address?.user?.aadObjectId;
-    const { conversationType } = address.conversation;
-    // Since tasks are organized at the team level (no channel tasks), use team id for channel posts,
-    // otherwise, use conversation ID.
-    const threadId =
-      conversationType == "channel"
-        ? sourceEvent?.team?.id
-        : address?.conversation?.id;
-
-    try {
-      if (conversationType !== "personal") {
-        let group = await groupService.get(threadId);
-        if (!group) {
-          group = await groupService.create(threadId, address.serviceUrl);
-        }
-        const members = await getMembers(group.serviceUrl, threadId);
-        if (members && members.some((member) => member.objectId === userId)) {
-          const task = await taskService.createForGroup(group.id, taskTitle);
-          const card = this.getAdaptiveCardForTask(task, undefined, true);
-          response.composeExtension.attachments = [card];
-          return response;
-        } else {
-          console.error(
-            `There are no group members or the user is not one of them.`
-          );
-        }
-      } else {
-        const task = await taskService.createForUser(userId, taskTitle);
-        const card = this.getAdaptiveCardForTask(task);
-        response.composeExtension.attachments = [card];
-        return response;
-      }
-    } catch (error) {
-      console.error(error);
-    }
-    return response;
-  }
-
   // Handle fetch task
-  async handleFetchTask(cb, event, session) {
-    if (event.value.commandId === "SignOutCommand") {
-      this.handleSignOutCommand(cb, session);
-    } else if (event.value.commandId === "createTask") {
-      this.handleCreateTaskCommand(cb);
-    } else {
-      cb(null);
-    }
-  }
-
-  handleCreateTaskCommand(cb) {
-    const card = {
-      contentType: "application/vnd.microsoft.card.adaptive",
-      content: {
-        version: "1.0.0",
-        type: "AdaptiveCard",
-        body: [
-          {
-            type: "TextBlock",
-            size: "Medium",
-            weight: "Bolder",
-            text: "Create a task",
-          },
-          { type: "TextBlock", text: "Title" },
-          { id: "title", placeholder: "New Task", type: "Input.Text" },
-        ],
-        actions: [
-          {
-            type: "Action.Submit",
-            title: "Create",
-            data: {
-              submitLocation: "messagingExtensionFetchTask",
-            },
-          },
-        ],
-      },
-    };
-
-    const response = {
-      task: {
-        type: "continue",
-        value: {
-          card: card,
-          heigth: 500,
-          width: 400,
-          title: "Create a Task",
-        },
-      },
-    };
-    cb(null, response);
-  }
-
-  handleSignOutCommand(cb, session) {
+  async handleFetchTask(cb, session) {
     utils.setUserToken(session, null);
     const card = {
       contentType: "application/vnd.microsoft.card.adaptive",
@@ -319,75 +193,24 @@ class AuthBot extends builder.UniversalBot {
       cb(null, this.getSSOResponse());
     }
 
+    const user = await userService.getUser(
+      session.message.address.user.aadObjectId
+    );
     const searchString =
       event.value.parameters.length > 0 && event.value.parameters[0].value;
-
-    const tasks = await getTasksInContext(session, event);
-
-    const groupPath =
-      event.address.conversationType == "personal" ? "" : "/group";
-
+    const tasks = await taskService.getForUser(user._id);
     const attachments = tasks
-      .filter(
-        (task) =>
-          task.title &&
-          task.title.toLowerCase().indexOf(searchString.toLowerCase()) >= 0
-      )
+      .filter((task) => task.title.indexOf(searchString) >= 0)
       .map((task) => ({
-        contentType: "application/vnd.microsoft.card.adaptive",
         content: {
-          $schema: "https://adaptivecards.io/schemas/adaptive-card.json",
-          type: "AdaptiveCard",
-          version: "1.5",
-          body: [
+          title: task.title,
+          images: [
             {
-              type: "TextBlock",
-              size: "Medium",
-              weight: "Bolder",
-              text: task?.title || "Unknown",
-            },
-            {
-              type: "TextBlock",
-              text: "Description",
-              wrap: true,
-            },
-            {
-              type: "ActionSet",
-              actions: [
-                {
-                  type: "Action.Submit",
-                  title: "View",
-                  data: {
-                    msteams: {
-                      type: "invoke",
-                      value: {
-                        type: "tab/tabInfoAction",
-                        tabInfo: {
-                          contentUrl: `${this.baseUrl}${groupPath}?task=${task?.id}&inTeamsSSO=true`,
-                          websiteUrl: `${this.baseUrl}?task=${task?.id}`,
-                          name: "Tasks",
-                          entityId: "entityId",
-                        },
-                      },
-                    },
-                  },
-                },
-              ],
+              url: `${process.env.APPSETTING_AAD_BaseUri}/checkmark.png`,
             },
           ],
         },
-        preview: {
-          contentType: "application/vnd.microsoft.card.thumbnail",
-          content: {
-            title: task?.title,
-            images: [
-              {
-                url: `${process.env.APPSETTING_AAD_BaseUri}/checkmark.png`,
-                alt: task?.title,
-              },
-            ],
-          },
-        },
+        contentType: "application/vnd.microsoft.card.thumbnail",
       }));
 
     const result = {
@@ -417,24 +240,28 @@ class AuthBot extends builder.UniversalBot {
 
     const urlObj = new URL(event.value.url);
     const taskId = urlObj.searchParams.get("task");
-    const shareTag = urlObj.searchParams.get("shareTag");
     if (taskId) {
       const taskObj = await taskService.get(taskId);
-      const attachment = this.getAdaptiveCardForTask(taskObj, shareTag, true);
-      const result = {
-        attachmentLayout: "list",
-        type: "result",
-        attachments: [attachment],
-        responseType: "composeExtension",
-      };
-      const response = {
-        composeExtension: result,
-      };
-      cb(null, response);
-      return;
+      if (taskObj) {
+        const attachment = this.getAdaptiveCardForTask(
+          event.value.url,
+          taskObj
+        );
+        const result = {
+          attachmentLayout: "list",
+          type: "result",
+          attachments: [attachment],
+          responseType: "composeExtension",
+        };
+        const response = {
+          composeExtension: result,
+        };
+        cb(null, response);
+        return;
+      }
     }
 
-    const attachment = this.getDefaultAdaptiveCardAttachment();
+    const attachment = this.getAdaptiveCardAttachment();
     const result = {
       attachmentLayout: "list",
       type: "result",
@@ -464,10 +291,9 @@ class AuthBot extends builder.UniversalBot {
       },
     };
   }
-
-  getDefaultAdaptiveCardAttachment() {
-    const contentUrl = `${this.baseUrl}/group/?inTeamsSSO=true`;
-    const websiteUrl = `${this.baseUrl}/group`;
+  getAdaptiveCardAttachment() {
+    const contentUrl = "https://taskmeow.com/group/?inTeamsSSO=true";
+    const websiteUrl = "https://taskmeow.com/group";
 
     const adaptiveCardJson = {
       contentType: "application/vnd.microsoft.card.adaptive",
@@ -553,43 +379,9 @@ class AuthBot extends builder.UniversalBot {
     return adaptiveCardJson;
   }
 
-  getAdaptiveCardForTask(task, shareTag, isGroup) {
-    const shareParam = shareTag ? `&shareTag=${shareTag}` : "";
-    const websiteUrl = `${this.baseUrl}?task=${task.id}${shareParam}`;
-    const contentUrl = isGroup
-      ? `${this.baseUrl}/group?task=${task.id}${shareParam}&inTeamsSSO=true`
-      : `${this.baseUrl}?task=${task.id}${shareParam}&inTeamsSSO=true`;
-    const actions = [
-      {
-        type: "Action.Submit",
-        title: "View",
-        data: {
-          msteams: {
-            type: "invoke",
-            value: {
-              type: "tab/tabInfoAction",
-              tabInfo: {
-                contentUrl: contentUrl,
-                websiteUrl: websiteUrl,
-                name: "Tasks",
-                entityId: "entityId",
-              },
-            },
-          },
-        },
-      },
-    ];
-
-    // Since a group task cannot be viewed outside of Teams, we will
-    // only allow opening outside when it's not a group task.
-    if (!isGroup) {
-      actions.push({
-        type: "Action.OpenUrl",
-        title: "Outside Teams",
-        url: websiteUrl,
-      });
-    }
-
+  getAdaptiveCardForTask(url, task) {
+    const contentUrl = `${url}&inTeamsSSO=true`;
+    const websiteUrl = url;
     const adaptiveCardJson = {
       contentType: "application/vnd.microsoft.card.adaptive",
       content: {
@@ -600,7 +392,7 @@ class AuthBot extends builder.UniversalBot {
             type: "TextBlock",
             size: "Medium",
             weight: "Bolder",
-            text: task?.title || "Unknown",
+            text: task.title,
           },
           {
             type: "TextBlock",
@@ -608,7 +400,31 @@ class AuthBot extends builder.UniversalBot {
             wrap: true,
           },
         ],
-        actions,
+        actions: [
+          {
+            type: "Action.OpenUrl",
+            title: "Outside Teams",
+            url: websiteUrl,
+          },
+          {
+            type: "Action.Submit",
+            title: "View",
+            data: {
+              msteams: {
+                type: "invoke",
+                value: {
+                  type: "tab/tabInfoAction",
+                  tabInfo: {
+                    contentUrl: contentUrl,
+                    websiteUrl: websiteUrl,
+                    name: "Tasks",
+                    entityId: "entityId",
+                  },
+                },
+              },
+            },
+          },
+        ],
       },
       preview: {
         content: {
@@ -626,26 +442,6 @@ class AuthBot extends builder.UniversalBot {
     return adaptiveCardJson;
   }
 }
-
-const getTasksInContext = async (session, event) => {
-  const { address, sourceEvent } = event;
-  if (address.conversationType !== "personal") {
-    // Since tasks are organized at the team level (no channel tasks), use team id for channel posts,
-    // otherwise, use conversation ID.
-    const threadId =
-      address.conversationType == "channel"
-        ? sourceEvent?.team?.id
-        : address?.conversation?.id;
-
-    return groupService
-      .get(threadId)
-      .then((group) => taskService.getForGroup(group._id));
-  } else {
-    return userService
-      .getUser(session.message.address.user.aadObjectId)
-      .then((user) => taskService.getForUser(user.id));
-  }
-};
 
 // Create chat bot
 const connector = new msteams.TeamsChatConnector({

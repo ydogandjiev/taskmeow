@@ -117,6 +117,58 @@ const Task = (props) => {
       </li>
     </div>
   );
+
+  /*
+  return (
+    <li
+      className="Task-listitem"
+      ref={drag}
+      style={{ opacity: isDragging ? 0.5 : 1 }}
+    >
+      <Checkbox
+        className="Task-checkbox"
+        onChange={(event, isChecked) =>
+          props.onCheckedChange(props.task, isChecked)
+        }
+      />
+      <span className="Task-title">
+        <div>{props.task.title}</div>
+      </span>
+      <Link className="Task-star-link">
+        {props.task.starred ? (
+          <Icon
+            className="Task-starred-icon"
+            iconName="FavoriteStarFill"
+            onClick={(event) => props.onStarredChange(props.task, false)}
+          />
+        ) : (
+          <Icon
+            className="Task-unstarred-icon"
+            iconName="FavoriteStar"
+            onClick={(event) => props.onStarredChange(props.task, true)}
+          />
+        )}
+      </Link>
+      {props.inTeams && props.supportsConversation && (
+        <Link className="Task-conversation-link">
+          {props.task.conversationOpen ? (
+            <Icon
+              className="Task-conversation-open-icon"
+              iconName="ChatSolid"
+              onClick={(event) => props.closeConversation(props.task)}
+            />
+          ) : (
+            <Icon
+              className="Task-conversation-closed-icon"
+              iconName="Chat"
+              onClick={(event) => props.openConversation(props.task)}
+            />
+          )}
+        </Link>
+      )}
+    </li>
+  );
+  */
 };
 
 export default Task;

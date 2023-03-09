@@ -12,10 +12,6 @@ class MockTasksService {
     return Promise.resolve(tasks);
   };
 
-  getShareUrl = () => {
-    return Promise.reject("Not implemented");
-  };
-
   create = (task) => {
     const newTask = {
       _id: `task-${this.taskIndex++}`,
