@@ -21,6 +21,10 @@ class GraphTasksService {
       });
   }
 
+  getShareUrl = () => {
+    return Promise.reject("Not implemented");
+  };
+
   create(task) {
     return authService
       .fetch("/graphql", {
