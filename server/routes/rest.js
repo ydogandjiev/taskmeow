@@ -10,6 +10,48 @@ router.get("/user/image", (req, res) => {
   userService.getImage(req, res);
 });
 
+router.get("/tasks/:taskId/share", (req, res) => {
+  taskService
+    .get(req.params.taskId)
+    .then((task) => {
+      if (task.user._id.toString() === req.user.id) {
+        taskService
+          .getShareUrl(task)
+          .then((url) => {
+            res.json(url);
+          })
+          .catch((err) => {
+            res.status(500).send(err.message);
+          });
+      } else {
+        res.status(403).send("Permission denied");
+      }
+    })
+    .catch(() => {
+      res.status(404).send("Not found");
+    });
+});
+
+router.get("/tasks/:taskId", (req, res) => {
+  taskService
+    .get(req.params.taskId)
+    .then((task) => {
+      if (task.user._id.toString() === req.user.id) {
+        res.json(task);
+        // TODO: enable shareTag comparison when user is not the owner
+        /*
+      } else if (task.shareTag === req.query.shareTag) {
+        res.json(task);
+      */
+      } else {
+        res.status(403).send("Permission denied");
+      }
+    })
+    .catch(() => {
+      res.status(404).send("Not found");
+    });
+});
+
 router.get("/tasks", (req, res) => {
   taskService
     .getForUser(req.user._id)
@@ -85,11 +127,11 @@ router.get("/groups/:threadId/tasks", (req, res) => {
                 res.status(500).send(err);
               });
           } else {
-            req.status(401).send("User is not a member of this group!");
+            res.status(401).send("User is not a member of this group!");
           }
         });
       } else {
-        req
+        res
           .status(404)
           .send(`Couldn't find group with id: ${req.params.threadId}`);
       }

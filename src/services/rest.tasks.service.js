@@ -1,9 +1,21 @@
 import authService from "./auth.service";
 
 class RestTasksService {
-  get(threadId) {
-    const route = threadId ? `/api/groups/${threadId}/tasks` : "/api/tasks";
+  get(threadId, options) {
+    let route;
+    if (options) {
+      route = `/api/tasks/${options.taskId}?shareTag=${options.shareTag}`;
+    } else {
+      route = threadId ? `/api/groups/${threadId}/tasks` : "/api/tasks";
+    }
 
+    return authService
+      .fetch(route, { method: "GET" })
+      .then((result) => result.json());
+  }
+
+  getShareUrl(taskId) {
+    const route = `/api/tasks/${taskId}/share`;
     return authService
       .fetch(route, { method: "GET" })
       .then((result) => result.json());

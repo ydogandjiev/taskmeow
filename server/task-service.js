@@ -13,6 +13,12 @@ function getForGroup(groupId) {
   return Task.find({ group: groupId }).read(ReadPreference.NEAREST).exec();
 }
 
+function getShareUrl(task) {
+  // TODO: this is just a mocked url until we implement the shareTag
+  const baseUrl = "https://taskmeow.com";
+  return Promise.resolve(`${baseUrl}?task=${task._id.toString()}`);
+}
+
 function createForUser(userId, title) {
   return new Task({ title, user: userId }).save();
 }
@@ -23,37 +29,45 @@ function createForGroup(groupId, title) {
 
 function updateForUser(userId, taskId, title, order, starred, conversationId) {
   return Task.findOne({ _id: taskId, user: userId }).then((task) => {
-    if (typeof title !== "undefined") {
-      task.title = title;
+    if (task) {
+      if (typeof title !== "undefined") {
+        task.title = title;
+      }
+      if (typeof order !== "undefined") {
+        task.order = order;
+      }
+      if (typeof starred !== "undefined") {
+        task.starred = starred;
+      }
+      if (typeof conversationId !== "undefined") {
+        task.conversationId = conversationId;
+      }
+      return task.save();
+    } else {
+      return Promise.reject("Cannot find task for user.");
     }
-    if (typeof order !== "undefined") {
-      task.order = order;
-    }
-    if (typeof starred !== "undefined") {
-      task.starred = starred;
-    }
-    if (typeof conversationId !== "undefined") {
-      task.conversationId = conversationId;
-    }
-    return task.save();
   });
 }
 
 function updateForGroup(groupId, id, title, order, starred, conversationId) {
   return Task.findOne({ _id: id, group: groupId }).then((task) => {
-    if (typeof title !== "undefined") {
-      task.title = title;
+    if (task) {
+      if (typeof title !== "undefined") {
+        task.title = title;
+      }
+      if (typeof order !== "undefined") {
+        task.order = order;
+      }
+      if (typeof starred !== "undefined") {
+        task.starred = starred;
+      }
+      if (typeof conversationId !== "undefined") {
+        task.conversationId = conversationId;
+      }
+      return task.save();
+    } else {
+      return Promise.reject("Cannot find task for group.");
     }
-    if (typeof order !== "undefined") {
-      task.order = order;
-    }
-    if (typeof starred !== "undefined") {
-      task.starred = starred;
-    }
-    if (typeof conversationId !== "undefined") {
-      task.conversationId = conversationId;
-    }
-    return task.save();
   });
 }
 
@@ -69,6 +83,7 @@ module.exports = {
   get,
   getForUser,
   getForGroup,
+  getShareUrl,
   createForUser,
   createForGroup,
   updateForUser,

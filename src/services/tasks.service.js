@@ -17,6 +17,8 @@ class TasksService {
 
   get = (...args) => this.tasksService.get(...args);
 
+  getShareUrl = (...args) => this.tasksService.getShareUrl(...args);
+
   create = (...args) => this.tasksService.create(...args);
 
   update = (...args) => this.tasksService.update(...args);
