@@ -119,9 +119,9 @@ class AuthBot extends builder.UniversalBot {
       } else if (event.name === "composeExtension/query") {
         await this.handleQuery(cb, event, session);
       } else if (event.name === "composeExtension/fetchTask") {
-        await this.handleFetchTask(cb, session);
+        await this.handleFetchTask(cb, event, session);
       } else if (event.name === "composeExtension/submitAction") {
-        //do nothing when the compose extension close button is pressed
+        await this.handleSubmitAction(cb, event);
       } else {
         // Simulate a normal message and route it, but remember the original invoke message
         const payload = event.value;
@@ -141,8 +141,131 @@ class AuthBot extends builder.UniversalBot {
     cb(null, "");
   }
 
+  async handleSubmitAction(cb, event) {
+    const value = event.value;
+    const data = value && value.data;
+    if (
+      value.commandId === "createTask" &&
+      data &&
+      data.title &&
+      event.address
+    ) {
+      const result = await this.handleCreateTask(
+        value.data,
+        event.address,
+        event.sourceEvent
+      );
+      if (result) {
+        cb(null, result);
+        return;
+      }
+    }
+    cb(null);
+  }
+
+  async handleCreateTask(data, address, sourceEvent) {
+    const response = {
+      composeExtension: {
+        attachmentLayout: "list",
+        type: "result",
+        attachments: [],
+      },
+    };
+
+    const taskTitle = data.title;
+    const userId = address && address.user && address.user.aadObjectId;
+    const { conversationType } = address.conversation;
+    // Since tasks are organized at the team level (no channel tasks), use team id for channel posts,
+    // otherwise, use conversation ID.
+    let threadId;
+    if (conversationType == "channel") {
+      threadId = sourceEvent && sourceEvent.team && sourceEvent.team.id;
+    } else {
+      threadId = address && address.conversation && address.conversation.id;
+    }
+
+    try {
+      if (conversationType !== "personal") {
+        let group = await groupService.get(threadId);
+        if (!group) {
+          group = await groupService.create(threadId, address.serviceUrl);
+        }
+        const members = await getMembers(group.serviceUrl, threadId);
+        if (members && members.some((member) => member.objectId === userId)) {
+          const task = await taskService.createForGroup(group.id, taskTitle);
+          const card = utils.getAdaptiveCardForTask(task, true);
+          response.composeExtension.attachments = [card];
+          return response;
+        } else {
+          console.error(
+            `There are no group members or the user is not one of them.`
+          );
+          return null;
+        }
+      } else {
+        const task = await taskService.createForUser(userId, taskTitle);
+        const card = utils.getAdaptiveCardForTask(task);
+        response.composeExtension.attachments = [card];
+        return response;
+      }
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
+
   // Handle fetch task
-  async handleFetchTask(cb, session) {
+  async handleFetchTask(cb, event, session) {
+    if (event.value.commandId === "SignOutCommand") {
+      this.handleSignOutCommand(cb, session);
+    } else if (event.value.commandId === "createTask") {
+      this.handleCreateTaskCommand(cb);
+    } else {
+      cb(null);
+    }
+  }
+
+  handleCreateTaskCommand(cb) {
+    const createTaskPrompt = {
+      task: {
+        type: "continue",
+        value: {
+          card: {
+            contentType: "application/vnd.microsoft.card.adaptive",
+            content: {
+              version: "1.0.0",
+              type: "AdaptiveCard",
+              body: [
+                {
+                  type: "TextBlock",
+                  size: "Medium",
+                  weight: "Bolder",
+                  text: "Create a task",
+                },
+                { type: "TextBlock", text: "Title" },
+                { id: "title", placeholder: "New Task", type: "Input.Text" },
+              ],
+              actions: [
+                {
+                  type: "Action.Submit",
+                  title: "Create",
+                  data: {
+                    submitLocation: "messagingExtensionFetchTask",
+                  },
+                },
+              ],
+            },
+          },
+          heigth: 500,
+          width: 400,
+          title: "Create a Task",
+        },
+      },
+    };
+    cb(null, createTaskPrompt);
+  }
+
+  handleSignOutCommand(cb, session) {
     utils.setUserToken(session, null);
     const card = {
       contentType: "application/vnd.microsoft.card.adaptive",

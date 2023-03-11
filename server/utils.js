@@ -9,6 +9,9 @@ const verificationCodeValidityInMilliseconds = 10 * 60 * 1000; // 10 minutes
 // Regexp to look for verification code in message
 const verificationCodeRegExp = /\b\d{6}\b/;
 
+const baseUrl = "https://taskmeow.com";
+const defaultImageUrl = `${baseUrl}/static/media/logo.28c3e78f.svg`;
+
 // Gets the OAuth state for the given provider
 function getOAuthState(session) {
   ensureProviderData(session);
@@ -153,6 +156,78 @@ function loadSessionAsync(bot, event) {
   });
 }
 
+function getAdaptiveCardForTask(task, isGroup) {
+  const websiteUrl = `${baseUrl}?task=${task.id}`;
+  const contentUrl = isGroup
+    ? `${baseUrl}/group?task=${task.id}&inTeamsSSO=true`
+    : `${baseUrl}?task=${task.id}&inTeamsSSO=true`;
+  const actions = [
+    {
+      type: "Action.Submit",
+      title: "View",
+      data: {
+        msteams: {
+          type: "invoke",
+          value: {
+            type: "tab/tabInfoAction",
+            tabInfo: {
+              contentUrl: contentUrl,
+              websiteUrl: websiteUrl,
+              name: "Tasks",
+              entityId: "entityId",
+            },
+          },
+        },
+      },
+    },
+  ];
+
+  // Since a group task cannot be viewed outside of Teams, we will
+  // only allow opening outside when it's not a group task.
+  if (!isGroup) {
+    actions.push({
+      type: "Action.OpenUrl",
+      title: "Outside Teams",
+      url: websiteUrl,
+    });
+  }
+
+  const adaptiveCardJson = {
+    contentType: "application/vnd.microsoft.card.adaptive",
+    content: {
+      type: "AdaptiveCard",
+      version: "1.0",
+      body: [
+        {
+          type: "TextBlock",
+          size: "Medium",
+          weight: "Bolder",
+          text: (task && task.title) || "Unknown",
+        },
+        {
+          type: "TextBlock",
+          text: "Description",
+          wrap: true,
+        },
+      ],
+      actions,
+    },
+    preview: {
+      content: {
+        title: "Description",
+        text: "Task",
+        images: [
+          {
+            url: defaultImageUrl,
+          },
+        ],
+      },
+      contentType: "application/vnd.microsoft.card.thumbnail",
+    },
+  };
+  return adaptiveCardJson;
+}
+
 module.exports = {
   getOAuthState,
   setOAuthState,
@@ -163,4 +238,5 @@ module.exports = {
   findVerificationCode,
   validateVerificationCode,
   loadSessionAsync,
+  getAdaptiveCardForTask,
 };
