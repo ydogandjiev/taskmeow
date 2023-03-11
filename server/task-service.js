@@ -1,5 +1,6 @@
 const Task = require("./task-model");
 const ReadPreference = require("mongodb").ReadPreference;
+const baseUrl = "https://taskmeow.com";
 
 function get(taskId) {
   return Task.findOne({ _id: taskId });
@@ -15,7 +16,6 @@ function getForGroup(groupId) {
 
 function getShareUrl(task) {
   // TODO: this is just a mocked url until we implement the shareTag
-  const baseUrl = "https://taskmeow.com";
   return Promise.resolve(`${baseUrl}?task=${task._id.toString()}`);
 }
 
