@@ -186,10 +186,7 @@ class AuthBot extends builder.UniversalBot {
 
     try {
       if (conversationType !== "personal") {
-        let group = await groupService.get(threadId);
-        if (!group) {
-          group = await groupService.create(threadId, address.serviceUrl);
-        }
+        const group = await this.findGroup(threadId, address.serviceUrl);
         const members = await getMembers(group.serviceUrl, threadId);
         if (members && members.some((member) => member.objectId === userId)) {
           const task = await taskService.createForGroup(group.id, taskTitle);
@@ -212,6 +209,14 @@ class AuthBot extends builder.UniversalBot {
       console.error(error);
       return null;
     }
+  }
+
+  async findGroup(threadId, serviceUrl) {
+    const group = await groupService.get(threadId);
+    if (group) {
+      return group;
+    }
+    return groupService.create(threadId, serviceUrl);
   }
 
   // Handle fetch task
