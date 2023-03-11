@@ -1,4 +1,7 @@
 const baseUrl = "https://taskmeow.com";
+const defaultContentUrl = `${baseUrl}/group/?inTeamsSSO=true`;
+const defaultWebsiteUrl = `${baseUrl}/group`;
+const defaultImageUrl = `${baseUrl}/static/media/logo.28c3e78f.svg`;
 
 const createTaskBotPrompt = {
   task: {
@@ -67,6 +70,90 @@ const signOutBotResponse = {
       width: 400,
       title: "Adaptive Card: Inputs",
     },
+  },
+};
+
+const SSOResponse = {
+  composeExtension: {
+    type: "silentAuth",
+    responseType: "composeExtension",
+    suggestedActions: {},
+  },
+};
+
+const defaultAdaptiveCardAttachment = {
+  contentType: "application/vnd.microsoft.card.adaptive",
+  content: {
+    type: "AdaptiveCard",
+    version: "1.0",
+    body: [
+      {
+        type: "TextBlock",
+        size: "Medium",
+        weight: "Bolder",
+        text: "Tasks",
+      },
+      {
+        type: "ColumnSet",
+        columns: [
+          {
+            type: "Column",
+            items: [
+              {
+                type: "TextBlock",
+                spacing: "None",
+                text: "Created today",
+                isSubtle: true,
+                wrap: true,
+              },
+            ],
+            width: "stretch",
+          },
+        ],
+      },
+      {
+        type: "TextBlock",
+        text: "Description",
+        wrap: true,
+      },
+    ],
+    actions: [
+      {
+        type: "Action.OpenUrl",
+        title: "Outside Teams",
+        url: defaultWebsiteUrl,
+      },
+      {
+        type: "Action.Submit",
+        title: "View",
+        data: {
+          msteams: {
+            type: "invoke",
+            value: {
+              type: "tab/tabInfoAction",
+              tabInfo: {
+                contentUrl: defaultContentUrl,
+                websiteUrl: defaultWebsiteUrl,
+                name: "Tasks",
+                entityId: "entityId",
+              },
+            },
+          },
+        },
+      },
+    ],
+  },
+  preview: {
+    content: {
+      title: "Description",
+      text: "Task",
+      images: [
+        {
+          url: defaultImageUrl,
+        },
+      ],
+    },
+    contentType: "application/vnd.microsoft.card.thumbnail",
   },
 };
 
@@ -186,89 +273,7 @@ function getAdaptiveCardForTask(task, shareTag, isGroup) {
         text: "Task",
         images: [
           {
-            url: "https://taskmeow.com/static/media/logo.28c3e78f.svg",
-          },
-        ],
-      },
-      contentType: "application/vnd.microsoft.card.thumbnail",
-    },
-  };
-  return adaptiveCardJson;
-}
-
-function getDefaultAdaptiveCardAttachment() {
-  const contentUrl = `${baseUrl}/group/?inTeamsSSO=true`;
-  const websiteUrl = `${baseUrl}/group`;
-
-  const adaptiveCardJson = {
-    contentType: "application/vnd.microsoft.card.adaptive",
-    content: {
-      type: "AdaptiveCard",
-      version: "1.0",
-      body: [
-        {
-          type: "TextBlock",
-          size: "Medium",
-          weight: "Bolder",
-          text: "Tasks",
-        },
-        {
-          type: "ColumnSet",
-          columns: [
-            {
-              type: "Column",
-              items: [
-                {
-                  type: "TextBlock",
-                  spacing: "None",
-                  text: "Created today",
-                  isSubtle: true,
-                  wrap: true,
-                },
-              ],
-              width: "stretch",
-            },
-          ],
-        },
-        {
-          type: "TextBlock",
-          text: "Description",
-          wrap: true,
-        },
-      ],
-      actions: [
-        {
-          type: "Action.OpenUrl",
-          title: "Outside Teams",
-          url: contentUrl,
-        },
-        {
-          type: "Action.Submit",
-          title: "View",
-          data: {
-            msteams: {
-              type: "invoke",
-              value: {
-                type: "tab/tabInfoAction",
-                tabInfo: {
-                  contentUrl: contentUrl,
-                  websiteUrl: websiteUrl,
-                  name: "Tasks",
-                  entityId: "entityId",
-                },
-              },
-            },
-          },
-        },
-      ],
-    },
-    preview: {
-      content: {
-        title: "Description",
-        text: "Task",
-        images: [
-          {
-            url: "https://taskmeow.com/static/media/logo.28c3e78f.svg",
+            url: defaultImageUrl,
           },
         ],
       },
@@ -281,8 +286,9 @@ function getDefaultAdaptiveCardAttachment() {
 module.exports = {
   baseUrl,
   signOutBotResponse,
+  SSOResponse,
   createTaskBotPrompt,
+  defaultAdaptiveCardAttachment,
   getAdaptiveCardForTask,
-  getDefaultAdaptiveCardAttachment,
   getTaskCardWithPreview,
 };

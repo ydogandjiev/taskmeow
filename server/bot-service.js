@@ -10,8 +10,9 @@ const utils = require("./utils");
 const {
   createTaskBotPrompt,
   signOutBotResponse,
+  SSOResponse,
+  defaultAdaptiveCardAttachment,
   getAdaptiveCardForTask,
-  getDefaultAdaptiveCardAttachment,
   getTaskCardWithPreview,
 } = require("./bot-utils");
 
@@ -197,6 +198,10 @@ class AuthBot extends builder.UniversalBot {
           console.error(
             `There are no group members or the user is not one of them.`
           );
+          response.composeExtension.attachments = [
+            defaultAdaptiveCardAttachment,
+          ];
+          return response;
         }
       } else {
         const task = await taskService.createForUser(userId, taskTitle);
@@ -206,8 +211,9 @@ class AuthBot extends builder.UniversalBot {
       }
     } catch (error) {
       console.error(error);
+      response.composeExtension.attachments = [defaultAdaptiveCardAttachment];
+      return response;
     }
-    return response;
   }
 
   // Handle fetch task
@@ -239,13 +245,14 @@ class AuthBot extends builder.UniversalBot {
 
     //check if user is authenticated if not send the sign in request
     if (!utils.getUserToken(session)) {
-      cb(null, this.getSSOResponse());
+      cb(null, SSOResponse);
+      return;
     }
 
     const searchString =
       event.value.parameters.length > 0 && event.value.parameters[0].value;
 
-    const tasks = await getTasksInContext(session, event);
+    const tasks = await this.getTasksInContext(session, event);
 
     const groupPath =
       event.address.conversationType == "personal" ? "" : "/group";
@@ -271,6 +278,26 @@ class AuthBot extends builder.UniversalBot {
     cb(null, response);
   }
 
+  async getTasksInContext(session, event) {
+    const { address, sourceEvent } = event;
+    if (address.conversationType !== "personal") {
+      // Since tasks are organized at the team level (no channel tasks), use team id for channel posts,
+      // otherwise, use conversation ID.
+      const threadId =
+        address.conversationType == "channel"
+          ? sourceEvent?.team?.id
+          : address?.conversation?.id;
+
+      return groupService
+        .get(threadId)
+        .then((group) => taskService.getForGroup(group._id));
+    } else {
+      return userService
+        .getUser(session.message.address.user.aadObjectId)
+        .then((user) => taskService.getForUser(user.id));
+    }
+  }
+
   // Handle Link Unfurl
   async handleLinkUnfurl(cb, event, session) {
     //store access token
@@ -281,6 +308,7 @@ class AuthBot extends builder.UniversalBot {
     //check if user is authenticated if not send the sign in request
     if (!utils.getUserToken(session)) {
       cb(null, this.getSSOResponse());
+      return;
     }
 
     const urlObj = new URL(event.value.url);
@@ -302,11 +330,10 @@ class AuthBot extends builder.UniversalBot {
       return;
     }
 
-    const attachment = getDefaultAdaptiveCardAttachment();
     const result = {
       attachmentLayout: "list",
       type: "result",
-      attachments: [attachment],
+      attachments: [defaultAdaptiveCardAttachment],
       responseType: "composeExtension",
     };
     const response = {
@@ -322,37 +349,7 @@ class AuthBot extends builder.UniversalBot {
     };
     utils.setUserToken(session, token);
   }
-
-  getSSOResponse() {
-    return {
-      composeExtension: {
-        type: "silentAuth",
-        responseType: "composeExtension",
-        suggestedActions: {},
-      },
-    };
-  }
 }
-
-const getTasksInContext = async (session, event) => {
-  const { address, sourceEvent } = event;
-  if (address.conversationType !== "personal") {
-    // Since tasks are organized at the team level (no channel tasks), use team id for channel posts,
-    // otherwise, use conversation ID.
-    const threadId =
-      address.conversationType == "channel"
-        ? sourceEvent?.team?.id
-        : address?.conversation?.id;
-
-    return groupService
-      .get(threadId)
-      .then((group) => taskService.getForGroup(group._id));
-  } else {
-    return userService
-      .getUser(session.message.address.user.aadObjectId)
-      .then((user) => taskService.getForUser(user.id));
-  }
-};
 
 // Create chat bot
 const connector = new msteams.TeamsChatConnector({
