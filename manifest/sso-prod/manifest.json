@@ -23,42 +23,12 @@
     "color": "color.png"
   },
   "accentColor": "#ffffff",
-  "authorization": {
-    "permissions": {
-      "resourceSpecific": [
-        {
-          "name": "ChannelMeeting.ReadBasic.Group",
-          "type": "Delegated"
-        },
-        {
-          "name": "ChannelMeetingParticipant.Read.Group",
-          "type": "Delegated"
-        },
-        {
-          "name": "ChannelMeetingStage.Write.Group",
-          "type": "Delegated"
-        },
-        {
-          "name": "MeetingStage.Write.Chat",
-          "type": "Delegated"
-        },
-        {
-          "name": "OnlineMeeting.ReadBasic.Chat",
-          "type": "Delegated"
-        },
-        {
-          "name": "OnlineMeetingParticipant.Read.Chat",
-          "type": "Delegated"
-        }
-      ]
-    }
-  },
   "configurableTabs": [
     {
       "configurationUrl": "https://taskmeow.com/config/?inTeamsSSO=true",
       "canUpdateConfiguration": true,
-      "scopes": ["team", "groupChat"],
-      "meetingSurfaces": ["sidePanel", "stage"]
+      "scopes": ["team", "groupchat"],
+      "meetingSurfaces": ["sidePanel"]
     }
   ],
   "staticTabs": [
@@ -78,7 +48,7 @@
   "bots": [
     {
       "botId": "36b1586d-b1da-45d2-9b32-899c3757b6f8",
-      "scopes": ["personal", "team", "groupChat"]
+      "scopes": ["personal"]
     }
   ],
   "composeExtensions": [
@@ -96,7 +66,7 @@
             {
               "name": "searchQuery",
               "title": "Search Query",
-              "description": "Search for task title",
+              "description": "Your search query",
               "inputType": "text"
             }
           ]
@@ -108,17 +78,14 @@
           "description": "Sign out from authenticated services.",
           "initialRun": false,
           "fetchTask": true,
-          "context": ["commandBox", "compose"]
-        },
-        {
-          "id": "createTask",
-
-          "title": "Create Task",
-          "type": "action",
           "context": ["commandBox", "compose"],
-          "description": "Create and share a new task in this chat.",
-          "initialRun": false,
-          "fetchTask": true
+          "parameters": [
+            {
+              "name": "param",
+              "title": "param",
+              "description": ""
+            }
+          ]
         }
       ],
       "messageHandlers": [
@@ -131,10 +98,6 @@
       ]
     }
   ],
-  "meetingExtensionDefinition": {
-    "supportsAnonymousGuestUsers": true,
-    "scenes": []
-  },
   "permissions": ["messageTeamMembers", "identity"],
   "validDomains": ["taskmeow.com"],
   "webApplicationInfo": {
