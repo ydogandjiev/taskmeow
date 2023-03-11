@@ -18,7 +18,7 @@ import * as microsoftTeams from "@microsoft/teams-js";
 const BASEURL = "https://taskmeow.com";
 
 const groupShareMessage =
-  "Group tasks cannot be shared outside this team or chat group.";
+  "Group tasks cannot be shared outside this channel or chat.";
 const privateShareErrorMessage = "This task cannot be shared by you.";
 
 const TaskPane = (props) => {
