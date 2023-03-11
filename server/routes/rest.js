@@ -204,11 +204,11 @@ router.put("/groups/:threadId/tasks/:taskId", (req, res) => {
                 res.status(500).send(err);
               });
           } else {
-            req.status(401).send("User is not a member of this group!");
+            res.status(401).send("User is not a member of this group!");
           }
         });
       } else {
-        req
+        res
           .status(404)
           .send(`Couldn't find group with id: ${req.params.threadId}`);
       }

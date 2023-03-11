@@ -118,12 +118,6 @@ function getTaskCardWithPreview(task, groupPath) {
       contentType: "application/vnd.microsoft.card.thumbnail",
       content: {
         title: task?.title,
-        images: [
-          {
-            url: `${process.env.APPSETTING_AAD_BaseUri}/checkmark.png`,
-            alt: task?.title,
-          },
-        ],
       },
     },
   };
@@ -216,7 +210,7 @@ function getDefaultAdaptiveCardAttachment() {
           type: "TextBlock",
           size: "Medium",
           weight: "Bolder",
-          text: "Publish Adaptive Card Schema",
+          text: "Tasks",
         },
         {
           type: "ColumnSet",
@@ -224,12 +218,6 @@ function getDefaultAdaptiveCardAttachment() {
             {
               type: "Column",
               items: [
-                {
-                  type: "TextBlock",
-                  weight: "Bolder",
-                  text: "Name",
-                  wrap: true,
-                },
                 {
                   type: "TextBlock",
                   spacing: "None",
