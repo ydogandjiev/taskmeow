@@ -228,6 +228,157 @@ function getAdaptiveCardForTask(task, isGroup) {
   return adaptiveCardJson;
 }
 
+function getTaskCardWithPreview(task, groupPath) {
+  return {
+    contentType: "application/vnd.microsoft.card.adaptive",
+    content: {
+      $schema: "https://adaptivecards.io/schemas/adaptive-card.json",
+      type: "AdaptiveCard",
+      version: "1.5",
+      body: [
+        {
+          type: "TextBlock",
+          size: "Medium",
+          weight: "Bolder",
+          text: task?.title || "Unknown",
+        },
+        {
+          type: "TextBlock",
+          text: "Description",
+          wrap: true,
+        },
+        {
+          type: "ActionSet",
+          actions: [
+            {
+              type: "Action.Submit",
+              title: "View",
+              data: {
+                msteams: {
+                  type: "invoke",
+                  value: {
+                    type: "tab/tabInfoAction",
+                    tabInfo: {
+                      contentUrl: `${baseUrl}${groupPath}?task=${task?.id}&inTeamsSSO=true`,
+                      websiteUrl: `${baseUrl}?task=${task?.id}`,
+                      name: "Tasks",
+                      entityId: "entityId",
+                    },
+                  },
+                },
+              },
+            },
+          ],
+        },
+      ],
+    },
+    preview: {
+      contentType: "application/vnd.microsoft.card.thumbnail",
+      content: {
+        title: task?.title,
+      },
+    },
+  };
+}
+
+function getDefaultAdaptiveCard() {
+  const contentUrl = `${baseUrl}/group/?inTeamsSSO=true`;
+  const websiteUrl = `${baseUrl}/group`;
+
+  const adaptiveCardJson = {
+    contentType: "application/vnd.microsoft.card.adaptive",
+    content: {
+      type: "AdaptiveCard",
+      version: "1.0",
+      body: [
+        {
+          type: "TextBlock",
+          size: "Medium",
+          weight: "Bolder",
+          text: "Publish Adaptive Card Schema",
+        },
+        {
+          type: "ColumnSet",
+          columns: [
+            {
+              type: "Column",
+              items: [
+                {
+                  type: "TextBlock",
+                  weight: "Bolder",
+                  text: "Name",
+                  wrap: true,
+                },
+                {
+                  type: "TextBlock",
+                  spacing: "None",
+                  text: "Created today",
+                  isSubtle: true,
+                  wrap: true,
+                },
+              ],
+              width: "stretch",
+            },
+          ],
+        },
+        {
+          type: "TextBlock",
+          text: "Description",
+          wrap: true,
+        },
+      ],
+      actions: [
+        {
+          type: "Action.OpenUrl",
+          title: "Outside Teams",
+          url: contentUrl,
+        },
+        {
+          type: "Action.Submit",
+          title: "View",
+          data: {
+            msteams: {
+              type: "invoke",
+              value: {
+                type: "tab/tabInfoAction",
+                tabInfo: {
+                  contentUrl: contentUrl,
+                  websiteUrl: websiteUrl,
+                  name: "Tasks",
+                  entityId: "entityId",
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
+    preview: {
+      content: {
+        title: "Description",
+        text: "Task",
+        images: [
+          {
+            url: "https://taskmeow.com/static/media/logo.28c3e78f.svg",
+          },
+        ],
+      },
+      contentType: "application/vnd.microsoft.card.thumbnail",
+    },
+  };
+  return adaptiveCardJson;
+}
+
+function getSSOResponse() {
+  return {
+    composeExtension: {
+      type: "silentAuth",
+      responseType: "composeExtension",
+      suggestedActions: {},
+    },
+  };
+}
+
 module.exports = {
   getOAuthState,
   setOAuthState,
@@ -239,4 +390,7 @@ module.exports = {
   validateVerificationCode,
   loadSessionAsync,
   getAdaptiveCardForTask,
+  getTaskCardWithPreview,
+  getDefaultAdaptiveCard,
+  getSSOResponse,
 };
