@@ -229,56 +229,59 @@ function getAdaptiveCardForTask(task, isGroup) {
 }
 
 function getTaskCardWithPreview(task, groupPath) {
-  return {
-    contentType: "application/vnd.microsoft.card.adaptive",
-    content: {
-      $schema: "https://adaptivecards.io/schemas/adaptive-card.json",
-      type: "AdaptiveCard",
-      version: "1.5",
-      body: [
-        {
-          type: "TextBlock",
-          size: "Medium",
-          weight: "Bolder",
-          text: task?.title || "Unknown",
-        },
-        {
-          type: "TextBlock",
-          text: "Description",
-          wrap: true,
-        },
-        {
-          type: "ActionSet",
-          actions: [
-            {
-              type: "Action.Submit",
-              title: "View",
-              data: {
-                msteams: {
-                  type: "invoke",
-                  value: {
-                    type: "tab/tabInfoAction",
-                    tabInfo: {
-                      contentUrl: `${baseUrl}${groupPath}?task=${task?.id}&inTeamsSSO=true`,
-                      websiteUrl: `${baseUrl}?task=${task?.id}`,
-                      name: "Tasks",
-                      entityId: "entityId",
+  if (task) {
+    return {
+      contentType: "application/vnd.microsoft.card.adaptive",
+      content: {
+        $schema: "https://adaptivecards.io/schemas/adaptive-card.json",
+        type: "AdaptiveCard",
+        version: "1.5",
+        body: [
+          {
+            type: "TextBlock",
+            size: "Medium",
+            weight: "Bolder",
+            text: task.title || "Unknown",
+          },
+          {
+            type: "TextBlock",
+            text: "Description",
+            wrap: true,
+          },
+          {
+            type: "ActionSet",
+            actions: [
+              {
+                type: "Action.Submit",
+                title: "View",
+                data: {
+                  msteams: {
+                    type: "invoke",
+                    value: {
+                      type: "tab/tabInfoAction",
+                      tabInfo: {
+                        contentUrl: `${baseUrl}${groupPath}?task=${task.id}&inTeamsSSO=true`,
+                        websiteUrl: `${baseUrl}?task=${task.id}`,
+                        name: "Tasks",
+                        entityId: "entityId",
+                      },
                     },
                   },
                 },
               },
-            },
-          ],
-        },
-      ],
-    },
-    preview: {
-      contentType: "application/vnd.microsoft.card.thumbnail",
-      content: {
-        title: task?.title,
+            ],
+          },
+        ],
       },
-    },
-  };
+      preview: {
+        contentType: "application/vnd.microsoft.card.thumbnail",
+        content: {
+          title: task.title,
+        },
+      },
+    };
+  }
+  return null;
 }
 
 function getDefaultAdaptiveCard() {
