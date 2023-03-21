@@ -380,16 +380,21 @@ class AuthBot extends builder.UniversalBot {
 
     //check if user is authenticated if not send the sign in request
     if (!utils.getUserToken(session)) {
-      cb(null, this.getSSOResponse());
+      cb(null, utils.getSSOResponse());
       return;
     }
 
     const urlObj = new URL(event.value.url);
     const taskId = urlObj.searchParams.get("task");
+    const shareTag = urlObj.searchParams.get("shareTag");
     if (taskId) {
       const taskObj = await taskService.get(taskId);
       if (taskObj) {
-        const attachment = utils.getAdaptiveCardForTask(taskObj, true);
+        const attachment = utils.getAdaptiveCardForTask(
+          taskObj,
+          true,
+          shareTag
+        );
         const result = {
           attachmentLayout: "list",
           type: "result",
