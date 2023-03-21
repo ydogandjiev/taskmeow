@@ -156,11 +156,12 @@ function loadSessionAsync(bot, event) {
   });
 }
 
-function getAdaptiveCardForTask(task, isGroup) {
-  const websiteUrl = `${baseUrl}?task=${task.id}`;
+function getAdaptiveCardForTask(task, isGroup, shareTag) {
+  const shareParam = shareTag ? `&shareTag=${shareTag}` : "";
+  const websiteUrl = `${baseUrl}?task=${task.id}${shareParam}`;
   const contentUrl = isGroup
-    ? `${baseUrl}/group?task=${task.id}&inTeamsSSO=true`
-    : `${baseUrl}?task=${task.id}&inTeamsSSO=true`;
+    ? `${baseUrl}/group?task=${task.id}${shareParam}&inTeamsSSO=true`
+    : `${baseUrl}?task=${task.id}${shareParam}&inTeamsSSO=true`;
   const actions = [
     {
       type: "Action.Submit",
@@ -382,6 +383,10 @@ function getSSOResponse() {
   };
 }
 
+function buildShareUrl(taskId, shareTag) {
+  return `${baseUrl}/group/?task=${taskId}&inTeamsSSO=true&shareTag=${shareTag}`;
+}
+
 module.exports = {
   getOAuthState,
   setOAuthState,
@@ -396,4 +401,5 @@ module.exports = {
   getTaskCardWithPreview,
   getDefaultAdaptiveCard,
   getSSOResponse,
+  buildShareUrl,
 };

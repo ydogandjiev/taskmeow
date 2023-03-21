@@ -38,11 +38,8 @@ router.get("/tasks/:taskId", (req, res) => {
     .then((task) => {
       if (task.user._id.toString() === req.user.id) {
         res.json(task);
-        // TODO: enable shareTag comparison when user is not the owner
-        /*
       } else if (task.shareTag === req.query.shareTag) {
         res.json(task);
-      */
       } else {
         res.status(403).send("Permission denied");
       }
