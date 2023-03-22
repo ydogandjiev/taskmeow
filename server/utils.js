@@ -9,8 +9,7 @@ const verificationCodeValidityInMilliseconds = 10 * 60 * 1000; // 10 minutes
 // Regexp to look for verification code in message
 const verificationCodeRegExp = /\b\d{6}\b/;
 
-// const baseUrl = "https://taskmeow.com";
-const baseUrl = "https://taskmeow.ngrok.io";
+const baseUrl = "https://taskmeow.com";
 const defaultImageUrl = `${baseUrl}/static/media/logo.28c3e78f.svg`;
 
 // Gets the OAuth state for the given provider
