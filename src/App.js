@@ -10,6 +10,7 @@ import {
 import Profile from "./components/Profile";
 import Tasks from "./components/Tasks";
 import Config from "./components/Config";
+import Create from "./components/Create";
 import Remove from "./components/Remove";
 import Debug from "./components/Debug";
 import authService from "./services/auth.service";
@@ -128,6 +129,10 @@ class App extends Component {
                 />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/config" element={<Config />} />
+                <Route
+                  path="/create"
+                  element={<Create appId={this.props.appId} />}
+                />
                 <Route path="/remove" element={<Remove />} />
                 <Route
                   path="/"
