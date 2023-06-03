@@ -56,8 +56,10 @@ class Debug extends Component {
   openTaskModule = () => {
     microsoftTeams.dialog.url.open({
       title: "New Task",
-      height: 800,
-      width: 800,
+      size: {
+        height: 600,
+        width: 800,
+      },
       url: this.state.url.href,
     });
   };
