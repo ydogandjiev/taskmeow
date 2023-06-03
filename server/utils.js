@@ -9,7 +9,15 @@ const verificationCodeValidityInMilliseconds = 10 * 60 * 1000; // 10 minutes
 // Regexp to look for verification code in message
 const verificationCodeRegExp = /\b\d{6}\b/;
 
-const baseUrl = "https://taskmeow.com";
+const isInt = process.env.REACT_APP_RUN_MODE === "int";
+const baseUrl = isInt ? "https://taskmeow.ngrok.io" : "https://taskmeow.com";
+if (isInt) {
+  console.warn("***Int Mode is for local development only!!!***");
+  console.warn(
+    `Base URL is set to ${baseUrl}. Messages and adaptive cards sent with this URL will not work in production.`
+  );
+  console.warn("******");
+}
 const defaultImageUrl = `${baseUrl}/static/media/logo.28c3e78f.svg`;
 
 // Gets the OAuth state for the given provider

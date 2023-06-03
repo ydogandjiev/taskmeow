@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { IconButton, Label } from "office-ui-fabric-react";
+import { DefaultButton, IconButton } from "office-ui-fabric-react";
 import * as microsoftTeams from "@microsoft/teams-js";
 import JsonViewer from "react-json-view";
 
@@ -17,26 +17,50 @@ class Debug extends Component {
     this.state = {
       debug: false,
       context: {},
-      settings: {},
       inTeams: !!params.get("inTeams") || !!params.get("inTeamsSSO"),
       url,
+      settings: {},
+      settingsLoading: false,
     };
   }
 
   componentDidMount() {
     if (this.state.inTeams) {
-      microsoftTeams.initialize();
+      microsoftTeams.app.initialize();
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.debug && !prevState.debug) {
-      microsoftTeams.getContext((context) => {
+      microsoftTeams.app.getContext().then((context) => {
         console.log(`context is ${JSON.stringify(context)}`);
         this.setState({ context });
       });
     }
   }
+
+  getSettings() {
+    this.setState({ settingsLoading: true });
+    microsoftTeams.getSettings();
+    microsoftTeams.pages
+      .getConfig()
+      .then((settings) => {
+        console.log(`settings is ${JSON.stringify(settings)}`);
+        this.setState({ settings, settingsLoading: false });
+      })
+      .catch((error) => {
+        this.setState({ settings: error, settingsLoading: false });
+      });
+  }
+
+  openTaskModule = () => {
+    microsoftTeams.dialog.url.open({
+      title: "New Task",
+      height: 800,
+      width: 800,
+      url: this.state.url.href,
+    });
+  };
 
   render() {
     return (
@@ -65,10 +89,32 @@ class Debug extends Component {
               border: "1px solid #dddddd",
             }}
           >
-            <Label>Context</Label>
+            <h3>Context</h3>
             <JsonViewer src={this.state.context} name="context" />
-            <Label>URL</Label>
+
+            <h3>URL</h3>
             <div>{this.state.url.href}</div>
+
+            <h3>Settings</h3>
+            <DefaultButton
+              primary
+              text="getSettings"
+              onClick={() => this.getSettings()}
+            />
+            <div>
+              {this.state.settingsLoading ? (
+                <p>Loading...</p>
+              ) : (
+                <JsonViewer src={this.state.settings} name="settings" />
+              )}
+            </div>
+
+            <h3>Task Module</h3>
+            <DefaultButton
+              primary
+              text="startTask"
+              onClick={() => this.openTaskModule()}
+            />
           </div>
         )}
       </div>
