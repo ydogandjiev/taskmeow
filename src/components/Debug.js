@@ -41,7 +41,6 @@ class Debug extends Component {
 
   getSettings() {
     this.setState({ settingsLoading: true });
-    microsoftTeams.getSettings();
     microsoftTeams.pages
       .getConfig()
       .then((settings) => {

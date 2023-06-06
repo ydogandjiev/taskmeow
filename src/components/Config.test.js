@@ -2,6 +2,19 @@ import React from "react";
 import ReactDOM from "react-dom";
 import Config from "./Config";
 
+jest.mock("@microsoft/teams-js", () => ({
+  app: {
+    initialize: jest.fn(),
+  },
+  pages: {
+    config: {
+      registerOnSaveHandler: jest.fn(),
+      setConfig: jest.fn(),
+      setValidityState: jest.fn(),
+    },
+  },
+}));
+
 // Initialize Office Fabric icons for use throughout app
 import { initializeIcons } from "@uifabric/icons";
 initializeIcons();
