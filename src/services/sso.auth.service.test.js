@@ -1,7 +1,15 @@
 import SSOAuthService from "./sso.auth.service";
 import * as microsoftTeams from "@microsoft/teams-js";
 
-jest.mock("@microsoft/teams-js");
+jest.mock("@microsoft/teams-js", () => ({
+  authentication: {
+    getAuthToken: jest.fn(),
+    getUser: jest.fn(),
+  },
+  app: {
+    initialize: jest.fn(),
+  },
+}));
 
 afterEach(() => {
   jest.resetAllMocks();

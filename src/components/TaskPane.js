@@ -14,8 +14,7 @@ import { ConsentConsumer } from "./ConsentContext";
 import UserTile from "./UserTile";
 import tasksService from "../services/tasks.service";
 import * as microsoftTeams from "@microsoft/teams-js";
-
-const BASEURL = "https://taskmeow.com";
+import { baseUrl } from "./utils";
 
 const groupShareMessage =
   "Group tasks cannot be shared outside this channel or chat.";
@@ -114,9 +113,9 @@ const TaskPane = (props) => {
 
   const share = () => {
     if (isGroupRoute && isListItem) {
-      const url = `${BASEURL}/group?task=${activeTask._id}`;
-      microsoftTeams.sharing.shareWebContent(
-        {
+      const url = `${baseUrl}/group?task=${activeTask._id}`;
+      microsoftTeams.sharing
+        .shareWebContent({
           content: [
             {
               type: "URL",
@@ -124,21 +123,18 @@ const TaskPane = (props) => {
               preview: true,
             },
           ],
-        },
-        (err) => {
-          if (err) {
-            console.error(err.message);
-          }
-        }
-      );
+        })
+        .catch((err) => {
+          console.error(err.message);
+        });
     } else if (activeTask.user) {
       setShareMessage("");
       tasksService
         .getShareUrl(activeTask._id)
         .then((url) => {
           if (url) {
-            microsoftTeams.sharing.shareWebContent(
-              {
+            microsoftTeams.sharing
+              .shareWebContent({
                 content: [
                   {
                     type: "URL",
@@ -146,13 +142,10 @@ const TaskPane = (props) => {
                     preview: true,
                   },
                 ],
-              },
-              (err) => {
-                if (err) {
-                  setShareMessage(err.message);
-                }
-              }
-            );
+              })
+              .catch((err) => {
+                setShareMessage(err.message);
+              });
           } else {
             setShareMessage(privateShareErrorMessage);
           }
@@ -257,6 +250,7 @@ const TaskPane = (props) => {
                   <p>{shareMessage}</p>
                 </div>
               )}
+
               <div className="task-field">
                 <PrimaryButton
                   disabled={!changed}

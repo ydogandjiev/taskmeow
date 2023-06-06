@@ -1,7 +1,18 @@
 import TeamsAuthService from "./teams.auth.service";
 
 import * as microsoftTeams from "@microsoft/teams-js";
-jest.mock("@microsoft/teams-js");
+
+jest.mock("@microsoft/teams-js", () => ({
+  authentication: {
+    getAuthToken: jest.fn(),
+    getUser: jest.fn(),
+    authenticate: jest.fn(),
+  },
+  app: {
+    initialize: jest.fn(),
+  },
+  getContext: jest.fn(),
+}));
 
 import * as msal from "@azure/msal-browser";
 jest.mock("@azure/msal-browser");

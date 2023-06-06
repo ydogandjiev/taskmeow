@@ -12,8 +12,8 @@ class Remove extends Component {
   state = {};
 
   componentDidMount() {
-    microsoftTeams.initialize();
-    microsoftTeams.settings.registerOnRemoveHandler((removeEvent) => {
+    microsoftTeams.app.initialize();
+    microsoftTeams.pages.config.registerOnRemoveHandler((removeEvent) => {
       removeEvent.notifySuccess();
     });
 
@@ -30,7 +30,7 @@ class Remove extends Component {
   }
 
   validate = () => {
-    microsoftTeams.settings.setValidityState(true);
+    microsoftTeams.pages.config.setValidityState(true);
   };
 
   render() {

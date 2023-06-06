@@ -6,7 +6,7 @@ import * as msal from "@azure/msal-browser";
 class TeamsAuthService {
   constructor() {
     // Initialize the Teams SDK
-    microsoftTeams.initialize();
+    microsoftTeams.app.initialize();
 
     this.api =
       window.location.hostname === "taskmeow.com"

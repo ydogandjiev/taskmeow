@@ -4,6 +4,19 @@ import Remove from "./Remove";
 import authService from "../services/auth.service";
 import userService from "../services/user.service";
 
+jest.mock("@microsoft/teams-js", () => ({
+  app: {
+    initialize: jest.fn(),
+  },
+  pages: {
+    config: {
+      registerOnRemoveHandler: jest.fn(),
+      setConfig: jest.fn(),
+      setValidityState: jest.fn(),
+    },
+  },
+}));
+
 // Initialize Office Fabric icons for use throughout app
 import { initializeIcons } from "@uifabric/icons";
 initializeIcons();

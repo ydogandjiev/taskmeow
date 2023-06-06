@@ -21,8 +21,8 @@ class Config extends Component {
   }
 
   componentDidMount() {
-    microsoftTeams.initialize();
-    microsoftTeams.settings.registerOnSaveHandler((saveEvent) => {
+    microsoftTeams.app.initialize();
+    microsoftTeams.pages.config.registerOnSaveHandler((saveEvent) => {
       let contentUrl = `${window.location.origin}/group/?${
         this.state.inTeamsSSO ? "inTeamsSSO=true" : "inTeams=true"
       }`;
@@ -30,7 +30,7 @@ class Config extends Component {
         this.state.inTeamsSSO ? "inTeamsSSO=true" : "inTeams=true"
       }`;
 
-      microsoftTeams.settings.setSettings({
+      microsoftTeams.pages.config.setConfig({
         entityId: "meowTasks",
         suggestedDisplayName: "Meow Tasks",
         contentUrl: contentUrl,
@@ -54,7 +54,7 @@ class Config extends Component {
   }
 
   validate = () => {
-    microsoftTeams.settings.setValidityState(true);
+    microsoftTeams.pages.config.setValidityState(true);
   };
 
   render() {

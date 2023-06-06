@@ -32,8 +32,8 @@ class Tasks extends Component {
     this.setState({ loading: true });
 
     if (this.props.inTeams) {
-      microsoftTeams.initialize();
-      microsoftTeams.getContext((context) => {
+      microsoftTeams.app.initialize();
+      microsoftTeams.app.getContext().then((context) => {
         const threadId = context.teamId || context.chatId;
         const fetchTaskPromise = this.props.isGroup
           ? tasksService.get(threadId)

@@ -1838,10 +1838,12 @@
   resolved "https://registry.npmjs.org/@microsoft/load-themed-styles/-/load-themed-styles-1.10.250.tgz"
   integrity sha512-uxn8ho0Wlc+JL8epCErwKIBK5ulva33VrabPbqPM1A770RGdxfW0J9PhnaIDOlz9p2w4DeyNhcLXIZry2eOaBg==
 
-"@microsoft/teams-js@^1.11.0":
-  version "1.11.0"
-  resolved "https://registry.npmjs.org/@microsoft/teams-js/-/teams-js-1.11.0.tgz"
-  integrity sha512-5utMOMWXdNq0cV8hGIZEUpUVChoasoYjBOItgFIKE2a4vavmzlhra+GNXMdpvlYlv6/r7ORtVCQUDFJvPTVj2Q==
+"@microsoft/teams-js@^2.11.0":
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/@microsoft/teams-js/-/teams-js-2.11.0.tgz#925d69ed962d6f787fcf507f4883175eb3ac46fe"
+  integrity sha512-XmNSFSCuJKRWsCmzkSCKC7+iiBC2+48ihJGm8AnaltKot3dF6J5ML851AtMC2Oi7WB1iuM3nej7PgdzdDK39fg==
+  dependencies:
+    debug "^4.3.3"
 
 "@nodelib/fs.scandir@2.1.4":
   version "2.1.4"
