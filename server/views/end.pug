@@ -23,12 +23,9 @@ html
       if (authContext.isCallback(window.location.hash)) {
         authContext.handleWindowCallback(window.location.hash);
 
-        // Only call notifySuccess or notifyFailure if this page is in the authentication popup
-        if (window.opener) {
-          if (authContext.getCachedUser()) {
+        if (authContext.getCachedUser()) {
             microsoftTeams.authentication.notifySuccess();
           } else {
             microsoftTeams.authentication.notifyFailure(authContext.getLoginError());
           }
-        }
       }
