@@ -30,9 +30,8 @@ html
       app
         .handleRedirectPromise()
         .then((authResponse) => {
-          window.opener &&
             microsoftTeams.authentication.notifySuccess(authResponse);
         })
         .catch((error) => {
-          window.opener && microsoftTeams.authentication.notifyFailure(error);
+          microsoftTeams.authentication.notifyFailure(error);
         });
