@@ -46,7 +46,10 @@ class Profile extends Component {
           this.setState({ token });
         })
         .catch((err) => {
-          console.warn(`Error getting NAA token: ${err}`);
+          const message =
+            err?.message || err?.toString() || "Unknown error with NAA";
+          console.warn(`Error getting NAA token: ${message}`);
+          this.setState({ tokenError: message });
         })
         .finally(() => {
           this.setState({ tokenLoading: false });
