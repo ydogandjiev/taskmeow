@@ -1667,10 +1667,10 @@
   "resolved" "https://registry.npmjs.org/@microsoft/load-themed-styles/-/load-themed-styles-1.10.250.tgz"
   "version" "1.10.250"
 
-"@microsoft/teams-js@^2.11.0":
-  "integrity" "sha512-XmNSFSCuJKRWsCmzkSCKC7+iiBC2+48ihJGm8AnaltKot3dF6J5ML851AtMC2Oi7WB1iuM3nej7PgdzdDK39fg=="
-  "resolved" "https://registry.npmjs.org/@microsoft/teams-js/-/teams-js-2.11.0.tgz"
-  "version" "2.11.0"
+"@microsoft/teams-js@^2.19.0":
+  "integrity" "sha512-QpAK8JO6s9D5qOiW//fwS4bUgzhLr1GDxHCRw+BEs9Uuw5Z9YhwMClhtFlI5P7HlH5SFC4QSsh44HaV31ORXJA"
+  "version" "2.19.0"
+  "resolved" "https://registry.yarnpkg.com/@microsoft/teams-js/-/teams-js-2.19.0.tgz#b9d971926469cc25ab9b850d10f95f36bd1d8f32"
   dependencies:
     "debug" "^4.3.3"
 
