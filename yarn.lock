@@ -1840,8 +1840,8 @@
 
 "@microsoft/teams-js@^2.19.0":
   version "2.19.0"
-  resolved "https://domoreexp.pkgs.visualstudio.com/_packaging/npm-mirror/npm/registry/@microsoft/teams-js/-/teams-js-2.19.0.tgz#b9d971926469cc25ab9b850d10f95f36bd1d8f32"
-  integrity sha1-udlxkmRpzCWrm4UNEPlfNr0djzI=
+  resolved "https://registry.yarnpkg.com/@microsoft/teams-js/-/teams-js-2.19.0.tgz#b9d971926469cc25ab9b850d10f95f36bd1d8f32"
+  integrity sha512-QpAK8JO6s9D5qOiW//fwS4bUgzhLr1GDxHCRw+BEs9Uuw5Z9YhwMClhtFlI5P7HlH5SFC4QSsh44HaV31ORXJA==
   dependencies:
     debug "^4.3.3"
 
