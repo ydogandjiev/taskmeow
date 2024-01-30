@@ -1838,8 +1838,8 @@
 
 "@microsoft/teams-js@^2.20.0-beta.1":
   version "2.20.0-beta.1"
-  resolved "https://domoreexp.pkgs.visualstudio.com/_packaging/npm-mirror/npm/registry/@microsoft/teams-js/-/teams-js-2.20.0-beta.1.tgz#54319b655fdd513335308c414933ef5279167f8e"
-  integrity sha1-VDGbZV/dUTM1MIxBSTPvUnkWf44=
+  resolved "https://registry.yarnpkg.com/@microsoft/teams-js/-/teams-js-2.20.0-beta.1.tgz#54319b655fdd513335308c414933ef5279167f8e"
+  integrity sha512-7mGjxSd/wz2z6LTm22YVMSfjiKVNoaMiO9bwnd4Hul2wEHn60ocK/SlV3XvMjLMFyUsUPv0auz2s8bR3pHS/Iw==
   dependencies:
     debug "^4.3.3"
 
