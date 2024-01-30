@@ -8,14 +8,35 @@ class MsalAuthService {
       window.location.hostname === "taskmeow.com"
         ? "api://taskmeow.com/botid-36b1586d-b1da-45d2-9b32-899c3757b6f8/access_as_user"
         : "api://taskmeow.ngrok.io/botid-ab93102c-869b-4d34-a921-a31d3e7f76ef/access_as_user";
+  }
 
-    this.app = new msal.PublicClientApplication({
+  get msalConfig() {
+    return {
+      clientId:
+        window.location.hostname === "taskmeow.com"
+          ? "36b1586d-b1da-45d2-9b32-899c3757b6f8"
+          : "ab93102c-869b-4d34-a921-a31d3e7f76ef",
+      redirectUri: `${window.location.origin}/callback/v2`,
+    };
+  }
+
+  async initializeMSAL() {
+    console.log(`Initializing MSAL instance`);
+    this.app = await msal.PublicClientApplication.createPublicClientApplication(
+      {
+        auth: {
+          ...this.msalConfig,
+        },
+      }
+    );
+  }
+
+  async initializeMSALNAA() {
+    console.log(`Initializing MSAL instance with NAA`);
+    this.appNext = await msal.PublicClientNext.createPublicClientApplication({
       auth: {
-        clientId:
-          window.location.hostname === "taskmeow.com"
-            ? "36b1586d-b1da-45d2-9b32-899c3757b6f8"
-            : "ab93102c-869b-4d34-a921-a31d3e7f76ef",
-        redirectUri: `${window.location.origin}/callback/v2`,
+        ...this.msalConfig,
+        supportsNestedAppAuth: true,
       },
     });
   }
@@ -81,8 +102,21 @@ class MsalAuthService {
   }
 
   getToken() {
+    return this.getTokenWithMSALClients();
+  }
+
+  getTokenWithNAA() {
+    if (!this.appNext) {
+      throw new Error(
+        "MSAL instance not initialized with NAA.\nPossible reason: app is not running in Teams"
+      );
+    }
+    return this.getTokenWithMSALClients(true);
+  }
+
+  getTokenWithMSALClients(useMsalNext = false) {
     const scopes = [this.api];
-    return this.app
+    return (useMsalNext ? this.appNext : this.app)
       .acquireTokenSilent({ scopes })
       .then((authResponse) => authResponse.accessToken)
       .catch((error) => {

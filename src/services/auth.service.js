@@ -19,6 +19,18 @@ class AuthService {
     }
   }
 
+  tryInitializeMSAL() {
+    if (this.authService instanceof MsalAuthService) {
+      return this.authService.initializeMSAL();
+    }
+  }
+
+  tryInitializeMSALNAA() {
+    if (this.authService instanceof MsalAuthService) {
+      return this.authService.initializeMSALNAA();
+    }
+  }
+
   isCallback() {
     return this.authService.isCallback();
   }
@@ -33,6 +45,13 @@ class AuthService {
 
   getToken() {
     return this.authService.getToken();
+  }
+
+  getTokenWithNAA() {
+    if (!(this.authService instanceof MsalAuthService)) {
+      throw new Error("This method is only supported for MsalAuthService");
+    }
+    return this.authService.getTokenWithNAA();
   }
 
   getUser() {
