@@ -1836,10 +1836,10 @@
   resolved "https://registry.npmjs.org/@microsoft/load-themed-styles/-/load-themed-styles-1.10.250.tgz"
   integrity sha512-uxn8ho0Wlc+JL8epCErwKIBK5ulva33VrabPbqPM1A770RGdxfW0J9PhnaIDOlz9p2w4DeyNhcLXIZry2eOaBg==
 
-"@microsoft/teams-js@^2.19.0":
-  version "2.19.0"
-  resolved "https://registry.yarnpkg.com/@microsoft/teams-js/-/teams-js-2.19.0.tgz#b9d971926469cc25ab9b850d10f95f36bd1d8f32"
-  integrity sha512-QpAK8JO6s9D5qOiW//fwS4bUgzhLr1GDxHCRw+BEs9Uuw5Z9YhwMClhtFlI5P7HlH5SFC4QSsh44HaV31ORXJA==
+"@microsoft/teams-js@^2.20.0-beta.1":
+  version "2.20.0-beta.1"
+  resolved "https://domoreexp.pkgs.visualstudio.com/_packaging/npm-mirror/npm/registry/@microsoft/teams-js/-/teams-js-2.20.0-beta.1.tgz#54319b655fdd513335308c414933ef5279167f8e"
+  integrity sha1-VDGbZV/dUTM1MIxBSTPvUnkWf44=
   dependencies:
     debug "^4.3.3"
 
