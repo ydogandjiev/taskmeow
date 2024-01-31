@@ -11,6 +11,13 @@ class SSOAuthService {
     this.authToken = null;
   }
 
+  async initializeMSAL() {
+    if (!this.teamsAuthService) {
+      this.teamsAuthService = new TeamsAuthService();
+    }
+    return this.teamsAuthService.initializeMSAL();
+  }
+
   isCallback() {
     if (!this.teamsAuthService) {
       this.teamsAuthService = new TeamsAuthService();
