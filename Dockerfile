@@ -1,5 +1,5 @@
 # Base image
-FROM node:gallium
+FROM node:iron
 
 # Create app directory
 WORKDIR /usr/src/app

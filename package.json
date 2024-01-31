@@ -34,7 +34,7 @@
     "mongodb": "^4.17.2",
     "mongoose": "^6.12.0",
     "morgan": "^1.9.1",
-    "node-fetch": "^3.3.2",
+    "node-fetch": "^2.7.0",
     "office-ui-fabric-react": "^7.185.2",
     "passport": "^0.6.0",
     "passport-azure-ad": "^4.3.4",
