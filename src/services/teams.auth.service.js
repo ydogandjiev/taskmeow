@@ -15,7 +15,6 @@ class TeamsAuthService {
   }
 
   async initializeMSAL() {
-    console.log(`Initializing MSAL instance`);
     this.app = await msal.PublicClientApplication.createPublicClientApplication(
       {
         auth: {
@@ -53,7 +52,6 @@ class TeamsAuthService {
           width: 600,
           height: 535,
           successCallback: (response) => {
-            console.log("Login succeeded:" + JSON.stringify(response));
             this.app.setActiveAccount(response.account);
             resolve(response.account);
           },
@@ -101,7 +99,6 @@ class TeamsAuthService {
           extraQueryParameters: { domain_hint: domainHint },
         })
         .then((response) => {
-          console.log("Token refresh succeeded: " + JSON.stringify(response));
           return response.accessToken;
         })
         .catch((error) => {

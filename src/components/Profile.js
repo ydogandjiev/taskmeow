@@ -82,7 +82,7 @@ class Profile extends Component {
                 <TextField
                   label="Name"
                   value={this.state.user.name}
-                  readyOnly={true}
+                  readOnly={true}
                 />
               ) : (
                 <div>
@@ -127,9 +127,9 @@ class Profile extends Component {
             {this.state.tokenLoading && <Spinner />}
           </Stack>
           <TextField
-            value={this.state.token}
+            value={this.state.token || ""}
             label="Token"
-            readOnly
+            readOnly={true}
             multiline
           />
           {this.state.tokenError && <Text block>{this.state.tokenError}</Text>}
