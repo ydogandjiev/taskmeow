@@ -11,8 +11,8 @@
     "url": "https://github.com/ydogandjiev/taskmeow/issues"
   },
   "dependencies": {
-    "@azure/msal-browser": "^2.11.0",
-    "@microsoft/teams-js": "^2.11.0",
+    "@azure/msal-browser": "^3.7.0",
+    "@microsoft/teams-js": "^2.20.0-beta.1",
     "@slack/events-api": "^3.0.0",
     "@slack/interactive-messages": "^2.0.0",
     "@slack/web-api": "^6.0.0",

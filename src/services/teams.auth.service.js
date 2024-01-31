@@ -12,20 +12,25 @@ class TeamsAuthService {
       window.location.hostname === "taskmeow.com"
         ? "api://taskmeow.com/botid-36b1586d-b1da-45d2-9b32-899c3757b6f8/access_as_user"
         : "api://taskmeow.ngrok.io/botid-ab93102c-869b-4d34-a921-a31d3e7f76ef/access_as_user";
+  }
 
-    this.app = new msal.PublicClientApplication({
-      auth: {
-        clientId:
-          window.location.hostname === "taskmeow.com"
-            ? "36b1586d-b1da-45d2-9b32-899c3757b6f8"
-            : "ab93102c-869b-4d34-a921-a31d3e7f76ef",
-        redirectUri: `${window.location.origin}/tab/v2/silent-end`,
-        navigateToLoginRequestUrl: false,
-      },
-      cache: {
-        cacheLocation: "localStorage",
-      },
-    });
+  async initializeMSAL() {
+    console.log(`Initializing MSAL instance`);
+    this.app = await msal.PublicClientApplication.createPublicClientApplication(
+      {
+        auth: {
+          clientId:
+            window.location.hostname === "taskmeow.com"
+              ? "36b1586d-b1da-45d2-9b32-899c3757b6f8"
+              : "ab93102c-869b-4d34-a921-a31d3e7f76ef",
+          redirectUri: `${window.location.origin}/tab/v2/silent-end`,
+          navigateToLoginRequestUrl: false,
+        },
+        cache: {
+          cacheLocation: "localStorage",
+        },
+      }
+    );
   }
 
   isCallback() {
