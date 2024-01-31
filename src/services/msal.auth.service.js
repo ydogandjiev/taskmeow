@@ -21,7 +21,6 @@ class MsalAuthService {
   }
 
   async initializeMSAL() {
-    console.log(`Initializing MSAL instance`);
     this.app = await msal.PublicClientApplication.createPublicClientApplication(
       {
         auth: {
@@ -32,7 +31,6 @@ class MsalAuthService {
   }
 
   async initializeMSALNAA() {
-    console.log(`Initializing MSAL instance with NAA`);
     this.appNext = await msal.PublicClientNext.createPublicClientApplication({
       auth: {
         ...this.msalConfig,

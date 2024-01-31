@@ -15,6 +15,7 @@ jest.mock("../services/user.service");
 it("renders profile", () => {
   const user = {
     name: "mockName",
+    upn: "mockName@mockCompany.com",
   };
   authService.getUser.mockResolvedValue(user);
 

@@ -15,20 +15,43 @@ jest.mock("@microsoft/teams-js", () => ({
 }));
 
 import * as msal from "@azure/msal-browser";
-jest.mock("@azure/msal-browser");
+
+let authService = null;
+const mockMsalFns = {
+  getActiveAccount: jest.fn(),
+  handleRedirectPromise: jest.fn(),
+  loginPopup: jest.fn(),
+  logout: jest.fn(),
+  setActiveAccount: jest.fn(),
+  getAllAccounts: jest.fn(),
+  acquireTokenSilent: jest.fn(),
+};
 
 afterEach(() => {
   jest.resetAllMocks();
 });
 
+beforeEach(async () => {
+  jest
+    .spyOn(msal.PublicClientApplication, "createPublicClientApplication")
+    .mockImplementation(() => {
+      return Promise.resolve(mockMsalFns);
+    });
+
+  authService = new TeamsAuthService();
+  await authService.initializeMSAL();
+});
+
 it("can be constructed", () => {
-  const authService = new TeamsAuthService();
   expect(authService).toBeDefined();
+  expect(
+    msal.PublicClientApplication.createPublicClientApplication.mock.instances
+      .length
+  ).toEqual(1);
 });
 
 it("can check for callback", (done) => {
-  const authService = new TeamsAuthService();
-  const app = msal.PublicClientApplication.mock.instances[0];
+  const app = mockMsalFns;
   const mockAuthResponse = {
     account: {
       name: "John Doe",
@@ -51,8 +74,7 @@ it("can initiate login", (done) => {
     },
   };
 
-  const authService = new TeamsAuthService();
-  const app = msal.PublicClientApplication.mock.instances[0];
+  const app = mockMsalFns;
   app.getActiveAccount.mockResolvedValue();
 
   microsoftTeams.getContext.mockImplementationOnce((callback) => {
@@ -74,16 +96,13 @@ it("can initiate login", (done) => {
 });
 
 it("can initiate logout", () => {
-  const authService = new TeamsAuthService();
-  const app = msal.PublicClientApplication.mock.instances[0];
-
+  const app = mockMsalFns;
   authService.logout();
   expect(app.logout).toHaveBeenCalledTimes(1);
 });
 
 it("can get token", (done) => {
-  const authService = new TeamsAuthService();
-  const app = msal.PublicClientApplication.mock.instances[0];
+  const app = mockMsalFns;
   const mockAuthResponse = {
     accessToken: "fakeToken",
   };
@@ -101,8 +120,7 @@ it("can get token", (done) => {
 });
 
 it("can get user", (done) => {
-  const authService = new TeamsAuthService();
-  const app = msal.PublicClientApplication.mock.instances[0];
+  const app = mockMsalFns;
   const mockAccount = {
     name: "fakeFirst fakeLast",
     oid: "fakeOid",
