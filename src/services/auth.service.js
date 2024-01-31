@@ -20,13 +20,13 @@ class AuthService {
   }
 
   tryInitializeMSAL() {
-    if (this.authService instanceof MsalAuthService) {
+    if (this.authService["initializeMSAL"]) {
       return this.authService.initializeMSAL();
     }
   }
 
   tryInitializeMSALNAA() {
-    if (this.authService instanceof MsalAuthService) {
+    if (this.authService["initializeMSALNAA"]) {
       return this.authService.initializeMSALNAA();
     }
   }
