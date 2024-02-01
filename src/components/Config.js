@@ -17,17 +17,21 @@ class Config extends Component {
 
     this.state = {
       inTeamsSSO: !!params.get("inTeamsSSO"),
+      inTeamsMSAL: !!params.get("inTeamsMSAL")
     };
   }
 
   componentDidMount() {
     microsoftTeams.app.initialize();
+    const queryString = this.state.inTeamsMSAL ? "inTeamsMSAL=true" : `${
+      this.state.inTeamsSSO ? "inTeamsSSO=true" : "inTeams=true"
+    }`
     microsoftTeams.pages.config.registerOnSaveHandler((saveEvent) => {
       let contentUrl = `${window.location.origin}/group/?${
-        this.state.inTeamsSSO ? "inTeamsSSO=true" : "inTeams=true"
+        queryString
       }`;
       let removeUrl = `${window.location.origin}/remove/?${
-        this.state.inTeamsSSO ? "inTeamsSSO=true" : "inTeams=true"
+        queryString
       }`;
 
       microsoftTeams.pages.config.setConfig({
