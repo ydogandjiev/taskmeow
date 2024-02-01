@@ -15,7 +15,7 @@ class AuthService {
     } else if (params.get("inTeamsSSO")) {
       this.authService = new SSOAuthService();
     } else if (params.get("inTeamsMSAL")) {
-      this.authService = new SSOAuthService();
+      this.authService = new TeamsAuthService();
       this.msalAuthService = new MsalAuthService(); // Can only use Msal for NAA functions
     } else {
       this.authService = new MsalAuthService();
@@ -57,7 +57,10 @@ class AuthService {
   }
 
   getTokenWithNAA() {
-    if (!(this.authService instanceof MsalAuthService) || !!this.msalAuthService) {
+    if (
+      !(this.authService instanceof MsalAuthService) ||
+      !!this.msalAuthService
+    ) {
       throw new Error("This method is only supported for MsalAuthService");
     }
 
