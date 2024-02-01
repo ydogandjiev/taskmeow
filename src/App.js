@@ -33,7 +33,7 @@ class App extends Component {
 
     this.state = {
       loading: true,
-      inTeams: !!params.get("inTeams") || !!params.get("inTeamsSSO"),
+      inTeams: !!params.get("inTeams") || !!params.get("inTeamsSSO") || !!params.get("inTeamsMSAL"),
       taskId: params.get("task"),
       shareTag: params.get("shareTag"),
     };
