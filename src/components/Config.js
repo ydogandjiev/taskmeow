@@ -17,22 +17,18 @@ class Config extends Component {
 
     this.state = {
       inTeamsSSO: !!params.get("inTeamsSSO"),
-      inTeamsMSAL: !!params.get("inTeamsMSAL")
+      inTeamsMSAL: !!params.get("inTeamsMSAL"),
     };
   }
 
   componentDidMount() {
     microsoftTeams.app.initialize();
-    const queryString = this.state.inTeamsMSAL ? "inTeamsMSAL=true" : `${
-      this.state.inTeamsSSO ? "inTeamsSSO=true" : "inTeams=true"
-    }`
+    const queryString = this.state.inTeamsMSAL
+      ? "inTeamsMSAL=true"
+      : `${this.state.inTeamsSSO ? "inTeamsSSO=true" : "inTeams=true"}`;
     microsoftTeams.pages.config.registerOnSaveHandler((saveEvent) => {
-      let contentUrl = `${window.location.origin}/group/?${
-        queryString
-      }`;
-      let removeUrl = `${window.location.origin}/remove/?${
-        queryString
-      }`;
+      let contentUrl = `${window.location.origin}/group/?${queryString}`;
+      let removeUrl = `${window.location.origin}/remove/?${queryString}`;
 
       microsoftTeams.pages.config.setConfig({
         entityId: "meowTasks",
