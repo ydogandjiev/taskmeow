@@ -2,9 +2,11 @@
 
 This is a simple todo list app that showcases the capabilities of the Teams Platform. It's deployed to https://taskmeow.com. You can sideload it into your Teams Client using one of the app packages from the manifest folder.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Azure DevOps builds](https://img.shields.io/azure-devops/build/ydogandjiev/35dab36f-5d13-406c-afa8-9b2b906763c4/16?logo=azurepipelines&label=Build)](https://ydogandjiev.visualstudio.com/taskmeow/_build/latest?definitionId=16)
-[![Azure DevOps releases](https://img.shields.io/azure-devops/release/ydogandjiev/35dab36f-5d13-406c-afa8-9b2b906763c4/4/4?logo=azurepipelines&label=Deployment)](https://ydogandjiev.visualstudio.com/taskmeow/_release?_a=releases&definitionId=4)
+![GitHub License](https://img.shields.io/github/license/ydogandjiev/taskmeow)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/y/ydogandjiev/taskmeow?logo=github)
+![GitHub top language](https://img.shields.io/github/languages/top/ydogandjiev/taskmeow?logo=javascript)
+[![Azure DevOps builds](https://img.shields.io/azure-devops/build/ydogandjiev/35dab36f-5d13-406c-afa8-9b2b906763c4/16?logo=azurepipelines)](https://ydogandjiev.visualstudio.com/taskmeow/_build/latest?definitionId=16)
+[![Azure DevOps releases](https://img.shields.io/azure-devops/release/ydogandjiev/35dab36f-5d13-406c-afa8-9b2b906763c4/4/4?logo=azurepipelines)](https://ydogandjiev.visualstudio.com/taskmeow/_release?_a=releases&definitionId=4)
 
 ## Installing
 
