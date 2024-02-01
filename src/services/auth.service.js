@@ -14,6 +14,9 @@ class AuthService {
       this.authService = new TeamsAuthService();
     } else if (params.get("inTeamsSSO")) {
       this.authService = new SSOAuthService();
+    } else if (params.get("inTeamsMSAL")) {
+      this.authService = new SSOAuthService();
+      this.msalAuthService = new MsalAuthService(); // Can only use Msal for NAA functions
     } else {
       this.authService = new MsalAuthService();
     }
@@ -23,11 +26,17 @@ class AuthService {
     if (this.authService["initializeMSAL"]) {
       return this.authService.initializeMSAL();
     }
+    if (this.msalAuthService) {
+      return this.msalAuthService.initializeMSAL();
+    }
   }
 
   tryInitializeMSALNAA() {
     if (this.authService["initializeMSALNAA"]) {
       return this.authService.initializeMSALNAA();
+    }
+    if (this.msalAuthService) {
+      return this.msalAuthService.initializeMSALNAA();
     }
   }
 
@@ -48,9 +57,14 @@ class AuthService {
   }
 
   getTokenWithNAA() {
-    if (!(this.authService instanceof MsalAuthService)) {
+    if (!(this.authService instanceof MsalAuthService) || !!this.msalAuthService) {
       throw new Error("This method is only supported for MsalAuthService");
     }
+
+    if (this.msalAuthService) {
+      return this.msalAuthService.getTokenWithNAA();
+    }
+
     return this.authService.getTokenWithNAA();
   }
 
