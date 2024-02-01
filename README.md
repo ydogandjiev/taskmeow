@@ -3,8 +3,8 @@
 This is a simple todo list app that showcases the capabilities of the Teams Platform. It's deployed to https://taskmeow.com. You can sideload it into your Teams Client using one of the app packages from the manifest folder.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build status](https://ydogandjiev.visualstudio.com/taskmeow/_apis/build/status/taskmeow%20-%20CI)](https://ydogandjiev.visualstudio.com/taskmeow/_build/latest?definitionId=16)
-[![Release status](https://ydogandjiev.vsrm.visualstudio.com/_apis/public/Release/badge/35dab36f-5d13-406c-afa8-9b2b906763c4/4/4)](https://ydogandjiev.visualstudio.com/taskmeow/_release?_a=releases&view=mine&definitionId=4)
+[![Azure DevOps builds](https://img.shields.io/azure-devops/build/ydogandjiev/35dab36f-5d13-406c-afa8-9b2b906763c4/16?logo=azurepipelines&label=Build)](https://ydogandjiev.visualstudio.com/taskmeow/_build/latest?definitionId=16)
+[![Azure DevOps releases](https://img.shields.io/azure-devops/release/ydogandjiev/35dab36f-5d13-406c-afa8-9b2b906763c4/4/4?logo=azurepipelines&label=Deployment)](https://ydogandjiev.visualstudio.com/taskmeow/_release?_a=releases&definitionId=4)
 
 ## Installing
 
