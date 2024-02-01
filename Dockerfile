@@ -1,5 +1,5 @@
 # Base image
-FROM node:iron
+FROM node:hydrogen
 
 # Create app directory
 WORKDIR /usr/src/app
