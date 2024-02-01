@@ -7,6 +7,7 @@ This is a simple todo list app that showcases the capabilities of the Teams Plat
 ![GitHub top language](https://img.shields.io/github/languages/top/ydogandjiev/taskmeow?logo=javascript)
 [![Azure DevOps builds](https://img.shields.io/azure-devops/build/ydogandjiev/35dab36f-5d13-406c-afa8-9b2b906763c4/16?logo=azurepipelines)](https://ydogandjiev.visualstudio.com/taskmeow/_build/latest?definitionId=16)
 [![Azure DevOps releases](https://img.shields.io/azure-devops/release/ydogandjiev/35dab36f-5d13-406c-afa8-9b2b906763c4/4/4?logo=azurepipelines)](https://ydogandjiev.visualstudio.com/taskmeow/_release?_a=releases&definitionId=4)
+[![Website](https://img.shields.io/website?url=https%3A%2F%2Ftaskmeow.com&logo=microsoftedge)](https://taskmeow.com)
 
 ## Installing
 
