@@ -59,7 +59,7 @@ class AuthService {
   getTokenWithNAA() {
     if (
       !(this.authService instanceof MsalAuthService) ||
-      !!this.msalAuthService
+      !this.msalAuthService
     ) {
       throw new Error("This method is only supported for MsalAuthService");
     }
