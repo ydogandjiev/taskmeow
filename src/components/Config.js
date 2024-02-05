@@ -22,35 +22,36 @@ class Config extends Component {
   }
 
   componentDidMount() {
-    microsoftTeams.app.initialize();
-    const queryString = this.state.inTeamsMSAL
-      ? "inTeamsMSAL=true"
-      : `${this.state.inTeamsSSO ? "inTeamsSSO=true" : "inTeams=true"}`;
-    microsoftTeams.pages.config.registerOnSaveHandler((saveEvent) => {
-      let contentUrl = `${window.location.origin}/group/?${queryString}`;
-      let removeUrl = `${window.location.origin}/remove/?${queryString}`;
+    microsoftTeams.app.initialize().then(() => {
+      const queryString = this.state.inTeamsMSAL
+        ? "inTeamsMSAL=true"
+        : `${this.state.inTeamsSSO ? "inTeamsSSO=true" : "inTeams=true"}`;
+      microsoftTeams.pages.config.registerOnSaveHandler((saveEvent) => {
+        let contentUrl = `${window.location.origin}/group/?${queryString}`;
+        let removeUrl = `${window.location.origin}/remove/?${queryString}`;
 
-      microsoftTeams.pages.config.setConfig({
-        entityId: "meowTasks",
-        suggestedDisplayName: "Meow Tasks",
-        contentUrl: contentUrl,
-        removeUrl: removeUrl,
-        websiteUrl: `${window.location.origin}/`,
+        microsoftTeams.pages.config.setConfig({
+          entityId: "meowTasks",
+          suggestedDisplayName: "Meow Tasks",
+          contentUrl: contentUrl,
+          removeUrl: removeUrl,
+          websiteUrl: `${window.location.origin}/`,
+        });
+
+        saveEvent.notifySuccess();
       });
 
-      saveEvent.notifySuccess();
+      this.setState({ loading: true });
+      authService
+        .getUser()
+        .then((user) => {
+          this.setState({ user, loading: false });
+        })
+        .catch((err) => {
+          console.warn(`Error getting user: ${err}`);
+          this.setState({ loading: false });
+        });
     });
-
-    this.setState({ loading: true });
-    authService
-      .getUser()
-      .then((user) => {
-        this.setState({ user, loading: false });
-      })
-      .catch((err) => {
-        console.warn(`Error getting user: ${err}`);
-        this.setState({ loading: false });
-      });
   }
 
   validate = () => {
