@@ -21,37 +21,36 @@ class Config extends Component {
     };
   }
 
-  componentDidMount() {
-    microsoftTeams.app.initialize().then(() => {
-      const queryString = this.state.inTeamsMSAL
-        ? "inTeamsMSAL=true"
-        : `${this.state.inTeamsSSO ? "inTeamsSSO=true" : "inTeams=true"}`;
-      microsoftTeams.pages.config.registerOnSaveHandler((saveEvent) => {
-        let contentUrl = `${window.location.origin}/group/?${queryString}`;
-        let removeUrl = `${window.location.origin}/remove/?${queryString}`;
+  async componentDidMount() {
+    await microsoftTeams.app.initialize();
+    const queryString = this.state.inTeamsMSAL
+      ? "inTeamsMSAL=true"
+      : `${this.state.inTeamsSSO ? "inTeamsSSO=true" : "inTeams=true"}`;
+    microsoftTeams.pages.config.registerOnSaveHandler((saveEvent) => {
+      let contentUrl = `${window.location.origin}/group/?${queryString}`;
+      let removeUrl = `${window.location.origin}/remove/?${queryString}`;
 
-        microsoftTeams.pages.config.setConfig({
-          entityId: "meowTasks",
-          suggestedDisplayName: "Meow Tasks",
-          contentUrl: contentUrl,
-          removeUrl: removeUrl,
-          websiteUrl: `${window.location.origin}/`,
-        });
-
-        saveEvent.notifySuccess();
+      microsoftTeams.pages.config.setConfig({
+        entityId: "meowTasks",
+        suggestedDisplayName: "Meow Tasks",
+        contentUrl: contentUrl,
+        removeUrl: removeUrl,
+        websiteUrl: `${window.location.origin}/`,
       });
 
-      this.setState({ loading: true });
-      authService
-        .getUser()
-        .then((user) => {
-          this.setState({ user, loading: false });
-        })
-        .catch((err) => {
-          console.warn(`Error getting user: ${err}`);
-          this.setState({ loading: false });
-        });
+      saveEvent.notifySuccess();
     });
+
+    this.setState({ loading: true });
+    authService
+      .getUser()
+      .then((user) => {
+        this.setState({ user, loading: false });
+      })
+      .catch((err) => {
+        console.warn(`Error getting user: ${err}`);
+        this.setState({ loading: false });
+      });
   }
 
   validate = () => {
