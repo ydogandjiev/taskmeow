@@ -21,8 +21,8 @@ class Config extends Component {
     };
   }
 
-  componentDidMount() {
-    microsoftTeams.app.initialize();
+  async componentDidMount() {
+    await microsoftTeams.app.initialize();
     const queryString = this.state.inTeamsMSAL
       ? "inTeamsMSAL=true"
       : `${this.state.inTeamsSSO ? "inTeamsSSO=true" : "inTeams=true"}`;
