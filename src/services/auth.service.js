@@ -2,6 +2,7 @@ import MockAuthService from "./mock.auth.service";
 import MsalAuthService from "./msal.auth.service";
 import TeamsAuthService from "./teams.auth.service";
 import SSOAuthService from "./sso.auth.service";
+import MsalNAAAuthService from "./msal.naa.auth.service"
 
 class AuthService {
   constructor() {
@@ -15,28 +16,24 @@ class AuthService {
     } else if (params.get("inTeamsSSO")) {
       this.authService = new SSOAuthService();
     } else if (params.get("inTeamsMSAL")) {
-      this.authService = new TeamsAuthService();
-      this.msalAuthService = new MsalAuthService(); // Can only use Msal for NAA functions
+      this.authService = new MsalNAAAuthService();
     } else {
       this.authService = new MsalAuthService();
     }
   }
 
   tryInitializeMSAL() {
-    if (this.authService["initializeMSAL"]) {
+    if (this.authService["initializeMSALNAA"]) {
+      return this.authService.initializeMSALNAA();
+    } 
+    else if (this.authService["initializeMSAL"]) {
       return this.authService.initializeMSAL();
-    }
-    if (this.msalAuthService) {
-      return this.msalAuthService.initializeMSAL();
     }
   }
 
   tryInitializeMSALNAA() {
     if (this.authService["initializeMSALNAA"]) {
       return this.authService.initializeMSALNAA();
-    }
-    if (this.msalAuthService) {
-      return this.msalAuthService.initializeMSALNAA();
     }
   }
 
@@ -59,13 +56,9 @@ class AuthService {
   getTokenWithNAA() {
     if (
       !(this.authService instanceof MsalAuthService) &&
-      !this.msalAuthService
+      !(this.authService instanceof MsalNAAAuthService)
     ) {
       throw new Error("This method is only supported for MsalAuthService");
-    }
-
-    if (this.msalAuthService) {
-      return this.msalAuthService.getTokenWithNAA();
     }
 
     return this.authService.getTokenWithNAA();

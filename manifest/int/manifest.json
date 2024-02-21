@@ -25,19 +25,19 @@
   "accentColor": "#ffffff",
   "configurableTabs": [
     {
-      "configurationUrl": "https://taskmeow.ngrok.io/config/?inTeams=true",
+      "configurationUrl": "https://taskmeow.ngrok.io/config/?inTeamsMSAL=true",
       "scopes": ["team", "groupchat"]
     }
   ],
   "staticTabs": [
     {
-      "contentUrl": "https://taskmeow.ngrok.io/?inTeams=true",
+      "contentUrl": "https://taskmeow.ngrok.io/?inTeamsMSAL=true",
       "entityId": "myTasks",
       "name": "My Tasks",
       "scopes": ["personal"]
     },
     {
-      "contentUrl": "https://taskmeow.ngrok.io/profile/?inTeams=true",
+      "contentUrl": "https://taskmeow.ngrok.io/profile/?inTeamsMSAL=true",
       "entityId": "myProfile",
       "name": "My Profile",
       "scopes": ["personal"]
