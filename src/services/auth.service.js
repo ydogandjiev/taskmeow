@@ -2,7 +2,7 @@ import MockAuthService from "./mock.auth.service";
 import MsalAuthService from "./msal.auth.service";
 import TeamsAuthService from "./teams.auth.service";
 import SSOAuthService from "./sso.auth.service";
-import MsalNAAAuthService from "./msal.naa.auth.service"
+import MsalNAAAuthService from "./msal.naa.auth.service";
 
 class AuthService {
   constructor() {
@@ -25,8 +25,7 @@ class AuthService {
   tryInitializeMSAL() {
     if (this.authService["initializeMSALNAA"]) {
       return this.authService.initializeMSALNAA();
-    } 
-    else if (this.authService["initializeMSAL"]) {
+    } else if (this.authService["initializeMSAL"]) {
       return this.authService.initializeMSAL();
     }
   }

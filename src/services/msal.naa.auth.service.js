@@ -5,7 +5,6 @@ import * as msal from "@azure/msal-browser";
 // either an AAD or MSA account. This leverages the AAD v2 endpoint.
 class MsalNAAAuthService {
   constructor() {
-    
     this.api =
       window.location.hostname === "taskmeow.com"
         ? "api://taskmeow.com/botid-36b1586d-b1da-45d2-9b32-899c3757b6f8/access_as_user"
@@ -45,16 +44,15 @@ class MsalNAAAuthService {
 
   isCallback() {
     try {
-    return this.appNext.handleRedirectPromise().then((authResponse) => {
-      if (authResponse) {
-        this.appNext.setActiveAccount(authResponse.account);
-        return true;
-      } else {
-        return false;
-      }
-    });
-    }
-    catch {
+      return this.appNext.handleRedirectPromise().then((authResponse) => {
+        if (authResponse) {
+          this.appNext.setActiveAccount(authResponse.account);
+          return true;
+        } else {
+          return false;
+        }
+      });
+    } catch {
       return Promise.resolve(false);
     }
   }
@@ -68,20 +66,17 @@ class MsalNAAAuthService {
     //   "offline_access",
     //   this.api,
     // ];
-
     // // Add non-production scopes
     // const extraScopes = ["User.Read"];
     // if (window.location.hostname !== "taskmeow.com") {
     //   extraScopes.push("Calendars.Read");
     //   extraScopes.push("Calendars.ReadWrite");
     // }
-
     // const authRequest = {
     //   scopes: loginScopes,
     //   extraScopesToConsent: extraScopes,
     //   prompt: "select_account",
     // };
-
     // if (window.navigator.standalone) {
     //   return this.app.loginRedirect(authRequest);
     // } else {
@@ -103,36 +98,30 @@ class MsalNAAAuthService {
       });
     }).then(async (context) => {
       const silentRequest = {
-        scopes: [
-          "openid",
-          "email",
-          "profile",
-          "offline_access",
-          this.api,
-        ],
+        scopes: ["openid", "email", "profile", "offline_access", this.api],
         extraScopesToConsent: ["User.Read"],
-        loginHint: context.loginHint
-    };
-    try {
-      await this.appNext.ssoSilent(silentRequest);
-    } catch (err) {
-      if (err instanceof msal.InteractionRequiredAuthError) {
-        await this.appNext.acquireTokenPopup(silentRequest).catch(() => {
+        loginHint: context.loginHint,
+      };
+      try {
+        await this.appNext.ssoSilent(silentRequest);
+      } catch (err) {
+        if (err instanceof msal.InteractionRequiredAuthError) {
+          await this.appNext.acquireTokenPopup(silentRequest).catch(() => {
             throw new Error("login failed");
-        });
-      } else {
+          });
+        } else {
           // handle error
+        }
       }
-    }
-    let activeAccount = this.appNext.getActiveAccount();
-    if (!activeAccount) {
-      const allAccounts = this.appNext.getAllAccounts();
-      if (allAccounts.length === 1) {
-        this.appNext.setActiveAccount(allAccounts[0]);
-        activeAccount = allAccounts[0];
+      let activeAccount = this.appNext.getActiveAccount();
+      if (!activeAccount) {
+        const allAccounts = this.appNext.getAllAccounts();
+        if (allAccounts.length === 1) {
+          this.appNext.setActiveAccount(allAccounts[0]);
+          activeAccount = allAccounts[0];
+        }
       }
-    }
-    return Promise.resolve(activeAccount);
+      return Promise.resolve(activeAccount);
     });
   }
 
