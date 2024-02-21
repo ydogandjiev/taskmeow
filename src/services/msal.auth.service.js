@@ -30,15 +30,6 @@ class MsalAuthService {
     );
   }
 
-  async initializeMSALNAA() {
-    this.appNext = await msal.PublicClientNext.createPublicClientApplication({
-      auth: {
-        ...this.msalConfig,
-        supportsNestedAppAuth: true,
-      },
-    });
-  }
-
   isCallback() {
     return this.app.handleRedirectPromise().then((authResponse) => {
       if (authResponse) {

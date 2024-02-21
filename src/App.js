@@ -7,7 +7,6 @@ import {
   MessageBarButton,
   MessageBarType,
 } from "office-ui-fabric-react";
-import * as microsoftTeams from "@microsoft/teams-js";
 import Profile from "./components/Profile";
 import Tasks from "./components/Tasks";
 import Config from "./components/Config";
@@ -33,7 +32,10 @@ class App extends Component {
 
     this.state = {
       loading: true,
-      inTeams: !!params.get("inTeams") || !!params.get("inTeamsSSO") || !!params.get("inTeamsMSAL"),
+      inTeams:
+        !!params.get("inTeams") ||
+        !!params.get("inTeamsSSO") ||
+        !!params.get("inTeamsMSAL"),
       taskId: params.get("task"),
       shareTag: params.get("shareTag"),
     };
@@ -70,12 +72,6 @@ class App extends Component {
           loading: false,
         });
       });
-
-    if (this.state.inTeams) {
-      microsoftTeams.app.initialize().then(() => {
-        authService.tryInitializeMSALNAA();
-      });
-    }
   }
 
   login = () => {
