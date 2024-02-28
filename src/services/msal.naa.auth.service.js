@@ -69,12 +69,15 @@ class MsalNAAAuthService {
         loginHint: context.loginHint,
       };
 
-      await this.appNext.acquireTokenPopup(silentRequest).then((authResponse) => {
-        this.appNext.setActiveAccount(authResponse.account);
-        return authResponse.account;
-      }).catch(() => {
-        throw new Error("login failed");
-      });
+      await this.appNext
+        .acquireTokenPopup(silentRequest)
+        .then((authResponse) => {
+          this.appNext.setActiveAccount(authResponse.account);
+          return authResponse.account;
+        })
+        .catch(() => {
+          throw new Error("login failed");
+        });
     });
   }
 
@@ -96,7 +99,7 @@ class MsalNAAAuthService {
       try {
         await this.appNext.ssoSilent(silentRequest);
       } catch (err) {
-        console.log("ssoSilent failed")
+        console.log("ssoSilent failed");
       }
       let activeAccount = this.appNext.getActiveAccount();
       if (!activeAccount) {

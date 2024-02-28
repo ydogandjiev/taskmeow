@@ -39,7 +39,7 @@ class UserTile extends Component {
   }
 
   viewTasks = () => {
-    if(window.location.pathname !== "/") {
+    if (window.location.pathname !== "/") {
       this.setState({ route: "/" });
     }
     // this.props.history.push("/");
