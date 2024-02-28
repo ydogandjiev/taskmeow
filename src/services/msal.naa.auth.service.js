@@ -57,34 +57,25 @@ class MsalNAAAuthService {
     }
   }
 
-  login() {
-    // Configure all the scopes that this app needs
-    // const loginScopes = [
-    //   "openid",
-    //   "email",
-    //   "profile",
-    //   "offline_access",
-    //   this.api,
-    // ];
-    // // Add non-production scopes
-    // const extraScopes = ["User.Read"];
-    // if (window.location.hostname !== "taskmeow.com") {
-    //   extraScopes.push("Calendars.Read");
-    //   extraScopes.push("Calendars.ReadWrite");
-    // }
-    // const authRequest = {
-    //   scopes: loginScopes,
-    //   extraScopesToConsent: extraScopes,
-    //   prompt: "select_account",
-    // };
-    // if (window.navigator.standalone) {
-    //   return this.app.loginRedirect(authRequest);
-    // } else {
-    //   return this.app.loginPopup(authRequest).then((authResponse) => {
-    //     this.app.setActiveAccount(authResponse.account);
-    //     return authResponse.account;
-    //   });
-    // }
+  async login() {
+    return new Promise((resolve) => {
+      microsoftTeams.getContext((context) => {
+        resolve(context);
+      });
+    }).then(async (context) => {
+      const silentRequest = {
+        scopes: ["openid", "email", "profile", "offline_access", this.api],
+        extraScopesToConsent: ["User.Read"],
+        loginHint: context.loginHint,
+      };
+
+      await this.appNext.acquireTokenPopup(silentRequest).then((authResponse) => {
+        this.appNext.setActiveAccount(authResponse.account);
+        return authResponse.account;
+      }).catch(() => {
+        throw new Error("login failed");
+      });
+    });
   }
 
   logout() {
@@ -105,13 +96,7 @@ class MsalNAAAuthService {
       try {
         await this.appNext.ssoSilent(silentRequest);
       } catch (err) {
-        if (err instanceof msal.InteractionRequiredAuthError) {
-          await this.appNext.acquireTokenPopup(silentRequest).catch(() => {
-            throw new Error("login failed");
-          });
-        } else {
-          // handle error
-        }
+        console.log("ssoSilent failed")
       }
       let activeAccount = this.appNext.getActiveAccount();
       if (!activeAccount) {
