@@ -39,12 +39,16 @@ class UserTile extends Component {
   }
 
   viewTasks = () => {
-    this.setState({ route: "/" });
+    if (window.location.pathname !== "/") {
+      this.setState({ route: "/" });
+    }
     // this.props.history.push("/");
   };
 
   viewProfile = () => {
-    this.setState({ route: "/profile" });
+    if (window.location.pathname.indexOf("/profile") == -1) {
+      this.setState({ route: "/profile" });
+    }
     // this.props.history.push("/profile");
   };
 
