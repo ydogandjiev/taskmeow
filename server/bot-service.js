@@ -228,43 +228,18 @@ class AuthBot extends builder.UniversalBot {
   }
 
   handleCreateTaskCommand(cb) {
-    const createTaskPrompt = {
+    const createTaskModule = {
       task: {
         type: "continue",
         value: {
-          card: {
-            contentType: "application/vnd.microsoft.card.adaptive",
-            content: {
-              version: "1.0.0",
-              type: "AdaptiveCard",
-              body: [
-                {
-                  type: "TextBlock",
-                  size: "Large",
-                  weight: "Bolder",
-                  text: "Create a task",
-                },
-                { type: "TextBlock", text: "Title" },
-                { id: "title", placeholder: "New Task", type: "Input.Text" },
-              ],
-              actions: [
-                {
-                  type: "Action.Submit",
-                  title: "Create",
-                  data: {
-                    submitLocation: "messagingExtensionFetchTask",
-                  },
-                },
-              ],
-            },
-          },
-          heigth: 500,
-          width: 500,
+          heigth: 400,
+          width: 600,
           title: "Create a Task",
+          url: `${utils.baseUrl}/create?inTeamsSSO=true`,
         },
       },
     };
-    cb(null, createTaskPrompt);
+    cb(null, createTaskModule);
   }
 
   handleSignOutCommand(cb, session) {

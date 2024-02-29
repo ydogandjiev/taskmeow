@@ -410,4 +410,5 @@ module.exports = {
   getDefaultAdaptiveCard,
   getSSOResponse,
   buildShareUrl,
+  baseUrl,
 };

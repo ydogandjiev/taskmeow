@@ -73,7 +73,10 @@ app.get("/termsofuse", (req, res) => {
 
 // React routes
 app.get("*", (req, res) => {
-  res.sendFile("build/index.html", { root: __dirname });
+  res.sendFile("build/index.html", {
+    root: __dirname,
+    APP_ID: process.env.APPSETTING_AAD_ApplicationId,
+  });
 });
 
 module.exports = app;
