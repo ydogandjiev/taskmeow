@@ -64,7 +64,7 @@ class MsalNAAAuthService {
       });
     }).then(async (context) => {
       const silentRequest = {
-        scopes: ["openid", "email", "profile", "offline_access", this.api],
+        scopes: ["openid", "profile", "offline_access", this.api],
         extraScopesToConsent: ["User.Read"],
         loginHint: context.loginHint,
       };
@@ -92,12 +92,13 @@ class MsalNAAAuthService {
       });
     }).then(async (context) => {
       const silentRequest = {
-        scopes: ["openid", "email", "profile", "offline_access", this.api],
+        scopes: ["openid", "profile", "offline_access", this.api],
         extraScopesToConsent: ["User.Read"],
         loginHint: context.loginHint,
       };
       try {
-        await this.appNext.ssoSilent(silentRequest);
+        // eslint-disable-next-line no-unused-vars
+        var response = await this.appNext.ssoSilent(silentRequest);
       } catch (err) {
         console.log("ssoSilent failed");
       }
@@ -127,14 +128,16 @@ class MsalNAAAuthService {
   }
 
   getTokenWithMSALClients(useMsalNext = false) {
-    const scopes = [this.api];
+    const request = {
+      scopes: [this.api],
+    };
     return (useMsalNext ? this.appNext : this.app)
-      .acquireTokenSilent({ scopes })
+      .acquireTokenSilent(request)
       .then((authResponse) => authResponse.accessToken)
       .catch((error) => {
         if (error.errorMessage.indexOf("interaction_required") >= 0) {
           return this.app
-            .acquireTokenPopup({ scopes })
+            .acquireTokenPopup(request)
             .then((authResponse) => authResponse.accessToken);
         } else {
           return Promise.reject(error);
