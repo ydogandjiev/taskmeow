@@ -218,7 +218,7 @@ class Tasks extends Component {
       <div>
         <div className="App-header">
           <h1 className="App-header-title">
-            {this.props.isGroup ? "Our Tasks" : "My Tasks"}
+            {this.props.isGroup ? this.props.tabName : "My Tasks"}
           </h1>
           <ConsentConsumer>
             {({ setConsentRequired }) => (
