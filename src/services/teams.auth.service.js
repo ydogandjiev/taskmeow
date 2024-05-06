@@ -51,12 +51,8 @@ class TeamsAuthService {
           url: `${window.location.origin}/tab/v2/silent-start`,
           width: 600,
           height: 535,
-          successCallback: (response, authLocalStorage) => {
-            console.log(response, authLocalStorage);
+          successCallback: (response) => {
             this.app.setActiveAccount(response.account);
-            Object.keys(authLocalStorage).map((key) =>
-              localStorage.setItem(key, authLocalStorage[key])
-            );
             resolve(response.account);
           },
           failureCallback: (error) => {

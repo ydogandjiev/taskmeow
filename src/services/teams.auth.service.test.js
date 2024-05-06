@@ -37,11 +37,6 @@ beforeEach(async () => {
     .mockImplementation(() => {
       return Promise.resolve(mockMsalFns);
     });
-  // jest
-  // .spyOn(Object, "keys")
-  // .mockImplementation(() => {
-  //   return {map:jest.fn()};
-  // });
 
   authService = new TeamsAuthService();
   await authService.initializeMSAL();
@@ -88,7 +83,7 @@ it("can initiate login", (done) => {
 
   microsoftTeams.authentication.authenticate.mockImplementationOnce(
     (request) => {
-      request.successCallback(mockAuthResponse, {});
+      request.successCallback(mockAuthResponse);
     }
   );
 

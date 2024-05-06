@@ -30,8 +30,7 @@ html
       app
         .handleRedirectPromise()
         .then((authResponse) => {
-          console.log({localStorage});
-            microsoftTeams.authentication.notifySuccess(authResponse, localStorage);
+            microsoftTeams.authentication.notifySuccess(authResponse);
         })
         .catch((error) => {
           microsoftTeams.authentication.notifyFailure(error);
