@@ -68,16 +68,17 @@ class MsalNAAAuthService {
         extraScopesToConsent: ["User.Read"],
         loginHint: context.loginHint,
       };
-
+      let activeAccount;
       await this.appNext
         .acquireTokenPopup(silentRequest)
         .then((authResponse) => {
           this.appNext.setActiveAccount(authResponse.account);
-          return authResponse.account;
+          activeAccount = authResponse.account;
         })
         .catch(() => {
           throw new Error("login failed");
         });
+        return Promise.resolve(activeAccount);
     });
   }
 
