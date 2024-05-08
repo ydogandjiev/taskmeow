@@ -33,6 +33,8 @@ SQLCONNSTR_DbUri="<DB Uri>"
 SQLCONNSTR_DbUsername="<DB Username>"
 SQLCONNSTR_DbPassword="<DB Password>"
 APPINSIGHTS_INSTRUMENTATIONKEY="AppInsights Instrumentation Key"
+APPSETTING_SessionSecret="any string"
+REACT_APP_APPID="<AAD App ID>"
 ```
 
 ### Start Create React App and Express Server
