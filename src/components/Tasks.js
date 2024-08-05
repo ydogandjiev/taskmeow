@@ -3,7 +3,6 @@ import { Icon, Spinner, TextField } from "office-ui-fabric-react";
 import Task from "./Task";
 import TaskPane from "./TaskPane";
 import UserTile from "./UserTile";
-import tasksService from "../services/tasks.service";
 import * as microsoftTeams from "@microsoft/teams-js";
 import { ConsentConsumer } from "./ConsentContext";
 
@@ -28,6 +27,25 @@ class Tasks extends Component {
     };
   }
 
+  taskService = {
+    get: (threadId) => {
+      this.props.worker.port.postMessage({method: 'get', args: [threadId]});
+      return Promise.resolve();
+    },
+    destroy: (taskId) => {
+      this.props.worker.port.postMessage({method: 'destroy', args: [taskId]});
+      return Promise.resolve();
+    },  
+    create: (task) => {
+      this.props.worker.port.postMessage({method: 'create', args: [task]});
+      return Promise.resolve();
+    },
+    update: (task, threadId) => {
+      this.props.worker.port.postMessage({method: 'update', args: [task, threadId]});
+      return Promise.resolve();
+    }
+  };
+
   componentDidMount() {
     this.setState({ loading: true });
 
@@ -35,8 +53,8 @@ class Tasks extends Component {
       microsoftTeams.app.getContext().then((context) => {
         const threadId = context.teamId || context.chatId;
         const fetchTaskPromise = this.props.isGroup
-          ? tasksService.get(threadId)
-          : tasksService.get();
+          ? this.props.worker.port.postMessage({method: 'get', args: [threadId]})
+          : this.props.worker.port.postMessage({method: 'get', args: []})
         fetchTaskPromise
           .then((tasks) => {
             this.setState({
@@ -54,7 +72,7 @@ class Tasks extends Component {
           });
       });
     } else {
-      tasksService.get().then((tasks) => {
+      this.taskService.get().then((tasks) => {
         this.setState({
           tasks: tasks.sort((a, b) => a.order - b.order),
           loading: false,
@@ -94,7 +112,7 @@ class Tasks extends Component {
   handleKeyDown = (event) => {
     if (event.key === "Enter") {
       const tasks = this.state.tasks;
-      tasksService
+      this.taskService
         .create({
           ...this.state.newTask,
           order: tasks.length > 0 ? tasks[0].order + 100 : 100,
@@ -184,7 +202,7 @@ class Tasks extends Component {
   };
 
   onTaskComplete(task) {
-    return tasksService.destroy(task._id).then(() => {
+    return this.taskService.destroy(task._id).then(() => {
       this.setState({
         tasks: this.state.tasks.filter((item) => item._id !== task._id),
         taskId: undefined,
@@ -202,7 +220,7 @@ class Tasks extends Component {
     const index = this.state.tasks.findIndex((item) => item._id === task._id);
     const updatedList = [...this.state.tasks];
     updatedList[index] = task;
-    return tasksService.update(task, threadId).then(() => {
+    return this.taskService.update(task, threadId).then(() => {
       if (!skipStateUpdate) {
         this.setState({
           taskId: undefined,

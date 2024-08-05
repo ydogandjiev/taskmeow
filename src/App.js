@@ -52,6 +52,16 @@ class App extends Component {
       tabName: "",
       unloadDebugMode: "normal",
     };
+
+    if (window.SharedWorker) {
+      this.worker = new SharedWorker(new URL("./worker.js", import.meta.url));
+      console.log(`>>>>> TaskMeow Share worker started.`);
+      this.worker.port.onmessage = (e) => {
+        console.log(">>>>> Worker said: ", JSON.stringify(e.data));
+      }
+      this.worker.port.start();
+    }
+  
   }
 
   async componentDidMount() {
@@ -135,10 +145,12 @@ class App extends Component {
         if (config?.suggestedDisplayName) {
           this.setState({ tabName: config?.suggestedDisplayName });
         }
-        console.log(
-          `>>>>> TaskMeow notified success for ${config?.suggestedDisplayName}.`
-        );
-        microsoftTeams.app.notifySuccess();
+        setTimeout(() => {
+          console.log(
+            `>>>>> TaskMeow notified success for ${config?.suggestedDisplayName}.`
+          );
+          microsoftTeams.app.notifySuccess();
+        }, 5000);
       });
     }
   };
@@ -211,6 +223,7 @@ class App extends Component {
                       taskId={taskId}
                       shareTag={shareTag}
                       tabName={tabName}
+                      worker={this.worker}
                     />
                   }
                 />
