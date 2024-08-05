@@ -8,16 +8,14 @@ export default () => {
     connections.push(port);
 
     port.onmessage = function (e) {
-
-      service[e.data.method](...e.data.args)
-      .then(result => {
-        if (['destroy', 'create', 'update'].includes(e.data.method)) {
+      service[e.data.method](...e.data.args).then((result) => {
+        if (["destroy", "create", "update"].includes(e.data.method)) {
           connections.postMessage(result);
         } else {
           port.postMessage(result);
         }
       });
-      
+
       console.log(`Worker: ${e.data.method} called`);
       port.postMessage(`worker result for ${e.data.method}`);
     };

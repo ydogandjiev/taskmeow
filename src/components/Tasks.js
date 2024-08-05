@@ -29,21 +29,24 @@ class Tasks extends Component {
 
   taskService = {
     get: (threadId) => {
-      this.props.worker.port.postMessage({method: 'get', args: [threadId]});
+      this.props.worker.port.postMessage({ method: "get", args: [threadId] });
       return Promise.resolve();
     },
     destroy: (taskId) => {
-      this.props.worker.port.postMessage({method: 'destroy', args: [taskId]});
+      this.props.worker.port.postMessage({ method: "destroy", args: [taskId] });
       return Promise.resolve();
-    },  
+    },
     create: (task) => {
-      this.props.worker.port.postMessage({method: 'create', args: [task]});
+      this.props.worker.port.postMessage({ method: "create", args: [task] });
       return Promise.resolve();
     },
     update: (task, threadId) => {
-      this.props.worker.port.postMessage({method: 'update', args: [task, threadId]});
+      this.props.worker.port.postMessage({
+        method: "update",
+        args: [task, threadId],
+      });
       return Promise.resolve();
-    }
+    },
   };
 
   componentDidMount() {
@@ -53,8 +56,11 @@ class Tasks extends Component {
       microsoftTeams.app.getContext().then((context) => {
         const threadId = context.teamId || context.chatId;
         const fetchTaskPromise = this.props.isGroup
-          ? this.props.worker.port.postMessage({method: 'get', args: [threadId]})
-          : this.props.worker.port.postMessage({method: 'get', args: []})
+          ? this.props.worker.port.postMessage({
+              method: "get",
+              args: [threadId],
+            })
+          : this.props.worker.port.postMessage({ method: "get", args: [] });
         fetchTaskPromise
           .then((tasks) => {
             this.setState({

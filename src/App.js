@@ -58,10 +58,9 @@ class App extends Component {
       console.log(`>>>>> TaskMeow Share worker started.`);
       this.worker.port.onmessage = (e) => {
         console.log(">>>>> Worker said: ", JSON.stringify(e.data));
-      }
+      };
       this.worker.port.start();
     }
-  
   }
 
   async componentDidMount() {
