@@ -9,6 +9,7 @@ import {
 } from "office-ui-fabric-react";
 import * as microsoftTeams from "@microsoft/teams-js";
 import {
+  LOAD_TEST_MODE_STORAGE_KEY,
   UNLOAD_TIME_STORAGE_KEY,
   UNLOAD_TEST_MODE_STORAGE_KEY,
 } from "./services/constants";
@@ -56,6 +57,12 @@ class App extends Component {
 
   async componentDidMount() {
     console.log(`>>>>> TaskMeow executing componentDidMount.`);
+
+    const loadTestMode = localStorage.getItem(LOAD_TEST_MODE_STORAGE_KEY);
+    if (loadTestMode === "slowLoad") {
+      console.log(`>>>>> TaskMeow loading slowly...`);
+      await new Promise((resolve) => setTimeout(resolve, 13000));
+    }
 
     // Initialize the Teams SDK
     await microsoftTeams.app.initialize();
@@ -135,6 +142,7 @@ class App extends Component {
         if (config?.suggestedDisplayName) {
           this.setState({ tabName: config?.suggestedDisplayName });
         }
+
         console.log(
           `>>>>> TaskMeow notified success for ${config?.suggestedDisplayName}.`
         );

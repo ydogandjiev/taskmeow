@@ -8,6 +8,7 @@ import {
 import * as microsoftTeams from "@microsoft/teams-js";
 import JsonViewer from "react-json-view";
 import {
+  LOAD_TEST_MODE_STORAGE_KEY,
   UNLOAD_TEST_MODE_STORAGE_KEY,
   UNLOAD_TIME_STORAGE_KEY,
 } from "../services/constants";
@@ -22,6 +23,10 @@ class Debug extends Component {
     { key: "reloadApp", text: "Reload App When Unloading" },
     { key: "normal", text: "Normal Unload" },
   ];
+  loadTestOptions = [
+    { key: "slowLoad", text: "Long Load Time" },
+    { key: "normal", text: "Normal Load" },
+  ];
 
   constructor(props) {
     super(props);
@@ -30,6 +35,7 @@ class Debug extends Component {
     const params = new URLSearchParams(url.search);
     const unloadDelaySetting = localStorage.getItem(UNLOAD_TIME_STORAGE_KEY);
     const unloadTestMode = localStorage.getItem(UNLOAD_TEST_MODE_STORAGE_KEY);
+    const loadTestMode = localStorage.getItem(LOAD_TEST_MODE_STORAGE_KEY);
 
     this.state = {
       debug: false,
@@ -38,6 +44,7 @@ class Debug extends Component {
       url,
       settings: {},
       settingsLoading: false,
+      loadTestMode: loadTestMode,
       unloadTestMode,
       unloadDelay: unloadDelaySetting || 0,
     };
@@ -98,6 +105,11 @@ class Debug extends Component {
     this.setState({ unloadTestMode: value.key });
   };
 
+  setLoadTestMode = (ev, value) => {
+    localStorage.setItem(LOAD_TEST_MODE_STORAGE_KEY, value.key);
+    this.setState({ loadTestMode: value.key });
+  };
+
   render() {
     return (
       <div>
@@ -153,6 +165,12 @@ class Debug extends Component {
             />
 
             <h3>Caching</h3>
+            <Dropdown
+              label="Load Test Option"
+              selectedKey={this.state.loadTestMode || "normal"}
+              options={this.loadTestOptions}
+              onChange={this.setLoadTestMode}
+            />
             <Dropdown
               label="Unload Test Option"
               selectedKey={this.state.unloadTestMode || "normal"}
