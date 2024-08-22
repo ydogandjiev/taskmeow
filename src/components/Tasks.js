@@ -33,6 +33,7 @@ class Tasks extends Component {
 
     if (this.props.inTeams) {
       microsoftTeams.app.getContext().then((context) => {
+        console.log(`>>>>> TaskMeow app contexxt = ${JSON.stringify(context)}`);
         const threadId = context.teamId || context.chatId;
         const fetchTaskPromise = this.props.isGroup
           ? tasksService.get(threadId)
