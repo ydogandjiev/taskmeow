@@ -2,40 +2,21 @@ import React, { Component } from "react";
 import {
   DefaultButton,
   IconButton,
-  TextField,
-  Dropdown,
 } from "office-ui-fabric-react";
 import * as microsoftTeams from "@microsoft/teams-js";
 import JsonViewer from "react-json-view";
-import {
-  LOAD_TEST_MODE_STORAGE_KEY,
-  UNLOAD_TEST_MODE_STORAGE_KEY,
-  UNLOAD_TIME_STORAGE_KEY,
-} from "../services/constants";
 
 /**
  * This component is responsible for:
  * 1. Fetching and displaying the user's profile information
  */
 class Debug extends Component {
-  cacheTestOptions = [
-    { key: "slowUnload", text: "Long Unload Time" },
-    { key: "reloadApp", text: "Reload App When Unloading" },
-    { key: "normal", text: "Normal Unload" },
-  ];
-  loadTestOptions = [
-    { key: "slowLoad", text: "Long Load Time" },
-    { key: "normal", text: "Normal Load" },
-  ];
 
   constructor(props) {
     super(props);
 
     const url = new URL(window.location);
     const params = new URLSearchParams(url.search);
-    const unloadDelaySetting = localStorage.getItem(UNLOAD_TIME_STORAGE_KEY);
-    const unloadTestMode = localStorage.getItem(UNLOAD_TEST_MODE_STORAGE_KEY);
-    const loadTestMode = localStorage.getItem(LOAD_TEST_MODE_STORAGE_KEY);
 
     this.state = {
       debug: false,
@@ -44,9 +25,6 @@ class Debug extends Component {
       url,
       settings: {},
       settingsLoading: false,
-      loadTestMode: loadTestMode,
-      unloadTestMode,
-      unloadDelay: unloadDelaySetting || 0,
     };
   }
 
@@ -59,7 +37,6 @@ class Debug extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (this.state.debug && !prevState.debug) {
       microsoftTeams.app.getContext().then((context) => {
-        console.log(`context is ${JSON.stringify(context)}`);
         this.setState({ context });
       });
     }
@@ -87,27 +64,6 @@ class Debug extends Component {
       },
       url: this.state.url.href,
     });
-  };
-
-  handleDelayChange = (ev, value) => {
-    this.setState({ unloadDelay: value });
-  };
-
-  setUnloadDelay = () => {
-    const time = this.state.unloadDelay;
-    if (!isNaN(time) && time >= 0) {
-      localStorage.setItem(UNLOAD_TIME_STORAGE_KEY, time);
-    }
-  };
-
-  setUnloadTestMode = (ev, value) => {
-    localStorage.setItem(UNLOAD_TEST_MODE_STORAGE_KEY, value.key);
-    this.setState({ unloadTestMode: value.key });
-  };
-
-  setLoadTestMode = (ev, value) => {
-    localStorage.setItem(LOAD_TEST_MODE_STORAGE_KEY, value.key);
-    this.setState({ loadTestMode: value.key });
   };
 
   render() {
@@ -163,36 +119,6 @@ class Debug extends Component {
               text="startTask"
               onClick={() => this.openTaskModule()}
             />
-
-            <h3>Caching</h3>
-            <Dropdown
-              label="Load Test Option"
-              selectedKey={this.state.loadTestMode || "normal"}
-              options={this.loadTestOptions}
-              onChange={this.setLoadTestMode}
-            />
-            <Dropdown
-              label="Unload Test Option"
-              selectedKey={this.state.unloadTestMode || "normal"}
-              options={this.cacheTestOptions}
-              onChange={this.setUnloadTestMode}
-            />
-            {this.state.unloadTestMode === "slowUnload" && (
-              <div>
-                <TextField
-                  label="Slow unload (duration in ms)"
-                  className="unload-time"
-                  placeholder="Unload time in milliseconds"
-                  value={this.state.unloadDelay}
-                  onChange={this.handleDelayChange}
-                />
-                <DefaultButton
-                  primary
-                  text="Save"
-                  onClick={() => this.setUnloadDelay()}
-                />
-              </div>
-            )}
           </div>
         )}
       </div>

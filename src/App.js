@@ -8,11 +8,6 @@ import {
   MessageBarType,
 } from "office-ui-fabric-react";
 import * as microsoftTeams from "@microsoft/teams-js";
-import {
-  LOAD_TEST_MODE_STORAGE_KEY,
-  UNLOAD_TIME_STORAGE_KEY,
-  UNLOAD_TEST_MODE_STORAGE_KEY,
-} from "./services/constants";
 import Profile from "./components/Profile";
 import Tasks from "./components/Tasks";
 import Config from "./components/Config";
@@ -39,8 +34,6 @@ class App extends Component {
     const url = new URL(window.location);
     const params = new URLSearchParams(url.search);
     console.log(`>>>>> TaskMeow on page ${window.location.href}`);
-    this.isCachedPage = !!params.get("isCached");
-    console.log(`>>>>> TaskMeow isCached set to ${this.isCachedPage}.`);
 
     this.state = {
       loading: true,
@@ -51,31 +44,17 @@ class App extends Component {
       taskId: params.get("task"),
       shareTag: params.get("shareTag"),
       tabName: "",
-      unloadDebugMode: "normal",
     };
   }
 
   async componentDidMount() {
     console.log(`>>>>> TaskMeow executing componentDidMount.`);
 
-    const loadTestMode = localStorage.getItem(LOAD_TEST_MODE_STORAGE_KEY);
-    if (loadTestMode === "slowLoad") {
-      console.log(`>>>>> TaskMeow loading slowly...`);
-      await new Promise((resolve) => setTimeout(resolve, 13000));
-    }
-
     // Initialize the Teams SDK
     await microsoftTeams.app.initialize();
     console.log(`>>>>> TaskMeow SDK initialized.`);
     microsoftTeams.teamsCore.registerOnLoadHandler(this.loadHandler);
     microsoftTeams.teamsCore.registerBeforeUnloadHandler(this.unloadHandler);
-
-    // This is an experiment for the case when an app performs a reload at unload time
-    const unloadTestMode = localStorage.getItem(UNLOAD_TEST_MODE_STORAGE_KEY);
-    if (unloadTestMode === "reloadApp" && this.isCachedPage) {
-      console.log(`>>>>> TaskMeow calling readyToUnload.`);
-      microsoftTeams.sendCustomMessage("readyToUnload");
-    }
 
     await authService.tryInitializeMSAL();
 
@@ -134,21 +113,19 @@ class App extends Component {
   };
 
   initializePage = () => {
-    if (!this.isCachedPage) {
-      microsoftTeams.pages.getConfig().then((config) => {
-        console.log(
-          `>>>>> TaskMeow page initialized for ${config?.suggestedDisplayName}`
-        );
-        if (config?.suggestedDisplayName) {
-          this.setState({ tabName: config?.suggestedDisplayName });
-        }
+    microsoftTeams.pages.getConfig().then((config) => {
+      console.log(
+        `>>>>> TaskMeow page initialized for ${config?.suggestedDisplayName}`
+      );
+      if (config?.suggestedDisplayName) {
+        this.setState({ tabName: config?.suggestedDisplayName });
+      }
 
-        console.log(
-          `>>>>> TaskMeow notified success for ${config?.suggestedDisplayName}.`
-        );
-        microsoftTeams.app.notifySuccess();
-      });
-    }
+      console.log(
+        `>>>>> TaskMeow notified success for ${config?.suggestedDisplayName}.`
+      );
+      microsoftTeams.app.notifySuccess();
+    });
   };
 
   loadHandler = (data) => {
@@ -157,26 +134,8 @@ class App extends Component {
   };
 
   unloadHandler = (readyToUnload) => {
-    const unloadTestMode = localStorage.getItem(UNLOAD_TEST_MODE_STORAGE_KEY);
-
-    if (unloadTestMode === "slowUnload") {
-      const unloadTime = localStorage.getItem(UNLOAD_TIME_STORAGE_KEY);
-      setTimeout(() => {
-        console.log(`>>>>> TaskMeow unloaded after ${unloadTime} ms`);
-        readyToUnload();
-      }, unloadTime);
-    } else if (unloadTestMode === "reloadApp") {
-      setTimeout(() => {
-        console.log(
-          `>>>>> TaskMeow unloading with a reload location set to ${this.cacheUrl}...`
-        );
-        window.location.replace(this.cacheUrl);
-      }, 1);
-    } else {
-      console.log(`>>>>> TaskMeow unloaded`);
-      readyToUnload();
-    }
-
+    console.log(`>>>>> TaskMeow unloaded`);
+    readyToUnload();
     return true;
   };
 
