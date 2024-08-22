@@ -1,8 +1,5 @@
 import React, { Component } from "react";
-import {
-  DefaultButton,
-  IconButton,
-} from "office-ui-fabric-react";
+import { DefaultButton, IconButton } from "office-ui-fabric-react";
 import * as microsoftTeams from "@microsoft/teams-js";
 import JsonViewer from "react-json-view";
 
@@ -11,7 +8,6 @@ import JsonViewer from "react-json-view";
  * 1. Fetching and displaying the user's profile information
  */
 class Debug extends Component {
-
   constructor(props) {
     super(props);
 

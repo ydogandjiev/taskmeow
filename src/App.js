@@ -25,8 +25,6 @@ import { ConsentConsumer } from "./components/ConsentContext";
 initializeIcons();
 
 class App extends Component {
-  isCachedPage;
-  cacheUrl = `${window.location.href}&isCached=true`;
 
   constructor(props) {
     super(props);
