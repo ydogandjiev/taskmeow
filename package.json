@@ -67,7 +67,7 @@
     "react-scripts": "5.0.0"
   },
   "scripts": {
-    "start": "concurrently \"react-scripts start\" \"nodemon server/server.js\"",
+    "start": "concurrently \"yarn client\" \"yarn server\"",
     "client": "react-scripts start",
     "server": "nodemon server/server.js",
     "build": "react-scripts build && rm -rf server/build && mv build server",
@@ -76,7 +76,7 @@
     "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls",
     "eject": "react-scripts eject",
     "lint": "eslint .",
-    "lint:fix": "npm run lint -- --fix",
+    "lint:fix": "yarn run lint -- --fix",
     "format": "prettier --write .",
     "prepare": "husky install"
   },
