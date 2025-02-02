@@ -1,5 +1,7 @@
 const builder = require("botbuilder");
 const msteams = require("botbuilder-teams");
+const { TeamsActivityHandler, MessageFactory } = require("botbuilder");
+const { TeamsAi } = require("teams-ai");
 
 const authDialog = require("./dialogs/auth-dialog");
 const authService = require("./auth-service");
@@ -8,29 +10,37 @@ const userService = require("./user-service");
 const groupService = require("./group-service");
 const utils = require("./utils");
 
-class AuthBot extends builder.UniversalBot {
-  constructor(_connector, botSettings) {
-    super(_connector, botSettings);
+class AuthBot extends TeamsActivityHandler {
+  constructor() {
+    super();
 
-    // Persist conversationData
-    this.set("persistConversationData", true);
+    this.teamsAi = new TeamsAi();
 
-    // Handle generic invokes
-    _connector.onInvoke(async (event, cb) => {
-      try {
-        await this.onInvoke(event, cb);
-      } catch (e) {
-        console.error("Invoke handler failed", e);
-        cb(e, null, 500);
+    this.onMessage(async (context, next) => {
+      const text = context.activity.text.trim().toLowerCase();
+
+      if (text.includes("view tasks")) {
+        await this.handleViewTasks(context);
+      } else if (text.includes("create task")) {
+        await this.handleCreateTask(context);
+      } else if (text.includes("complete task")) {
+        await this.handleCompleteTask(context);
+      } else {
+        await context.sendActivity(
+          MessageFactory.text("Sorry, I didn't understand that command.")
+        );
       }
+
+      await next();
     });
 
-    _connector.onSigninStateVerification(async (event, query, cb) => {
-      try {
-        await this.onInvoke(event, cb);
-      } catch (e) {
-        console.error("Signin state verification handler failed", e);
-        cb(e, null, 500);
+    this.onInvokeActivity(async (context, next) => {
+      const invokeValue = context.activity.value;
+
+      if (invokeValue && invokeValue.commandId === "createTask") {
+        await this.handleCreateTaskCommand(context);
+      } else {
+        await next();
       }
     });
 
@@ -40,6 +50,64 @@ class AuthBot extends builder.UniversalBot {
     // Bind handlers to ensure this pointer is accurate when they are called
     this.handleOAuthCallback = this.handleOAuthCallback.bind(this);
     this.onInvoke = this.onInvoke.bind(this);
+  }
+
+  async handleViewTasks(context) {
+    const userId = context.activity.from.aadObjectId;
+    const tasks = await taskService.getForUser(userId);
+
+    if (tasks.length === 0) {
+      await context.sendActivity(MessageFactory.text("You have no tasks. Meow!"));
+    } else {
+      const taskList = tasks.map((task) => `- ${task.title}`).join("\n");
+      await context.sendActivity(
+        MessageFactory.text(`Here are your tasks:\n${taskList} Meow!`)
+      );
+    }
+  }
+
+  async handleCreateTask(context) {
+    const userId = context.activity.from.aadObjectId;
+    const taskTitle = context.activity.text.replace("create task", "").trim();
+
+    if (!taskTitle) {
+      await context.sendActivity(
+        MessageFactory.text("Please provide a title for the task. Meow!")
+      );
+      return;
+    }
+
+    await taskService.createForUser(userId, taskTitle);
+    await context.sendActivity(
+      MessageFactory.text(`Task "${taskTitle}" created successfully. Meow!`)
+    );
+  }
+
+  async handleCompleteTask(context) {
+    const userId = context.activity.from.aadObjectId;
+    const taskTitle = context.activity.text.replace("complete task", "").trim();
+
+    if (!taskTitle) {
+      await context.sendActivity(
+        MessageFactory.text("Please provide the title of the task to complete. Meow!")
+      );
+      return;
+    }
+
+    const tasks = await taskService.getForUser(userId);
+    const task = tasks.find((t) => t.title.toLowerCase() === taskTitle.toLowerCase());
+
+    if (!task) {
+      await context.sendActivity(
+        MessageFactory.text(`Task "${taskTitle}" not found. Meow!`)
+      );
+      return;
+    }
+
+    await taskService.removeForUser(userId, task._id);
+    await context.sendActivity(
+      MessageFactory.text(`Task "${taskTitle}" completed successfully. Meow!`)
+    );
   }
 
   // Handle OAuth callbacks
