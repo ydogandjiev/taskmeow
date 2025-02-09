@@ -1,14 +1,21 @@
-const graphqlHTTP = require("express-graphql");
-const { buildSchema } = require("graphql");
-const path = require("path");
-const fs = require("fs");
-const express = require("express");
+import graphqlHTTP from "express-graphql";
+import { buildSchema } from "graphql";
+import path from "path";
+import fs from "fs";
+import express from "express";
 const router = express.Router();
 
-const taskService = require("../task-service");
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+import taskService from "../task-service.js";
 
 const schema = buildSchema(
-  fs.readFileSync(path.join(__dirname, "schema.graphql"), { encoding: "utf-8" })
+  fs.readFileSync(path.join(__dirname, "schema.graphql"), {
+    encoding: "utf-8",
+  })
 );
 
 const resolvers = {
@@ -56,4 +63,4 @@ router.use(
   })
 );
 
-module.exports = router;
+export default router;

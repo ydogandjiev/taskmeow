@@ -1,5 +1,5 @@
-const Group = require("./group-model");
-const ReadPreference = require("mongodb").ReadPreference;
+import Group from "./group-model.js";
+import { ReadPreference } from "mongodb";
 
 function get(threadId) {
   return Group.findOne({ threadId }).read(ReadPreference.NEAREST).exec();
@@ -13,7 +13,7 @@ function remove(threadId) {
   return Group.findOneAndRemove({ threadId });
 }
 
-module.exports = {
+export default {
   get,
   create,
   remove,

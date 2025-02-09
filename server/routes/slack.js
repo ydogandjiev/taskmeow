@@ -1,9 +1,9 @@
-const express = require("express");
-const { WebClient } = require("@slack/web-api");
-const { createEventAdapter } = require("@slack/events-api");
-const { createMessageAdapter } = require("@slack/interactive-messages");
+import { Router } from "express";
+import { WebClient } from "@slack/web-api";
+import { createEventAdapter } from "@slack/events-api";
+import { createMessageAdapter } from "@slack/interactive-messages";
 
-const router = express.Router();
+const router = Router();
 
 function getHomeView(todos) {
   let blocks = [
@@ -107,4 +107,4 @@ if (
   });
 }
 
-module.exports = router;
+export default router;

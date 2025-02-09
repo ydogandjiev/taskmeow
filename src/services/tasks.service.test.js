@@ -1,10 +1,11 @@
+import RestTasksService from "./rest.tasks.service.js";
+import tasksService from "./tasks.service.js";
+
 afterEach(() => {
   jest.resetModules();
 });
 
 it("uses rest service by default", () => {
-  const RestTasksService = require("./rest.tasks.service").default;
-  const tasksService = require("./tasks.service").default;
   jest.mock("./rest.tasks.service");
 
   expect(RestTasksService).toHaveBeenCalledTimes(1);
