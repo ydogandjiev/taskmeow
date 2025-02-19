@@ -125,9 +125,11 @@ app.ai.action("addItems", async (context, state, parameters) => {
 });
 
 app.ai.action("removeItems", async (context, state, parameters) => {
+  const user = await userService.getUser(context.activity.from.aadObjectId);
+  const tasks = await taskService.getForUser(user._id);
   for (const item of parameters.items) {
-    const user = await userService.getUser(context.activity.from.aadObjectId);
-    await taskService.removeForUser(user._id, item);
+    const task = tasks.find((task) => task.title === item);
+    await taskService.removeForUser(user._id, task._id);
   }
   return `items removed. think about your next action`;
 });
