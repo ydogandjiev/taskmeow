@@ -16,8 +16,10 @@ jest.mock("@microsoft/teams-js", () => ({
 }));
 
 // Initialize Office Fabric icons for use throughout app
-import { initializeIcons } from "@uifabric/icons";
-initializeIcons();
+import { initializeIcons } from "office-ui-fabric-react";
+initializeIcons(
+  "https://res.cdn.office.net/files/fabric-cdn-prod_20240129.001/assets/icons/"
+);
 
 import authService from "../services/auth.service";
 jest.mock("../services/auth.service");

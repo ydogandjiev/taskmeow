@@ -4,8 +4,10 @@ import { wrapWithBackend } from "react-dnd-test-utils";
 import Task from "./Task";
 
 // Initialize Office Fabric icons for use throughout app
-import { initializeIcons } from "@uifabric/icons";
-initializeIcons();
+import { initializeIcons } from "office-ui-fabric-react";
+initializeIcons(
+  "https://res.cdn.office.net/files/fabric-cdn-prod_20240129.001/assets/icons/"
+);
 
 beforeEach(() => {
   jest.resetModules();
