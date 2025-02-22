@@ -1,10 +1,10 @@
-const express = require("express");
-const router = express.Router();
+import { Router } from "express";
+import botService from "../bot-service.js";
+import taskService from "../task-service.js";
+import userService from "../user-service.js";
+import groupService from "../group-service.js";
 
-const botService = require("../bot-service");
-const taskService = require("../task-service");
-const userService = require("../user-service");
-const groupService = require("../group-service");
+const router = Router();
 
 router.get("/user/image", (req, res) => {
   userService.getImage(req, res);
@@ -247,4 +247,4 @@ router.delete("/groups/:threadId/tasks/:taskId", (req, res) => {
     });
 });
 
-module.exports = router;
+export default router;

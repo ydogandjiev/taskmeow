@@ -77,7 +77,8 @@
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
     "format": "prettier --write .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "ngrok": "ngrok http 3001 --host-header=rewrite --subdomain=taskmeow"
   },
   "proxy": "http://localhost:3001",
   "browserslist": {

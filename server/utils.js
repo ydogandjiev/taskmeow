@@ -1,4 +1,4 @@
-const randomNumber = require("random-number-csprng");
+import randomNumber from "random-number-csprng";
 
 // How many digits the verification code should be
 const verificationCodeLength = 6;
@@ -395,7 +395,7 @@ function buildShareUrl(taskId, shareTag) {
   return `${baseUrl}/group/?task=${taskId}&inTeamsSSO=true&shareTag=${shareTag}`;
 }
 
-module.exports = {
+export default {
   getOAuthState,
   setOAuthState,
   getUserToken,

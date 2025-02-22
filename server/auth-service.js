@@ -1,10 +1,10 @@
-const fetch = require("node-fetch");
-const request = require("request-promise");
-const querystring = require("querystring");
-const passport = require("passport");
-const OIDCBearerStrategy = require("passport-azure-ad").BearerStrategy;
-const User = require("./user-model");
-const ServerError = require("./server-error");
+import fetch from "node-fetch";
+import request from "request-promise";
+import { stringify } from "querystring";
+import passport from "passport";
+import { BearerStrategy as OIDCBearerStrategy } from "passport-azure-ad";
+import User from "./user-model.js";
+import ServerError from "./server-error.js";
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -98,7 +98,7 @@ function exchangeForToken(tid, token, scopes) {
 
     fetch(url, {
       method: "POST",
-      body: querystring.stringify(params),
+      body: stringify(params),
       headers: {
         Accept: "application/json",
         "Content-Type": "application/x-www-form-urlencoded",
@@ -138,7 +138,7 @@ function getAuthorizationUrl(state, extraParams, tenant) {
   // Determine the tenant endpoint to use, defaulting to "common"
   tenant = tenant || "common";
 
-  return `https://login.microsoftonline.com/${tenant}/oauth2/authorize?${querystring.stringify(
+  return `https://login.microsoftonline.com/${tenant}/oauth2/authorize?${stringify(
     params
   )}`;
 }
@@ -166,7 +166,7 @@ async function getAccessTokenAsync(code) {
   };
 }
 
-module.exports = {
+export default {
   initialize,
   authenticateUser,
   ensureAuthenticated,

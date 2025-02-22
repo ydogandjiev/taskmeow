@@ -1,11 +1,11 @@
-const builder = require("botbuilder");
-const msteams = require("botbuilder-teams");
-const uuidv4 = require("uuid/v4");
+import builder from "botbuilder";
+import msteams from "botbuilder-teams";
+import { v4 as uuidv4 } from "uuid";
 
-const authService = require("../auth-service");
-const taskService = require("../task-service");
-const userService = require("../user-service");
-const utils = require("../utils");
+import authService from "../auth-service.js";
+import taskService from "../task-service.js";
+import userService from "../user-service.js";
+import utils from "../utils.js";
 
 class AuthDialog extends builder.IntentDialog {
   showUserProfileAction = "showUserProfileAction";
@@ -246,4 +246,4 @@ class AuthDialog extends builder.IntentDialog {
   }
 }
 
-module.exports = new AuthDialog();
+export default new AuthDialog();

@@ -1,10 +1,15 @@
-const express = require("express");
-const router = express.Router();
+import { Router } from "express";
+const router = Router();
 
-const botService = require("../bot-service");
+import botService from "../bot-service.js";
 
-// Configure bot routes
-router.post("/bot/messages", botService.connector.listen());
-router.get("/auth/azureADv1/callback", botService.bot.handleOAuthCallback);
+// Listen for incoming server requests.
+router.post("/bot/messages", async (req, res) => {
+  // Route received a request to adapter for processing
+  await botService.adapter.process(req, res, async (context) => {
+    // Dispatch to application for routing
+    await botService.app.run(context);
+  });
+});
 
-module.exports = router;
+export default router;

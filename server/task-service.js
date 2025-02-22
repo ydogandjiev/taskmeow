@@ -1,7 +1,7 @@
-const Task = require("./task-model");
-const ReadPreference = require("mongodb").ReadPreference;
-const uuid = require("uuid");
-const utils = require("./utils");
+import Task from "./task-model.js";
+import { ReadPreference } from "mongodb";
+import { v4 as uuidv4 } from "uuid";
+import * as utils from "./utils.js";
 
 function get(taskId) {
   return Task.findOne({ _id: taskId });
@@ -17,7 +17,7 @@ function getForGroup(groupId) {
 
 function getShareUrl(task) {
   if (!task.shareTag) {
-    const shareTag = uuid.v4();
+    const shareTag = uuidv4();
     task.shareTag = shareTag;
     return task
       .save()
@@ -88,7 +88,7 @@ function removeForGroup(groupId, taskId) {
   return Task.findOneAndRemove({ _id: taskId, group: groupId });
 }
 
-module.exports = {
+export default {
   get,
   getForUser,
   getForGroup,
