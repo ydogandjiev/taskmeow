@@ -185,3 +185,10 @@ body,
 .back-link {
   margin-bottom: 20px;
 }
+
+.create-section {
+  margin-top: 60px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}

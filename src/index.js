@@ -9,12 +9,14 @@ import App from "./App";
 import { ConsentProvider } from "./components/ConsentContext";
 import { unregister } from "./registerServiceWorker";
 
+const APP_ID = process.env.REACT_APP_APPID || window.APP_ID;
+
 ReactDOM.render(
   <BrowserRouter>
     <Fabric>
       <ConsentProvider>
         <DndProvider backend={HTML5Backend}>
-          <App />
+          <App appId={APP_ID} />
         </DndProvider>
       </ConsentProvider>
     </Fabric>
