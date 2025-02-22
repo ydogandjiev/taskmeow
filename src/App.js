@@ -19,9 +19,11 @@ import logo from "./logo.svg";
 import "./App.css";
 
 // Initialize Office Fabric icons for use throughout app
-import { initializeIcons } from "@uifabric/icons";
+import { initializeIcons } from "office-ui-fabric-react";
 import { ConsentConsumer } from "./components/ConsentContext";
-initializeIcons();
+initializeIcons(
+  "https://res.cdn.office.net/files/fabric-cdn-prod_20240129.001/assets/icons/"
+);
 
 class App extends Component {
   constructor(props) {
