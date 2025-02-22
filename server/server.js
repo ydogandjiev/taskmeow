@@ -7,7 +7,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import appInsights from "applicationinsights";
-appInsights.setup(process.env.APPINSIGHTS_INSTRUMENTATIONKEY).start();
+appInsights
+  .setup(process.env.APPSETTING_APPINSIGHTS_INSTRUMENTATIONKEY)
+  .start();
 
 const app = (await import("./app.js")).default;
 // import app from "./app.js";

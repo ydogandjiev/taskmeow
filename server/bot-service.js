@@ -60,17 +60,26 @@ const onTurnErrorHandler = async (context, error) => {
 // Set the onTurnError for the singleton CloudAdapter.
 adapter.onTurnError = onTurnErrorHandler;
 
-if (!process.env.APPSETTING_OPENAI_KEY) {
+if (
+  !process.env.APPSETTING_OPENAI_KEY &&
+  !process.env.APPSETTING_AZURE_OPENAI_KEY
+) {
   throw new Error(
-    "Missing environment variables - please check that APPSETTING_OPENAI_KEY is set."
+    "Missing environment variables - please check that OPENAI_KEY or AZURE_OPENAI_KEY and AZURE_OPENAI_ENDPOINT is set."
   );
 }
 
 // Create AI components
 const model = new OpenAIModel({
   // OpenAI Support
-  apiKey: process.env.APPSETTING_OPENAI_KEY,
-  defaultModel: "gpt-4o",
+  // apiKey: process.env.APPSETTING_OPENAI_KEY,
+  // defaultModel: "gpt-4o",
+
+  // Azure OpenAI Support
+  azureApiKey: process.env.APPSETTING_AZURE_OPENAI_KEY,
+  azureDefaultDeployment: "gpt-4o",
+  azureEndpoint: process.env.APPSETTING_AZURE_OPENAI_ENDPOINT,
+  azureApiVersion: "2024-08-01-preview",
 
   // Request logging
   logRequests: true,
