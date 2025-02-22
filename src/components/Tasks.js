@@ -33,6 +33,7 @@ class Tasks extends Component {
 
     if (this.props.inTeams) {
       microsoftTeams.app.getContext().then((context) => {
+        console.log(`>>>>> TaskMeow app contexxt = ${JSON.stringify(context)}`);
         const threadId = context.teamId || context.chatId;
         const fetchTaskPromise = this.props.isGroup
           ? tasksService.get(threadId)
@@ -218,7 +219,7 @@ class Tasks extends Component {
       <div>
         <div className="App-header">
           <h1 className="App-header-title">
-            {this.props.isGroup ? "Our Tasks" : "My Tasks"}
+            {this.props.isGroup ? this.props.tabName : "My Tasks"}
           </h1>
           <ConsentConsumer>
             {({ setConsentRequired }) => (

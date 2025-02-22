@@ -5,9 +5,6 @@ import TeamsAuthService from "./teams.auth.service";
 // This token can then be used to request other resources.
 class SSOAuthService {
   constructor() {
-    // Initialize the Teams SDK
-    microsoftTeams.app.initialize();
-
     this.authToken = null;
   }
 
