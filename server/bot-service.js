@@ -92,8 +92,7 @@ const prompts = new PromptManager({
 // Define a prompt function for getting the current list of tasks
 prompts.addFunction("getTasks", async (context) => {
   const user = await userService.getUser(context.activity.from.aadObjectId);
-  const tasks = await taskService.getForUser(user._id);
-  return tasks.map((task) => task.title);
+  return await taskService.getForUser(user._id);
 });
 
 const planner = new ActionPlanner({
@@ -141,6 +140,23 @@ app.ai.action("removeItems", async (context, state, parameters) => {
     await taskService.removeForUser(user._id, task._id);
   }
   return `items removed. think about your next action`;
+});
+
+app.ai.action("starItems", async (context, state, parameters) => {
+  const user = await userService.getUser(context.activity.from.aadObjectId);
+  const tasks = await taskService.getForUser(user._id);
+  for (const item of parameters.items) {
+    const task = tasks.find((task) => task.title === item);
+    task.starred = true;
+    await taskService.updateForUser(
+      user._id,
+      task._id,
+      task.title,
+      task.order,
+      task.starred
+    );
+  }
+  return `items starred. think about your next action`;
 });
 
 app.message("/reset", async (context, state) => {
