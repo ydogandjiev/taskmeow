@@ -3,12 +3,17 @@
 /**
  * Module dependencies.
  */
-require("dotenv").config();
-const appInsights = require("applicationinsights");
-appInsights.setup(process.env.APPINSIGHTS_INSTRUMENTATIONKEY).start();
+import dotenv from "dotenv";
+dotenv.config();
 
-const app = require("./app");
-const http = require("http");
+import appInsights from "applicationinsights";
+appInsights
+  .setup(process.env.APPSETTING_APPINSIGHTS_INSTRUMENTATIONKEY)
+  .start();
+
+const app = (await import("./app.js")).default;
+// import app from "./app.js";
+import http from "http";
 
 /**
  * Get port from environment and store in Express.

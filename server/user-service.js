@@ -1,7 +1,7 @@
-const request = require("request-promise");
-const ReadPreference = require("mongodb").ReadPreference;
-const authService = require("./auth-service");
-const User = require("./user-model");
+import request from "request-promise";
+import { ReadPreference } from "mongodb";
+import User from "./user-model.js";
+import authService from "./auth-service.js";
 
 async function getUser(oid) {
   return await User.findOne({
@@ -47,7 +47,7 @@ async function getProfile(accessToken) {
   });
 }
 
-module.exports = {
+export default {
   getUser,
   getImage,
   getProfile,

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const uri = process.env.SQLCONNSTR_DbUri;
 const username = process.env.SQLCONNSTR_DbUsername;
@@ -25,7 +25,7 @@ function connect() {
     });
 }
 
-module.exports = {
+export default {
   connect,
   mongoose,
 };

@@ -1,17 +1,25 @@
-const express = require("express");
-const path = require("path");
-const logger = require("morgan");
-const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
-const bearerToken = require("express-bearer-token");
-const session = require("express-session");
+import express from "express";
+const { static: serveStatic } = express;
+import { fileURLToPath } from "url";
+import path from "path";
+import logger from "morgan";
+import cookieParser from "cookie-parser";
+import bodyParser from "body-parser";
+import bearerToken from "express-bearer-token";
+import session from "express-session";
 
-const authService = require("./auth-service");
-const bot = require("./routes/bot");
-const rest = require("./routes/rest");
-const graph = require("./routes/graph");
-const slack = require("./routes/slack");
-require("./mongo").connect();
+import authService from "./auth-service.js";
+import bot from "./routes/bot.js";
+import rest from "./routes/rest.js";
+import graph from "./routes/graph.js";
+import slack from "./routes/slack.js";
+
+// Connect to MongoDB
+import mongo from "./mongo.js";
+mongo.connect();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -21,7 +29,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(bearerToken());
-app.use(express.static(path.join(__dirname, "build")));
+app.use(serveStatic(path.join(__dirname, "build")));
 app.use(session({ secret: process.env.APPSETTING_SessionSecret }));
 
 authService.initialize(app);
@@ -42,6 +50,10 @@ app.use("/api", authService.ensureAuthenticated(), rest);
 // Auth routes
 app.get("/bot/start", (req, res) => {
   res.render("bot-start");
+});
+
+app.get("/bot/end", (req, res) => {
+  res.render("bot-end");
 });
 
 app.get("/tab/silent-start", (req, res) => {
@@ -73,7 +85,7 @@ app.get("/termsofuse", (req, res) => {
 
 // React routes
 app.get("*", (req, res) => {
-  res.sendFile("build/index.html", { root: __dirname });
+  res.sendFile("build/index.html", { root: path.resolve() });
 });
 
-module.exports = app;
+export default app;
