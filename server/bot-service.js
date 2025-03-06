@@ -118,7 +118,7 @@ const app = new ApplicationBuilder()
             authority: "https://login.microsoftonline.com/common",
           },
         },
-        signInLink: `${process.env.APPSETTING_AAD_BaseUri}/bot-start.html`,
+        signInLink: `${process.env.APPSETTING_AAD_BaseUri}/bot/start`,
         endOnInvalidMessage: true,
       },
     },

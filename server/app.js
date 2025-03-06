@@ -52,6 +52,10 @@ app.get("/bot/start", (req, res) => {
   res.render("bot-start");
 });
 
+app.get("/bot/end", (req, res) => {
+  res.render("bot-end");
+});
+
 app.get("/tab/silent-start", (req, res) => {
   res.render("start", { clientId: process.env.APPSETTING_AAD_ApplicationId });
 });

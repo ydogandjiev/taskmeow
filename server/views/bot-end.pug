@@ -5,23 +5,56 @@ html
     title Task Meow
 
   body
-    div(style="display: none")
-      div
-        p You're almost there!
-        p To finish linking your account with<br/> Azure AD, type
-        span #{verificationCode}
-        p in the Microsoft Teams chat window.
+    div(id="divError")
 
     script(src="https://statics.teams.cdn.office.net/sdk/v1.11.0/js/MicrosoftTeams.min.js", integrity="sha384-SCVF3m7OvDKnfAilUzYn2yozEvBeP8n/Oq0yTH8VUI70J4AzrqR70jzjdQ6DI8s2", crossorigin="anonymous")
-    script(src="https://secure.aadcdn.microsoftonline-p.com/lib/1.0.17/js/adal.min.js", integrity="sha384-BIOS/65fbAsb2XiCCSTlZSTTl0ZgqkOU522dpyk5meOnN2EOQ3uH+QpqEtoAtmBn", crossorigin="anonymous")
 
     script.
-      // If the window is still visible after 5 seconds, then we are probably on a platform
-      // that does not support automatically passing the verification code using notifySuccess().
-      // So we ask the user to manually enter the verification code in the chat window.
-      setTimeout(() => {
-          document.getElementById("instructionText").style.display = "initial";
-      }, 5000);
-
       microsoftTeams.initialize();
-      microsoftTeams.authentication.notifySuccess("#{verificationCode}");
+      let hashParams = getHashParameters();
+
+      if (hashParams['error']) {
+          // Authentication failed
+          handleAuthError(hashParams['error'], hashParams);
+      } else if (hashParams['code']) {
+          // Get the stored state parameter and compare with incoming state
+          let expectedState = localStorage.getItem('state');
+          if (expectedState !== hashParams['state']) {
+              // State does not match, report error
+              handleAuthError('StateDoesNotMatch', hashParams);
+          } else {
+              microsoftTeams.authentication.notifySuccess();
+          }
+      } else {
+          // Unexpected condition: hash does not contain error or access_token parameter
+          handleAuthError('UnexpectedFailure', hashParams);
+      }
+
+      // Parse hash parameters into key-value pairs
+      function getHashParameters() {
+          let hashParams = {};
+          location.hash
+              .substr(1)
+              .split('&')
+              .forEach(function (item) {
+                  let s = item.split('='),
+                      k = s[0],
+                      v = s[1] && decodeURIComponent(s[1]);
+                  hashParams[k] = v;
+              });
+          return hashParams;
+      }
+
+      // Show error information
+      function handleAuthError(errorType, errorMessage) {
+          const err = JSON.stringify({
+              error: errorType,
+              message: JSON.stringify(errorMessage)
+          });
+          let para = document.createElement('p');
+          let node = document.createTextNode(err);
+          para.appendChild(node);
+
+          let element = document.getElementById('divError');
+          element.appendChild(para);
+      }
