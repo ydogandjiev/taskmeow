@@ -46,5 +46,29 @@
                 "items"
             ]
         }
+    },
+    {
+        "name": "starItems",
+        "description": "Stars one or more items in a list indicating that it's important",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "string",
+                    "description": "The name of the list to star the item in"
+                },
+                "items": {
+                    "type": "array",
+                    "description": "The items to star in the list",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "list",
+                "items"
+            ]
+        }
     }
 ]
