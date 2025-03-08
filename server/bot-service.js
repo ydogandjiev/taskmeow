@@ -142,6 +142,20 @@ app.ai.action("removeItems", async (context, state, parameters) => {
   return `items removed. think about your next action`;
 });
 
+app.ai.action("renameItem", async (context, state, parameters) => {
+  const user = await userService.getUser(context.activity.from.aadObjectId);
+  const tasks = await taskService.getForUser(user._id);
+  const task = tasks.find((task) => task.title === parameters.oldName);
+  await taskService.updateForUser(
+    user._id,
+    task._id,
+    parameters.newName,
+    task.order,
+    task.starred
+  );
+  return `items renamed. think about your next action`;
+});
+
 app.ai.action("starItems", async (context, state, parameters) => {
   const user = await userService.getUser(context.activity.from.aadObjectId);
   const tasks = await taskService.getForUser(user._id);

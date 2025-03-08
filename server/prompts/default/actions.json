@@ -48,6 +48,32 @@
         }
     },
     {
+        "name": "renameItem",
+        "description": "Renames an item in a list",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "string",
+                    "description": "The name of the list to rename the item in"
+                },
+                "oldName": {
+                    "type": "string",
+                    "description": "The old name of the item"
+                },
+                "newName": {
+                    "type": "string",
+                    "description": "The new name of the item"
+                }
+            },
+            "required": [
+                "list",
+                "oldName",
+                "newName"
+            ]
+        }
+    },
+    {
         "name": "starItems",
         "description": "Stars one or more items in a list indicating that it's important",
         "parameters": {
