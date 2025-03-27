@@ -64,8 +64,7 @@ class MsalNAAAuthService {
       });
     }).then(async (context) => {
       const silentRequest = {
-        scopes: ["openid", "profile", "offline_access", this.api],
-        extraScopesToConsent: ["User.Read"],
+        scopes: ["openid", "profile", "offline_access", "User.Read", this.api],
         loginHint: context.loginHint,
       };
       let activeAccount;
@@ -78,7 +77,7 @@ class MsalNAAAuthService {
         .catch(() => {
           throw new Error("login failed");
         });
-        return Promise.resolve(activeAccount);
+      return Promise.resolve(activeAccount);
     });
   }
 
@@ -93,8 +92,7 @@ class MsalNAAAuthService {
       });
     }).then(async (context) => {
       const silentRequest = {
-        scopes: ["openid", "profile", "offline_access", this.api],
-        extraScopesToConsent: ["User.Read"],
+        scopes: ["openid", "profile", "offline_access", "User.Read", this.api],
         loginHint: context.loginHint,
       };
       try {
