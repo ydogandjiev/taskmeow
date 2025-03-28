@@ -64,7 +64,8 @@ class MsalNAAAuthService {
       });
     }).then(async (context) => {
       const silentRequest = {
-        scopes: ["openid", "profile", "offline_access", "User.Read", this.api],
+        scopes: ["openid", "profile", "offline_access", "User.Read"],
+        extraScopesToConsent: [this.api],
         loginHint: context.loginHint,
       };
       let activeAccount;
@@ -92,7 +93,8 @@ class MsalNAAAuthService {
       });
     }).then(async (context) => {
       const silentRequest = {
-        scopes: ["openid", "profile", "offline_access", "User.Read", this.api],
+        scopes: ["openid", "profile", "offline_access", "User.Read"],
+        extraScopesToConsent: [this.api],
         loginHint: context.loginHint,
       };
       try {
