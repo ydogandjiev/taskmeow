@@ -190,7 +190,7 @@ app.conversationUpdate("membersAdded", async (context) => {
   const membersAdded = context.activity.membersAdded || [];
   for (let i = 0; i < membersAdded.length; i++) {
     // See if the member added was our bot
-    if (membersAdded[i].id !== context.activity.recipient.id) {
+    if (membersAdded[i].id === context.activity.recipient.id) {
       const threadId =
         context.activity.conversation.conversationType === "channel"
           ? context.activity.channelData.team.id
