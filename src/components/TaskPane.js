@@ -78,6 +78,29 @@ const TaskPane = (props) => {
     }
   }, [activeTask, taskId, shareTag, taskList, isListLoading]);
 
+  useEffect(() => {
+    // Register Teams back button handler when viewing task details
+    if (inTeams) {
+      const backButtonHandler = () => {
+        onCloseTask();
+        return true;
+      };
+
+      microsoftTeams.pages
+        .registerBackButtonHandler(backButtonHandler)
+        .catch((error) => {
+          console.error("Error registering back button handler:", error);
+        });
+
+      // Cleanup: unregister the handler when component unmounts
+      return () => {
+        microsoftTeams.pages.registerBackButtonHandler(null).catch(() => {
+          // Ignore errors during cleanup
+        });
+      };
+    }
+  }, [inTeams, onCloseTask]);
+
   const handleCompletionToggle = (ev, isChecked) => {
     setComplete(isChecked);
     setChanged(true);
