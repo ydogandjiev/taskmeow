@@ -86,17 +86,13 @@ const TaskPane = (props) => {
         return true;
       };
 
-      microsoftTeams.pages
-        .registerBackButtonHandler(backButtonHandler)
-        .catch((error) => {
-          console.error("Error registering back button handler:", error);
-        });
+      microsoftTeams.pages.backStack.registerBackButtonHandler(
+        backButtonHandler
+      );
 
       // Cleanup: unregister the handler when component unmounts
       return () => {
-        microsoftTeams.pages.registerBackButtonHandler(null).catch(() => {
-          // Ignore errors during cleanup
-        });
+        microsoftTeams.pages.backStack.registerBackButtonHandler(null);
       };
     }
   }, [inTeams, onCloseTask]);
