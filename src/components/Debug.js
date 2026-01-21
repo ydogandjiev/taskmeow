@@ -33,7 +33,6 @@ class Debug extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (this.state.debug && !prevState.debug) {
       microsoftTeams.app.getContext().then((context) => {
-        console.log(`context is ${JSON.stringify(context)}`);
         this.setState({ context });
       });
     }

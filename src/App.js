@@ -7,6 +7,7 @@ import {
   MessageBarButton,
   MessageBarType,
 } from "office-ui-fabric-react";
+import * as microsoftTeams from "@microsoft/teams-js";
 import Profile from "./components/Profile";
 import Tasks from "./components/Tasks";
 import Config from "./components/Config";
@@ -26,11 +27,13 @@ initializeIcons(
 );
 
 class App extends Component {
+
   constructor(props) {
     super(props);
 
     const url = new URL(window.location);
     const params = new URLSearchParams(url.search);
+    console.log(`>>>>> TaskMeow on page ${window.location.href}`);
 
     this.state = {
       loading: true,
@@ -40,10 +43,19 @@ class App extends Component {
         !!params.get("inTeamsMSAL"),
       taskId: params.get("task"),
       shareTag: params.get("shareTag"),
+      tabName: "",
     };
   }
 
   async componentDidMount() {
+    console.log(`>>>>> TaskMeow executing componentDidMount.`);
+
+    // Initialize the Teams SDK
+    await microsoftTeams.app.initialize();
+    console.log(`>>>>> TaskMeow SDK initialized.`);
+    microsoftTeams.teamsCore.registerOnLoadHandler(this.loadHandler);
+    microsoftTeams.teamsCore.registerBeforeUnloadHandler(this.unloadHandler);
+
     await authService.tryInitializeMSAL();
 
     authService
@@ -54,16 +66,19 @@ class App extends Component {
             .getUser()
             .then((user) => {
               // Signed in the user automatically; we're ready to go
+              console.log(`>>>>> TaskMeow authenticated.`);
               this.setState({
                 user: user,
                 loading: false,
               });
+              this.initializePage();
             })
             .catch(() => {
               // Failed to sign in the user automatically; show login screen
               this.setState({
                 loading: false,
               });
+              microsoftTeams.app.notifyFailure();
             });
         }
       })
@@ -73,6 +88,7 @@ class App extends Component {
           error: error,
           loading: false,
         });
+        microsoftTeams.app.notifyFailure();
       });
   }
 
@@ -83,18 +99,49 @@ class App extends Component {
       .then((user) => {
         if (user) {
           this.setState({ user, loading: false });
+          this.initializePage();
         } else {
           this.setState({ loading: false });
+          microsoftTeams.app.notifyFailure();
         }
       })
       .catch((err) => {
         console.error(err);
         this.setState({ loading: false });
+        microsoftTeams.app.notifyFailure();
       });
   };
 
+  initializePage = () => {
+    microsoftTeams.pages.getConfig().then((config) => {
+      console.log(
+        `>>>>> TaskMeow page initialized for ${config?.suggestedDisplayName}`
+      );
+      if (config?.suggestedDisplayName) {
+        this.setState({ tabName: config?.suggestedDisplayName });
+      }
+
+      console.log(
+        `>>>>> TaskMeow notified success for ${config?.suggestedDisplayName}.`
+      );
+      microsoftTeams.app.notifySuccess();
+    });
+  };
+
+  loadHandler = (data) => {
+    console.log(`>>>>> TaskMeow loading from cache. ${JSON.stringify(data)}`);
+    window.location.replace(data.contentUrl);
+  };
+
+  unloadHandler = (readyToUnload) => {
+    console.log(`>>>>> TaskMeow unloaded`);
+    readyToUnload();
+    return true;
+  };
+
   render() {
-    const { inTeams, taskId, shareTag, user, loading, error } = this.state;
+    const { inTeams, taskId, shareTag, user, tabName, loading, error } =
+      this.state;
     return (
       <div className="App" style={{ backgroundImage: `url(${background})` }}>
         {inTeams && <Debug />}
@@ -130,6 +177,7 @@ class App extends Component {
                       inTeams={inTeams}
                       taskId={taskId}
                       shareTag={shareTag}
+                      tabName={tabName}
                     />
                   }
                 />
@@ -143,6 +191,7 @@ class App extends Component {
                       inTeams={inTeams}
                       taskId={taskId}
                       shareTag={shareTag}
+                      tabName={tabName}
                     />
                   }
                 />
