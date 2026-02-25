@@ -1,0 +1,256 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "TaskMeow API",
+    "description": "Task management API for personal to-do lists",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://taskmeow.ngrok.io/mcp"
+    }
+  ],
+  "paths": {
+    "/tools/call": {
+      "post": {
+        "summary": "Execute MCP tool",
+        "description": "Call an MCP tool using JSON-RPC 2.0 protocol. Specify the tool name and arguments in the request body.",
+        "operationId": "callMCPTool",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["jsonrpc", "method", "params", "id"],
+                "properties": {
+                  "jsonrpc": {
+                    "type": "string",
+                    "enum": ["2.0"]
+                  },
+                  "method": {
+                    "type": "string",
+                    "enum": ["tools/call"]
+                  },
+                  "params": {
+                    "type": "object",
+                    "required": ["name", "arguments"],
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Tool name to execute",
+                        "enum": [
+                          "get_tasks",
+                          "create_task",
+                          "update_task",
+                          "delete_task",
+                          "get_task_widget"
+                        ]
+                      },
+                      "arguments": {
+                        "type": "object",
+                        "description": "Tool-specific arguments"
+                      }
+                    }
+                  },
+                  "id": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "examples": {
+                "get_tasks": {
+                  "summary": "Get all tasks for a user",
+                  "value": {
+                    "jsonrpc": "2.0",
+                    "method": "tools/call",
+                    "params": {
+                      "name": "get_tasks",
+                      "arguments": {
+                        "userEmail": "user@example.com"
+                      }
+                    },
+                    "id": 1
+                  }
+                },
+                "create_task": {
+                  "summary": "Create a new task",
+                  "value": {
+                    "jsonrpc": "2.0",
+                    "method": "tools/call",
+                    "params": {
+                      "name": "create_task",
+                      "arguments": {
+                        "userEmail": "user@example.com",
+                        "title": "Buy groceries",
+                        "starred": false
+                      }
+                    },
+                    "id": 2
+                  }
+                },
+                "update_task": {
+                  "summary": "Update a task",
+                  "value": {
+                    "jsonrpc": "2.0",
+                    "method": "tools/call",
+                    "params": {
+                      "name": "update_task",
+                      "arguments": {
+                        "userEmail": "user@example.com",
+                        "taskId": "507f1f77bcf86cd799439011",
+                        "starred": true
+                      }
+                    },
+                    "id": 3
+                  }
+                },
+                "delete_task": {
+                  "summary": "Delete a task",
+                  "value": {
+                    "jsonrpc": "2.0",
+                    "method": "tools/call",
+                    "params": {
+                      "name": "delete_task",
+                      "arguments": {
+                        "userEmail": "user@example.com",
+                        "taskId": "507f1f77bcf86cd799439011"
+                      }
+                    },
+                    "id": 4
+                  }
+                },
+                "get_task_widget": {
+                  "summary": "Get embeddable widget",
+                  "value": {
+                    "jsonrpc": "2.0",
+                    "method": "tools/call",
+                    "params": {
+                      "name": "get_task_widget",
+                      "arguments": {
+                        "userEmail": "user@example.com"
+                      }
+                    },
+                    "id": 5
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["jsonrpc", "result", "id"],
+                  "properties": {
+                    "jsonrpc": {
+                      "type": "string",
+                      "enum": ["2.0"]
+                    },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "content": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "enum": ["text"]
+                              },
+                              "text": {
+                                "type": "string",
+                                "description": "JSON-stringified response data"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "id": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "jsonrpc": {
+                      "type": "string",
+                      "enum": ["2.0"]
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "integer"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "id": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key or bearer token"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "OAuth2": [
+              "api://taskmeow.ngrok.io/botid-ab93102c-869b-4d34-a921-a31d3e7f76ef/access_as_user"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      },
+      "OAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+            "tokenUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+            "scopes": {
+              "api://taskmeow.ngrok.io/botid-ab93102c-869b-4d34-a921-a31d3e7f76ef/access_as_user": "Access TaskMeow API",
+              "user.read": "Read user profile",
+              "email": "Read user email",
+              "openid": "Authenticate using OpenID Connect",
+              "profile": "Read user profile information",
+              "offline_access": "Maintain access to data you have given it access to"
+            }
+          }
+        }
+      }
+    }
+  }
+}

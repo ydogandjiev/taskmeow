@@ -1,0 +1,39 @@
+{
+  "schema_version": "v2.1",
+  "name_for_human": "TaskMeow",
+  "namespace": "TaskMeow",
+  "description_for_human": "Manage your tasks with TaskMeow - create, view, update, and delete to-do items.",
+  "description_for_model": "TaskMeow helps users manage their personal task lists. Users can view all tasks, create new tasks with optional starring for importance, update task titles or starred status, delete tasks, and get an embeddable widget. All operations require the user's email to identify their tasks. Tasks can be organized by starred status to highlight important items.",
+  "logo_url": "https://taskmeow.ngrok.io/favicon.png",
+  "contact_email": "support@taskmeow.com",
+  "legal_info_url": "https://taskmeow.ngrok.io/termsofuse",
+  "privacy_policy_url": "https://taskmeow.ngrok.io/privacypolicy",
+  "runtimes": [
+    {
+      "type": "OpenApi",
+      "auth": {
+        "type": "ApiKeyPluginVault",
+        "reference_id": "TASKMEOW_API_KEY"
+      },
+      "spec": {
+        "url": "https://taskmeow.ngrok.io/openapi.json"
+      }
+    }
+  ],
+  "capabilities": {
+    "conversation_starters": [
+      {
+        "text": "Show me my TaskMeow tasks"
+      },
+      {
+        "text": "Add a task to buy groceries to my TaskMeow list"
+      },
+      {
+        "text": "Star my first TaskMeow task"
+      },
+      {
+        "text": "Delete the last task from TaskMeow"
+      }
+    ]
+  }
+}

@@ -12,6 +12,10 @@ async function getUser(oid) {
     .exec();
 }
 
+async function getByEmail(email) {
+  return await User.findOne({ email }).read(ReadPreference.NEAREST).exec();
+}
+
 async function getImage(req, res) {
   try {
     const token = await authService.exchangeForToken(
@@ -49,6 +53,7 @@ async function getProfile(accessToken) {
 
 export default {
   getUser,
+  getByEmail,
   getImage,
   getProfile,
 };

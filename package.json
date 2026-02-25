@@ -13,6 +13,7 @@
   "dependencies": {
     "@azure/msal-browser": "^3.7.0",
     "@microsoft/teams-js": "^2.20.0-beta.1",
+    "@modelcontextprotocol/sdk": "^1.27.0",
     "@slack/events-api": "^3.0.0",
     "@slack/interactive-messages": "^2.0.0",
     "@slack/web-api": "^6.0.0",
@@ -46,7 +47,9 @@
     "react-json-view": "^1.21.3",
     "react-router-dom": "^6.3.0",
     "request": "^2.88.0",
-    "request-promise": "^4.2.4"
+    "request-promise": "^4.2.4",
+    "uuid": "^13.0.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.9",
@@ -69,7 +72,7 @@
     "start": "concurrently \"react-scripts start\" \"nodemon server/server.js\"",
     "client": "react-scripts start",
     "server": "nodemon server/server.js",
-    "build": "react-scripts build && rm -rf server/build && mv build server",
+    "build": "react-scripts build && rm -rf server/build && mv build server && node scripts/build-embed.js",
     "test": "react-scripts test --env=jest-environment-jsdom-global --watchAll=false",
     "coverage": "react-scripts test --env=jest-environment-jsdom-global --coverage --watchAll=false",
     "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls",
@@ -78,7 +81,8 @@
     "lint:fix": "npm run lint -- --fix",
     "format": "prettier --write .",
     "prepare": "husky install",
-    "ngrok": "ngrok http 3001 --host-header=rewrite --subdomain=taskmeow"
+    "ngrok": "ngrok http 3001 --host-header=rewrite --subdomain=taskmeow",
+    "generate-api-key": "node scripts/generate-api-key.js"
   },
   "proxy": "http://localhost:3001",
   "browserslist": {

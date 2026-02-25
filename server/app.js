@@ -13,6 +13,7 @@ import bot from "./routes/bot.js";
 import rest from "./routes/rest.js";
 import graph from "./routes/graph.js";
 import slack from "./routes/slack.js";
+import mcpServer from "./mcp-server.js";
 
 // Connect to MongoDB
 import mongo from "./mongo.js";
@@ -37,6 +38,18 @@ authService.initialize(app);
 // Server-rendered views
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
+
+// MCP server endpoints
+app.use("/mcp", mcpServer);
+
+// Copilot plugin manifest and OpenAPI spec
+app.get("/ai-plugin.json", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "ai-plugin.json"));
+});
+
+app.get("/openapi.json", (req, res) => {
+  res.sendFile(path.join(__dirname, "copilot-openapi.json"));
+});
 
 // Bot endpoints
 app.use(bot);
@@ -81,6 +94,11 @@ app.get("/privacypolicy", (req, res) => {
 
 app.get("/termsofuse", (req, res) => {
   res.render("termsofuse");
+});
+
+// Embed widget route
+app.get("/embed/tasks", (req, res) => {
+  res.sendFile("build/embed.html", { root: path.resolve() });
 });
 
 // React routes

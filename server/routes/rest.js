@@ -3,8 +3,12 @@ import botService from "../bot-service.js";
 import taskService from "../task-service.js";
 import userService from "../user-service.js";
 import groupService from "../group-service.js";
+import widgetAuth from "../widget-auth-middleware.js";
 
 const router = Router();
+
+// Apply widget auth to all routes (will fall through if no widget token)
+router.use(widgetAuth);
 
 router.get("/user/image", (req, res) => {
   userService.getImage(req, res);
