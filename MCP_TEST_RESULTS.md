@@ -92,13 +92,8 @@ curl -X POST https://taskmeow.ngrok.io/mcp/tools/list \
         "description": "Get all tasks for the user. Returns a list of tasks with their details.",
         "inputSchema": {
           "type": "object",
-          "properties": {
-            "userEmail": {
-              "type": "string",
-              "description": "Email of the user whose tasks to retrieve"
-            }
-          },
-          "required": ["userEmail"]
+          "properties": {},
+          "required": []
         }
       },
       {
@@ -107,11 +102,10 @@ curl -X POST https://taskmeow.ngrok.io/mcp/tools/list \
         "inputSchema": {
           "type": "object",
           "properties": {
-            "userEmail": { "type": "string", "description": "..." },
             "title": { "type": "string", "description": "..." },
             "starred": { "type": "boolean", "default": false }
           },
-          "required": ["userEmail", "title"]
+          "required": ["title"]
         }
       },
       {
@@ -185,7 +179,7 @@ curl -X POST https://taskmeow.ngrok.io/mcp/tools/call \
     "method":"tools/call",
     "params":{
       "name":"get_tasks",
-      "arguments":{"userEmail":"ydogandjiev@microsoft.com"}
+      "arguments":{}
     },
     "id":10
   }'

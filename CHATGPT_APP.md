@@ -189,9 +189,7 @@ Request:
   "method": "tools/call",
   "params": {
     "name": "get_tasks",
-    "arguments": {
-      "userEmail": "user@example.com"
-    }
+    "arguments": {}
   },
   "id": 2
 }
@@ -223,10 +221,7 @@ All requests must include one of:
 
 ### User Context
 
-ChatGPT Apps SDK automatically provides user context. The MCP server expects:
-
-- `userEmail` in tool arguments
-- Uses email to look up the TaskMeow user
+The MCP server infers the user's identity from the bearer token provided in the `Authorization` header. No `userEmail` argument is required in tool calls.
 
 ## Available Tools
 
@@ -237,9 +232,7 @@ ChatGPT Apps SDK automatically provides user context. The MCP server expects:
 **Input Schema**:
 
 ```json
-{
-  "userEmail": "string (required)"
-}
+{}
 ```
 
 **Output**:
@@ -268,7 +261,6 @@ ChatGPT Apps SDK automatically provides user context. The MCP server expects:
 
 ```json
 {
-  "userEmail": "string (required)",
   "title": "string (required)",
   "starred": "boolean (optional, default: false)"
 }
@@ -297,7 +289,6 @@ ChatGPT Apps SDK automatically provides user context. The MCP server expects:
 
 ```json
 {
-  "userEmail": "string (required)",
   "taskId": "string (required)",
   "title": "string (optional)",
   "starred": "boolean (optional)",
@@ -317,7 +308,6 @@ At least one of `title`, `starred`, or `order` must be provided.
 
 ```json
 {
-  "userEmail": "string (required)",
   "taskId": "string (required)"
 }
 ```
@@ -341,9 +331,7 @@ At least one of `title`, `starred`, or `order` must be provided.
 **Input Schema**:
 
 ```json
-{
-  "userEmail": "string (required)"
-}
+{}
 ```
 
 **Output**:
@@ -403,9 +391,7 @@ curl -X POST https://your-domain.com/mcp/tools/call \
     "method": "tools/call",
     "params": {
       "name": "get_tasks",
-      "arguments": {
-        "userEmail": "your.email@example.com"
-      }
+      "arguments": {}
     },
     "id": 3
   }'
@@ -423,7 +409,6 @@ curl -X POST https://your-domain.com/mcp/tools/call \
     "params": {
       "name": "create_task",
       "arguments": {
-        "userEmail": "your.email@example.com",
         "title": "Test task from MCP",
         "starred": true
       }

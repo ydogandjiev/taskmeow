@@ -55,9 +55,7 @@ Microsoft 365 Copilot
 ### 1. get_tasks
 
 **Description**: Retrieve all tasks for the user
-**Parameters**:
-
-- `userEmail` (required): User's email address
+**Parameters**: _(none — user inferred from bearer token)_
 
 **Example Usage in Copilot**:
 
@@ -70,7 +68,6 @@ Microsoft 365 Copilot
 **Description**: Create a new task
 **Parameters**:
 
-- `userEmail` (required): User's email address
 - `title` (required): Task title
 - `starred` (optional): Mark as important (default: false)
 
@@ -85,7 +82,6 @@ Microsoft 365 Copilot
 **Description**: Update task properties
 **Parameters**:
 
-- `userEmail` (required): User's email address
 - `taskId` (required): Task identifier
 - `title` (optional): New title
 - `starred` (optional): New starred status
@@ -102,7 +98,6 @@ Microsoft 365 Copilot
 **Description**: Delete a task permanently
 **Parameters**:
 
-- `userEmail` (required): User's email address
 - `taskId` (required): Task identifier
 
 **Example Usage**:
@@ -116,9 +111,7 @@ Microsoft 365 Copilot
 ### 5. get_task_widget
 
 **Description**: Get embeddable task widget
-**Parameters**:
-
-- `userEmail` (required): User's email address
+**Parameters**: _(none — user inferred from bearer token)_
 
 **Example Usage**:
 
@@ -271,9 +264,7 @@ All functions call this single endpoint using JSON-RPC 2.0 protocol.
   "method": "tools/call",
   "params": {
     "name": "get_tasks",
-    "arguments": {
-      "userEmail": "user@example.com"
-    }
+    "arguments": {}
   },
   "id": 1
 }
@@ -365,7 +356,7 @@ Certain actions (create, update, delete) show confirmation dialogs with Adaptive
        "method":"tools/call",
        "params":{
          "name":"get_tasks",
-         "arguments":{"userEmail":"user@example.com"}
+         "arguments":{}
        },
        "id":1
      }'

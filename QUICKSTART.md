@@ -73,9 +73,7 @@ curl -X POST https://your-domain.com/mcp/tools/call \
     "method": "tools/call",
     "params": {
       "name": "get_tasks",
-      "arguments": {
-        "userEmail": "your.email@example.com"
-      }
+      "arguments": {}
     },
     "id": 2
   }'

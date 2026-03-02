@@ -54,25 +54,18 @@ function authenticateMCP(req, res, next) {
   )(req, res, next);
 }
 
-function normalizeEmail(email) {
-  return typeof email === "string" ? email.trim().toLowerCase() : "";
-}
-
-async function getUserByEmail(userEmail, expectedEmail) {
-  if (
-    expectedEmail &&
-    normalizeEmail(userEmail) !== normalizeEmail(expectedEmail)
-  ) {
-    throw new Error("userEmail must match the signed-in Entra account");
-  }
-
+async function getUserByEmail(userEmail) {
   const user = await userService.getByEmail(userEmail);
   if (!user) throw new Error(`User not found: ${userEmail}`);
   return user;
 }
 
 function createMcpServer({ authenticatedEmail, authType }) {
-  const expectedEmail = authType === "bearer" ? authenticatedEmail : null;
+  if (authType === "bearer" && !authenticatedEmail) {
+    throw new Error(
+      "Authenticated email is required for bearer token authentication"
+    );
+  }
 
   const server = new McpServer({
     name: "taskmeow-mcp-server",
@@ -81,14 +74,10 @@ function createMcpServer({ authenticatedEmail, authType }) {
 
   server.tool(
     "get_tasks",
-    "Get all tasks for the user. Returns a list of tasks with their details.",
-    {
-      userEmail: z
-        .string()
-        .describe("Email of the user whose tasks to retrieve"),
-    },
-    async ({ userEmail }) => {
-      const user = await getUserByEmail(userEmail, expectedEmail);
+    "Get all tasks for the authenticated user. Returns a list of tasks with their details.",
+    {},
+    async () => {
+      const user = await getUserByEmail(authenticatedEmail);
       const tasks = await taskService.getForUser(user._id);
       return {
         content: [
@@ -115,22 +104,21 @@ function createMcpServer({ authenticatedEmail, authType }) {
 
   server.tool(
     "create_task",
-    "Create a new task for the user.",
+    "Create a new task for the authenticated user.",
     {
-      userEmail: z.string().describe("Email of the user creating the task"),
       title: z.string().describe("Title or description of the task"),
       starred: z
         .boolean()
         .optional()
         .describe("Whether to star/favorite this task"),
     },
-    async ({ userEmail, title, starred = false }) => {
+    async ({ title, starred = false }) => {
       if (!title || title.trim().length === 0) {
         throw new Error(
           "Task title is required and must be a non-empty string"
         );
       }
-      const user = await getUserByEmail(userEmail, expectedEmail);
+      const user = await getUserByEmail(authenticatedEmail);
       const task = await taskService.createForUser(user._id, title.trim());
       if (starred) {
         task.starred = starred;
@@ -158,21 +146,20 @@ function createMcpServer({ authenticatedEmail, authType }) {
 
   server.tool(
     "update_task",
-    "Update an existing task (title, starred status, or order).",
+    "Update an existing task (title, starred status, or order) for the authenticated user.",
     {
-      userEmail: z.string().describe("Email of the user who owns the task"),
       taskId: z.string().describe("ID of the task to update"),
       title: z.string().optional().describe("New title for the task"),
       starred: z.boolean().optional().describe("New starred status"),
       order: z.number().optional().describe("New order position"),
     },
-    async ({ userEmail, taskId, title, starred, order }) => {
+    async ({ taskId, title, starred, order }) => {
       if (title === undefined && starred === undefined && order === undefined) {
         throw new Error(
           "At least one field (title, starred, order) must be provided"
         );
       }
-      const user = await getUserByEmail(userEmail, expectedEmail);
+      const user = await getUserByEmail(authenticatedEmail);
       const task = await taskService.updateForUser(
         user._id,
         taskId,
@@ -203,13 +190,12 @@ function createMcpServer({ authenticatedEmail, authType }) {
 
   server.tool(
     "delete_task",
-    "Delete a task permanently.",
+    "Delete a task permanently for the authenticated user.",
     {
-      userEmail: z.string().describe("Email of the user who owns the task"),
       taskId: z.string().describe("ID of the task to delete"),
     },
-    async ({ userEmail, taskId }) => {
-      const user = await getUserByEmail(userEmail, expectedEmail);
+    async ({ taskId }) => {
+      const user = await getUserByEmail(authenticatedEmail);
       const task = await taskService.removeForUser(user._id, taskId);
       if (!task) throw new Error(`Task not found: ${taskId}`);
       return {
@@ -228,14 +214,10 @@ function createMcpServer({ authenticatedEmail, authType }) {
 
   server.tool(
     "get_task_widget",
-    "Get an embeddable HTML widget showing all tasks.",
-    {
-      userEmail: z
-        .string()
-        .describe("Email of the user whose tasks to display"),
-    },
-    async ({ userEmail }) => {
-      const user = await getUserByEmail(userEmail, expectedEmail);
+    "Get an embeddable HTML widget showing all tasks for the authenticated user.",
+    {},
+    async () => {
+      const user = await getUserByEmail(authenticatedEmail);
       const widgetToken = Buffer.from(
         JSON.stringify({
           userId: user._id.toString(),

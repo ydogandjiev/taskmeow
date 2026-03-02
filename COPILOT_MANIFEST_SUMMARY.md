@@ -106,9 +106,7 @@ The plugin uses the existing **MCP (Model Context Protocol)** server:
   "method": "tools/call",
   "params": {
     "name": "get_tasks",
-    "arguments": {
-      "userEmail": "user@example.com"
-    }
+    "arguments": {}
   },
   "id": 1
 }
@@ -143,9 +141,7 @@ All tools are called through the `callMCPTool` operation:
 
 ### 1. get_tasks
 
-**Arguments**:
-
-- `userEmail` (required): User's email
+**Arguments**: _(none — user inferred from bearer token)_
 
 **Returns**: Array of tasks with id, title, starred, order, date
 
@@ -153,7 +149,6 @@ All tools are called through the `callMCPTool` operation:
 
 **Arguments**:
 
-- `userEmail` (required): User's email
 - `title` (required): Task title
 - `starred` (optional): Mark as important
 
@@ -163,7 +158,6 @@ All tools are called through the `callMCPTool` operation:
 
 **Arguments**:
 
-- `userEmail` (required): User's email
 - `taskId` (required): Task ID
 - `title` (optional): New title
 - `starred` (optional): New starred status
@@ -175,16 +169,13 @@ All tools are called through the `callMCPTool` operation:
 
 **Arguments**:
 
-- `userEmail` (required): User's email
 - `taskId` (required): Task ID
 
 **Returns**: Deleted task confirmation
 
 ### 5. get_task_widget
 
-**Arguments**:
-
-- `userEmail` (required): User's email
+**Arguments**: _(none — user inferred from bearer token)_
 
 **Returns**: HTML widget and URL
 

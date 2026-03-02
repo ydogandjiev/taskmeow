@@ -66,9 +66,7 @@
                     "method": "tools/call",
                     "params": {
                       "name": "get_tasks",
-                      "arguments": {
-                        "userEmail": "user@example.com"
-                      }
+                      "arguments": {}
                     },
                     "id": 1
                   }
@@ -81,7 +79,6 @@
                     "params": {
                       "name": "create_task",
                       "arguments": {
-                        "userEmail": "user@example.com",
                         "title": "Buy groceries",
                         "starred": false
                       }
@@ -97,7 +94,6 @@
                     "params": {
                       "name": "update_task",
                       "arguments": {
-                        "userEmail": "user@example.com",
                         "taskId": "507f1f77bcf86cd799439011",
                         "starred": true
                       }
@@ -113,7 +109,6 @@
                     "params": {
                       "name": "delete_task",
                       "arguments": {
-                        "userEmail": "user@example.com",
                         "taskId": "507f1f77bcf86cd799439011"
                       }
                     },
@@ -127,9 +122,7 @@
                     "method": "tools/call",
                     "params": {
                       "name": "get_task_widget",
-                      "arguments": {
-                        "userEmail": "user@example.com"
-                      }
+                      "arguments": {}
                     },
                     "id": 5
                   }
