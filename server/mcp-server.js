@@ -122,10 +122,20 @@ function createMcpServer({ authenticatedEmail, authType }) {
   //  APP TOOLS — Widget tools (tool + UI resource linked via _meta)
   // ══════════════════════════════════════════════════════════════════════
 
-  server.tool(
+  registerAppTool(
+    server,
     "get_tasks",
-    "Get all tasks for the authenticated user. Returns a list of tasks with their details.",
-    {},
+    {
+      title: "Get Tasks",
+      description:
+        "Get all tasks for the authenticated user. Returns a list of tasks with their details.",
+      inputSchema: {},
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
+      },
+    },
     async () => {
       const user = await getUserByEmail(authenticatedEmail);
       const tasks = await taskService.getForUser(user._id);
@@ -152,15 +162,24 @@ function createMcpServer({ authenticatedEmail, authType }) {
     }
   );
 
-  server.tool(
+  registerAppTool(
+    server,
     "create_task",
-    "Create a new task for the authenticated user.",
     {
-      title: z.string().describe("Title or description of the task"),
-      starred: z
-        .boolean()
-        .optional()
-        .describe("Whether to star/favorite this task"),
+      title: "Create Task",
+      description: "Create a new task for the authenticated user.",
+      inputSchema: {
+        title: z.string().describe("Title or description of the task"),
+        starred: z
+          .boolean()
+          .optional()
+          .describe("Whether to star/favorite this task"),
+      },
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: false,
+        openWorldHint: false,
+      },
     },
     async ({ title, starred = false }) => {
       if (!title || title.trim().length === 0) {
@@ -194,14 +213,24 @@ function createMcpServer({ authenticatedEmail, authType }) {
     }
   );
 
-  server.tool(
+  registerAppTool(
+    server,
     "update_task",
-    "Update an existing task (title, starred status, or order) for the authenticated user.",
     {
-      taskId: z.string().describe("ID of the task to update"),
-      title: z.string().optional().describe("New title for the task"),
-      starred: z.boolean().optional().describe("New starred status"),
-      order: z.number().optional().describe("New order position"),
+      title: "Update Task",
+      description:
+        "Update an existing task (title, starred status, or order) for the authenticated user.",
+      inputSchema: {
+        taskId: z.string().describe("ID of the task to update"),
+        title: z.string().optional().describe("New title for the task"),
+        starred: z.boolean().optional().describe("New starred status"),
+        order: z.number().optional().describe("New order position"),
+      },
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: false,
+        openWorldHint: false,
+      },
     },
     async ({ taskId, title, starred, order }) => {
       if (title === undefined && starred === undefined && order === undefined) {
@@ -238,11 +267,20 @@ function createMcpServer({ authenticatedEmail, authType }) {
     }
   );
 
-  server.tool(
+  registerAppTool(
+    server,
     "delete_task",
-    "Delete a task permanently for the authenticated user.",
     {
-      taskId: z.string().describe("ID of the task to delete"),
+      title: "Delete Task",
+      description: "Delete a task permanently for the authenticated user.",
+      inputSchema: {
+        taskId: z.string().describe("ID of the task to delete"),
+      },
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: true,
+        openWorldHint: false,
+      },
     },
     async ({ taskId }) => {
       const user = await getUserByEmail(authenticatedEmail);
