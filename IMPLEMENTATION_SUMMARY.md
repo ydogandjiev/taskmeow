@@ -24,7 +24,7 @@ Successfully implemented a **ChatGPT App** using the Apps SDK with an MCP (Model
 2. `create_task` - Create a new task
 3. `update_task` - Update task properties (title, starred, order)
 4. `delete_task` - Delete a task
-5. `get_task_widget` - Get embeddable HTML widget
+5. `show_tasks_widget` - Get embeddable HTML widget
 
 **Authentication**: API key via `X-API-Key` or `Authorization: Bearer` header
 

@@ -38,7 +38,7 @@ Microsoft 365 Copilot
 **Key Sections**:
 
 - **Metadata**: Name, description, contact info, logo
-- **Functions**: 5 tools (get_tasks, create_task, update_task, delete_task, get_task_widget)
+- **Functions**: 5 tools (get_tasks, create_task, update_task, delete_task, show_tasks_widget)
 - **Runtime**: OpenAPI configuration with API key authentication
 - **Capabilities**: Conversation starters and localization
 
@@ -108,9 +108,9 @@ Microsoft 365 Copilot
 
 **Confirmation**: Plugin requests confirmation before deletion
 
-### 5. get_task_widget
+### 5. show_tasks_widget
 
-**Description**: Get embeddable task widget
+**Description**: Show embeddable task widget
 **Parameters**: _(none — user inferred from bearer token)_
 
 **Example Usage**:

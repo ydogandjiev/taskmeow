@@ -37,7 +37,7 @@ ChatGPT ←→ MCP Server (/mcp) ←→ TaskMeow Database
    - `create_task` - Create a new task
    - `update_task` - Update task properties
    - `delete_task` - Delete a task
-   - `get_task_widget` - Get embeddable widget
+   - `show_tasks_widget` - Show embeddable widget
 
 3. **Authentication**
    - API key-based (simple header authentication)
@@ -324,9 +324,9 @@ At least one of `title`, `starred`, or `order` must be provided.
 }
 ```
 
-### 5. get_task_widget
+### 5. show_tasks_widget
 
-**Description**: Get embeddable HTML widget
+**Description**: Show embeddable HTML widget
 
 **Input Schema**:
 
@@ -582,7 +582,7 @@ MCP server returns JSON-RPC 2.0 error responses:
 ### v1.0.0 (2024)
 
 - Initial ChatGPT App implementation with MCP server
-- 5 tools: get_tasks, create_task, update_task, delete_task, get_task_widget
+- 5 tools: get_tasks, create_task, update_task, delete_task, show_tasks_widget
 - API key authentication
 - Rate limiting
 - Embeddable widget support

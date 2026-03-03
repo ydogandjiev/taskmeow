@@ -1,12 +1,33 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import {
+  registerAppResource,
+  registerAppTool,
+  RESOURCE_MIME_TYPE,
+} from "@modelcontextprotocol/ext-apps/server";
 import { z } from "zod";
 import { Router } from "express";
 import passport from "passport";
+import fs from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import taskService from "./task-service.js";
 import userService from "./user-service.js";
 
 const router = Router();
+
+// Widget HTML loader
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const ASSETS_DIR = path.resolve(__dirname, "build");
+
+async function readWidgetHtml() {
+  const htmlPath = path.join(ASSETS_DIR, "embed.html");
+  return await fs.readFile(htmlPath, "utf-8");
+}
+
+// Resource URIs
+const TASKS_WIDGET_URI = "ui://taskmeow/tasks-widget.html";
 
 function authenticateMCP(req, res, next) {
   const authHeader = req.headers["authorization"];
@@ -71,6 +92,35 @@ function createMcpServer({ authenticatedEmail, authType }) {
     name: "taskmeow-mcp-server",
     version: "1.0.0",
   });
+
+  // ══════════════════════════════════════════════════════════════════════
+  //  APP RESOURCES — Widget HTML (mimeType: text/html;profile=mcp-app)
+  // ══════════════════════════════════════════════════════════════════════
+  registerAppResource(
+    server,
+    "Tasks Widget",
+    TASKS_WIDGET_URI,
+    {
+      mimeType: RESOURCE_MIME_TYPE,
+      description: "Interactive task management widget",
+    },
+    async () => {
+      const html = await readWidgetHtml();
+      return {
+        contents: [
+          {
+            uri: TASKS_WIDGET_URI,
+            mimeType: RESOURCE_MIME_TYPE,
+            text: html,
+          },
+        ],
+      };
+    }
+  );
+
+  // ══════════════════════════════════════════════════════════════════════
+  //  APP TOOLS — Widget tools (tool + UI resource linked via _meta)
+  // ══════════════════════════════════════════════════════════════════════
 
   server.tool(
     "get_tasks",
@@ -212,32 +262,49 @@ function createMcpServer({ authenticatedEmail, authType }) {
     }
   );
 
-  server.tool(
-    "get_task_widget",
-    "Get an embeddable HTML widget showing all tasks for the authenticated user.",
-    {},
+  // ── Show Tasks Widget ─────────────────────────────────────────────────
+  registerAppTool(
+    server,
+    "show_tasks_widget",
+    {
+      title: "Show Tasks Widget",
+      description:
+        "Display an interactive widget showing all tasks for the authenticated user. The widget allows users to view, add, edit, and manage their tasks.",
+      inputSchema: {},
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: false,
+        openWorldHint: false,
+      },
+      _meta: { ui: { resourceUri: TASKS_WIDGET_URI } },
+    },
     async () => {
       const user = await getUserByEmail(authenticatedEmail);
-      const widgetToken = Buffer.from(
-        JSON.stringify({
-          userId: user._id.toString(),
-          email: user.email,
-          exp: Date.now() + 3600000,
-        })
-      ).toString("base64");
-      const baseUrl =
-        process.env.APPSETTING_AAD_BaseUri || "https://taskmeow.com";
-      const widgetUrl = `${baseUrl}/embed/tasks?token=${widgetToken}`;
+      const tasks = await taskService.getForUser(user._id);
+
       return {
         content: [
           {
             type: "text",
-            text: JSON.stringify({
-              url: widgetUrl,
-              message: "Interactive task widget ready to display",
-            }),
+            text: `Found ${tasks.length} task${
+              tasks.length !== 1 ? "s" : ""
+            }. Interactive widget is ready to display and manage your tasks.`,
           },
         ],
+        structuredContent: {
+          user: {
+            id: user._id.toString(),
+            email: user.email,
+          },
+          tasks: tasks.map((t) => ({
+            id: t._id.toString(),
+            title: t.title,
+            starred: t.starred,
+            order: t.order,
+            date: t.date,
+          })),
+          count: tasks.length,
+        },
       };
     }
   );

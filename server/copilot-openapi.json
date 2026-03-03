@@ -44,7 +44,7 @@
                           "create_task",
                           "update_task",
                           "delete_task",
-                          "get_task_widget"
+                          "show_tasks_widget"
                         ]
                       },
                       "arguments": {
@@ -115,13 +115,13 @@
                     "id": 4
                   }
                 },
-                "get_task_widget": {
+                "show_tasks_widget": {
                   "summary": "Get embeddable widget",
                   "value": {
                     "jsonrpc": "2.0",
                     "method": "tools/call",
                     "params": {
-                      "name": "get_task_widget",
+                      "name": "show_tasks_widget",
                       "arguments": {}
                     },
                     "id": 5

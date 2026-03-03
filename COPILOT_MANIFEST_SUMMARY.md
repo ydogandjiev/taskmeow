@@ -62,7 +62,7 @@
 **Operation**: `callMCPTool`
 
 - Calls the MCP server via JSON-RPC 2.0
-- Supports 5 tools: get_tasks, create_task, update_task, delete_task, get_task_widget
+- Supports 5 tools: get_tasks, create_task, update_task, delete_task, show_tasks_widget
 - Examples provided for each tool
 
 ## Design Approach
@@ -173,7 +173,7 @@ All tools are called through the `callMCPTool` operation:
 
 **Returns**: Deleted task confirmation
 
-### 5. get_task_widget
+### 5. show_tasks_widget
 
 **Arguments**: _(none — user inferred from bearer token)_
 

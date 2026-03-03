@@ -123,8 +123,8 @@ curl -X POST https://taskmeow.ngrok.io/mcp/tools/list \
         }
       },
       {
-        "name": "get_task_widget",
-        "description": "Get an embeddable HTML widget showing all tasks.",
+        "name": "show_tasks_widget",
+        "description": "Show an embeddable HTML widget showing all tasks.",
         "inputSchema": {
           /* ... */
         }

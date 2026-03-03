@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@microsoft/teams-ai": "~1.7.2",
+    "@modelcontextprotocol/ext-apps": "^1.0.0",
     "@modelcontextprotocol/sdk": "^1.27.0",
     "@slack/events-api": "^3.0.0",
     "@slack/interactive-messages": "^2.0.0",

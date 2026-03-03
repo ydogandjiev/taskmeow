@@ -24,7 +24,7 @@ ChatGPT App → MCP Server (/mcp) → TaskMeow Database
 - **Protocol**: JSON-RPC 2.0 (MCP)
 - **Authentication**: Simple API key
 - **No OAuth flows**: Seamless integration
-- **5 Tools**: get_tasks, create_task, update_task, delete_task, get_task_widget
+- **5 Tools**: get_tasks, create_task, update_task, delete_task, show_tasks_widget
 
 ## Quick Start
 
