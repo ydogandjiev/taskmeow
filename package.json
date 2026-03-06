@@ -10,20 +10,22 @@
   "bugs": {
     "url": "https://github.com/ydogandjiev/taskmeow/issues"
   },
+  "homepage": "https://taskmeow.com/",
   "dependencies": {
     "@azure/msal-browser": "^3.7.0",
     "@microsoft/teams-js": "^2.20.0-beta.1",
+    "@modelcontextprotocol/ext-apps": "^1.1.2",
     "@modelcontextprotocol/sdk": "^1.27.0",
     "@slack/events-api": "^3.0.0",
     "@slack/interactive-messages": "^2.0.0",
     "@slack/web-api": "^6.0.0",
     "applicationinsights": "^1.0.3",
-    "body-parser": "^1.17.2",
     "botbuilder": "^3.15.0",
     "botbuilder-teams": "^0.2.1",
     "cookie-parser": "^1.4.3",
+    "cors": "^2.8.6",
     "dotenv": "^6.0.0",
-    "express": "^4.17.3",
+    "express": "^5.2.1",
     "express-bearer-token": "^2.1.1",
     "express-graphql": "^0.6.12",
     "express-session": "^1.17.3",
@@ -66,13 +68,16 @@
     "prettier": "2.6.2",
     "react-dnd-test-backend": "^15.1.1",
     "react-dnd-test-utils": "^15.1.1",
-    "react-scripts": "5.0.0"
+    "react-scripts": "5.0.0",
+    "vite": "^7.3.1",
+    "vite-plugin-singlefile": "^2.3.0"
   },
   "scripts": {
     "start": "concurrently \"react-scripts start\" \"nodemon server/server.js\"",
     "client": "react-scripts start",
     "server": "nodemon server/server.js",
-    "build": "react-scripts build && rm -rf server/build && mv build server && node scripts/build-embed.js",
+    "build": "react-scripts build && rm -rf server/build && mv build server && vite build --config mcp-widget/vite.config.js",
+    "build:widget": "vite build --config mcp-widget/vite.config.js",
     "test": "react-scripts test --env=jest-environment-jsdom-global --watchAll=false",
     "coverage": "react-scripts test --env=jest-environment-jsdom-global --coverage --watchAll=false",
     "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls",

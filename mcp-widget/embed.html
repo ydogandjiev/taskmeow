@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Meow</title>
+    <style>
+      :root {
+        --bg-primary: var(--color-background-primary, #ffffff);
+        --bg-secondary: var(--color-background-secondary, #f8f9fa);
+        --bg-hover: var(--color-background-tertiary, #f0f2f5);
+        --text-primary: var(--color-text-primary, #1a1a2e);
+        --text-secondary: var(--color-text-secondary, #555577);
+        --text-muted: var(--color-text-tertiary, #9999bb);
+        --border: var(--color-border-primary, #e0e0f0);
+        --accent: var(--color-accent-primary, #5c6bc0);
+        --accent-hover: var(--color-accent-secondary, #3f51b5);
+        --danger: var(--color-error, #ef5350);
+        --star-color: #f5a623;
+        --radius: var(--border-radius-md, 8px);
+        --radius-sm: var(--border-radius-sm, 4px);
+        --font: var(
+          --font-sans,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          sans-serif
+        );
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: var(--font);
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        min-height: 100vh;
+        padding: 16px;
+      }
+
+      .widget {
+        max-width: 480px;
+        margin: 0 auto;
+      }
+
+      /* ── Header ── */
+      .header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+
+      .header-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .header-title svg {
+        color: var(--accent);
+      }
+
+      .task-badge {
+        background: var(--accent);
+        color: white;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 12px;
+        min-width: 24px;
+        text-align: center;
+        margin-left: auto;
+      }
+
+      /* ── Error banner ── */
+      .error-msg {
+        display: none;
+        background: #ffebee;
+        color: var(--danger);
+        border-radius: var(--radius-sm);
+        padding: 8px 12px;
+        font-size: 13px;
+        margin-bottom: 12px;
+        border-left: 3px solid var(--danger);
+      }
+
+      /* ── Add task row ── */
+      .add-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      .add-input {
+        flex: 1;
+        padding: 10px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        font-family: var(--font);
+        font-size: 14px;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        outline: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+      }
+
+      .add-input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent);
+      }
+
+      .add-input::placeholder {
+        color: var(--text-muted);
+      }
+
+      .add-btn {
+        padding: 10px 18px;
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: var(--radius);
+        font-family: var(--font);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s, transform 0.1s;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .add-btn:hover {
+        background: var(--accent-hover);
+      }
+
+      .add-btn:active {
+        transform: scale(0.97);
+      }
+
+      /* ── Task list ── */
+      .task-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .task-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 12px;
+        background: var(--bg-secondary);
+        border: 1.5px solid transparent;
+        border-radius: var(--radius);
+        cursor: default;
+        transition:
+          border-color 0.15s,
+          background 0.15s,
+          transform 0.12s,
+          opacity 0.15s;
+        user-select: none;
+        position: relative;
+      }
+
+      .task-item:hover {
+        border-color: var(--border);
+        background: var(--bg-hover);
+      }
+
+      .task-item.pending {
+        opacity: 0.55;
+      }
+
+      .task-item.dragging {
+        opacity: 0.35;
+        border-color: var(--accent);
+        background: var(--bg-hover);
+      }
+
+      .task-item.drag-over {
+        border-color: var(--accent);
+        background: color-mix(in srgb, var(--accent) 6%, var(--bg-secondary));
+        transform: scale(1.015);
+      }
+
+      /* ── Drag handle ── */
+      .drag-handle {
+        color: var(--text-muted);
+        cursor: grab;
+        display: flex;
+        align-items: center;
+        padding: 2px;
+        flex-shrink: 0;
+        opacity: 0.4;
+        transition: opacity 0.15s;
+      }
+
+      .task-item:hover .drag-handle {
+        opacity: 1;
+      }
+
+      .drag-handle:active {
+        cursor: grabbing;
+      }
+
+      /* ── Star button ── */
+      .star-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 1;
+        padding: 1px 2px;
+        color: var(--text-muted);
+        transition:
+          color 0.15s,
+          transform 0.1s;
+        flex-shrink: 0;
+      }
+
+      .star-btn.active {
+        color: var(--star-color);
+      }
+
+      .star-btn:hover {
+        transform: scale(1.25);
+      }
+
+      /* ── Task title ── */
+      .task-title {
+        flex: 1;
+        font-size: 14px;
+        color: var(--text-primary);
+        word-break: break-word;
+        line-height: 1.4;
+      }
+
+      /* ── Delete button ── */
+      .delete-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 18px;
+        line-height: 1;
+        padding: 1px 3px;
+        color: var(--text-muted);
+        transition:
+          color 0.15s,
+          transform 0.1s;
+        flex-shrink: 0;
+        opacity: 0;
+        border-radius: var(--radius-sm);
+        transition: opacity 0.15s, color 0.15s, transform 0.1s;
+      }
+
+      .task-item:hover .delete-btn {
+        opacity: 1;
+      }
+
+      .delete-btn:hover {
+        color: var(--danger);
+        transform: scale(1.15);
+      }
+
+      /* ── Empty state ── */
+      .empty-state {
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 14px;
+        padding: 40px 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .empty-state svg {
+        opacity: 0.3;
+      }
+
+      /* ── Loading state ── */
+      .loading {
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 14px;
+        padding: 40px 16px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .spinner {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--border);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        vertical-align: middle;
+        margin-right: 6px;
+      }
+
+      /* ── Drop zone indicator ── */
+      .drop-line {
+        height: 2px;
+        background: var(--accent);
+        border-radius: 2px;
+        margin: -3px 0;
+        opacity: 0;
+        transition: opacity 0.15s;
+      }
+
+      .drop-line.visible {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="widget">
+      <div class="header">
+        <span class="header-title">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M9 11l3 3L22 4" />
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+          </svg>
+          My Tasks
+        </span>
+        <span class="task-badge" id="task-count">0</span>
+      </div>
+
+      <div id="error-msg" class="error-msg"></div>
+
+      <div class="add-row">
+        <input
+          type="text"
+          class="add-input"
+          id="new-task-input"
+          placeholder="Add a new task..."
+          autocomplete="off"
+        />
+        <button class="add-btn" id="add-task-btn">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+          >
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Add
+        </button>
+      </div>
+
+      <div class="task-list" id="task-list">
+        <div class="loading">
+          <span class="spinner"></span> Loading tasks...
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

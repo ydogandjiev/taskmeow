@@ -55,7 +55,7 @@ const resolvers = {
 };
 
 router.use(
-  "*",
+  "/",
   graphqlHTTP({
     schema: schema,
     rootValue: resolvers,

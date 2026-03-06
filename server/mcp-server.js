@@ -82,6 +82,12 @@ async function getUserByEmail(userEmail) {
 }
 
 function createMcpServer({ authenticatedEmail, authType }) {
+  console.log(
+    "Creating MCP server with authType:",
+    authType,
+    "authenticatedEmail:",
+    authenticatedEmail
+  );
   if (authType === "bearer" && !authenticatedEmail) {
     throw new Error(
       "Authenticated email is required for bearer token authentication"
@@ -103,8 +109,19 @@ function createMcpServer({ authenticatedEmail, authType }) {
     {
       mimeType: RESOURCE_MIME_TYPE,
       description: "Interactive task management widget",
+      _meta: {
+        ui: {
+          csp: {
+            baseUriDomains: [process.env.APPSETTING_AAD_BaseUri],
+            connectDomains: [process.env.APPSETTING_AAD_BaseUri],
+            frameDomains: [process.env.APPSETTING_AAD_BaseUri],
+            resourceDomains: [process.env.APPSETTING_AAD_BaseUri],
+          },
+        },
+      },
     },
     async () => {
+      console.log("Loading widget HTML resource for:", authenticatedEmail);
       const html = await readWidgetHtml();
       return {
         contents: [
@@ -112,6 +129,16 @@ function createMcpServer({ authenticatedEmail, authType }) {
             uri: TASKS_WIDGET_URI,
             mimeType: RESOURCE_MIME_TYPE,
             text: html,
+            _meta: {
+              ui: {
+                csp: {
+                  baseUriDomains: [process.env.APPSETTING_AAD_BaseUri],
+                  connectDomains: [process.env.APPSETTING_AAD_BaseUri],
+                  frameDomains: [process.env.APPSETTING_AAD_BaseUri],
+                  resourceDomains: [process.env.APPSETTING_AAD_BaseUri],
+                },
+              },
+            },
           },
         ],
       };
@@ -121,7 +148,6 @@ function createMcpServer({ authenticatedEmail, authType }) {
   // ══════════════════════════════════════════════════════════════════════
   //  APP TOOLS — Widget tools (tool + UI resource linked via _meta)
   // ══════════════════════════════════════════════════════════════════════
-
   registerAppTool(
     server,
     "get_tasks",
@@ -135,8 +161,10 @@ function createMcpServer({ authenticatedEmail, authType }) {
         destructiveHint: false,
         openWorldHint: false,
       },
+      _meta: { ui: { resourceUri: TASKS_WIDGET_URI } },
     },
     async () => {
+      console.log(`Getting tasks for user: ${authenticatedEmail}`);
       const user = await getUserByEmail(authenticatedEmail);
       const tasks = await taskService.getForUser(user._id);
       return {
@@ -180,6 +208,7 @@ function createMcpServer({ authenticatedEmail, authType }) {
         destructiveHint: false,
         openWorldHint: false,
       },
+      _meta: { ui: { resourceUri: TASKS_WIDGET_URI } },
     },
     async ({ title, starred = false }) => {
       if (!title || title.trim().length === 0) {
@@ -231,6 +260,7 @@ function createMcpServer({ authenticatedEmail, authType }) {
         destructiveHint: false,
         openWorldHint: false,
       },
+      _meta: { ui: { resourceUri: TASKS_WIDGET_URI } },
     },
     async ({ taskId, title, starred, order }) => {
       if (title === undefined && starred === undefined && order === undefined) {
@@ -281,6 +311,7 @@ function createMcpServer({ authenticatedEmail, authType }) {
         destructiveHint: true,
         openWorldHint: false,
       },
+      _meta: { ui: { resourceUri: TASKS_WIDGET_URI } },
     },
     async ({ taskId }) => {
       const user = await getUserByEmail(authenticatedEmail);
@@ -347,25 +378,41 @@ function createMcpServer({ authenticatedEmail, authType }) {
     }
   );
 
+  console.log(
+    "MCP server created with tools:",
+    Object.keys(server._registeredTools),
+    "and resources:",
+    Object.keys(server._registeredResources)
+  );
   return server;
 }
 
 async function handleMcpRequest(req, res) {
+  const server = createMcpServer({
+    authenticatedEmail: req.mcpAuthenticatedEmail || "yudogan@microsoft.com",
+    authType: req.mcpAuthType,
+  });
   const transport = new StreamableHTTPServerTransport({
     sessionIdGenerator: undefined,
   });
-  const server = createMcpServer({
-    authenticatedEmail: req.mcpAuthenticatedEmail,
-    authType: req.mcpAuthType,
+
+  res.on("close", () => {
+    server.close();
+    transport.close();
   });
+
   try {
     await server.connect(transport);
     await transport.handleRequest(req, res, req.body);
-    res.on("finish", () => transport.close());
+    console.log("MCP request handled successfully");
   } catch (error) {
     console.error("MCP error:", error);
     if (!res.headersSent) {
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({
+        jsonrpc: "2.0",
+        error: { code: -32603, message: "Internal server error" },
+        id: null,
+      });
     }
   }
 }

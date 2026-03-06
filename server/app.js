@@ -1,10 +1,11 @@
 import express from "express";
+import { createMcpExpressApp } from "@modelcontextprotocol/sdk/server/express.js";
 const { static: serveStatic } = express;
 import { fileURLToPath } from "url";
+import cors from "cors";
 import path from "path";
 import logger from "morgan";
 import cookieParser from "cookie-parser";
-import bodyParser from "body-parser";
 import bearerToken from "express-bearer-token";
 import session from "express-session";
 
@@ -22,12 +23,25 @@ mongo.connect();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const app = express();
+const app = createMcpExpressApp({
+  host: "0.0.0.0",
+  allowedHosts: [
+    "localhost",
+    "127.0.0.1",
+    process.env.APPSETTING_HOSTNAME || "taskmeow.azurewebsites.net",
+  ],
+});
+// const app = express();
+
+app.use(cors());
+
+// MCP server endpoints
 
 app.use(logger("dev"));
 app.use(slack);
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use("/mcp", mcpServer);
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(bearerToken());
 app.use(serveStatic(path.join(__dirname, "build")));
@@ -38,9 +52,6 @@ authService.initialize(app);
 // Server-rendered views
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
-
-// MCP server endpoints
-app.use("/mcp", mcpServer);
 
 // Copilot plugin manifest and OpenAPI spec
 app.get("/ai-plugin.json", (req, res) => {
@@ -102,7 +113,7 @@ app.get("/embed/tasks", (req, res) => {
 });
 
 // React routes
-app.get("*", (req, res) => {
+app.use((req, res) => {
   res.sendFile("build/index.html", { root: path.resolve() });
 });
 

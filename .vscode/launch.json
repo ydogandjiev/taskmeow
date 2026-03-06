@@ -38,7 +38,8 @@
       "type": "node",
       "request": "launch",
       "name": "Launch Server",
-      "program": "${workspaceRoot}/server/server.js"
+      "program": "${workspaceRoot}/server/server.js",
+      "cwd": "${workspaceRoot}/server"
     }
   ]
 }
