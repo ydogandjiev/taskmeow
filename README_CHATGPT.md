@@ -37,7 +37,7 @@ npm run generate-api-key
 ### 2. Update .env
 
 ```bash
-CHATGPT_APP_API_KEY="tm_your_generated_key"
+APPSETTING_CHATGPT_APP_API_KEY="tm_your_generated_key"
 ```
 
 ### 3. Build & Deploy
@@ -127,7 +127,7 @@ curl -X POST https://your-domain.com/mcp/tools/call \
 Only one variable needed:
 
 ```bash
-CHATGPT_APP_API_KEY="tm_your_key_here"
+APPSETTING_CHATGPT_APP_API_KEY="tm_your_key_here"
 ```
 
 ## Troubleshooting

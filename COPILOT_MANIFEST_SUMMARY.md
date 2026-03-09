@@ -122,7 +122,7 @@ The plugin uses the existing **MCP (Model Context Protocol)** server:
 4. Configure authentication:
    - Type: **API Key**
    - Reference ID: `TASKMEOW_API_KEY`
-   - API Key: `tm_8f3e7a2b9d4c1e6f5a8b7c9d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2`
+   - API Key: `tm_your_generated_api_key_here`
 5. Assign to users/groups
 6. Enable and save
 

@@ -55,7 +55,7 @@ npm run generate-api-key
 Copy the generated API key and add it to your `.env`:
 
 ```bash
-CHATGPT_APP_API_KEY="tm_your_generated_key_here"
+APPSETTING_CHATGPT_APP_API_KEY="tm_your_generated_key_here"
 ```
 
 ### 2. Build and Deploy
@@ -533,7 +533,7 @@ MCP server returns JSON-RPC 2.0 error responses:
 
 ### "Authentication required" error
 
-- Verify `CHATGPT_APP_API_KEY` is set in `.env`
+- Verify `APPSETTING_CHATGPT_APP_API_KEY` is set in `.env`
 - Ensure API key is sent in headers
 - Check that API key matches exactly
 

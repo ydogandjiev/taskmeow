@@ -35,12 +35,18 @@ function authenticateMCP(req, res, next) {
   const bearerValue = bearerMatch?.[1];
   const apiKeyHeader = req.headers["x-api-key"];
 
-  if (apiKeyHeader && apiKeyHeader === process.env.CHATGPT_APP_API_KEY) {
+  if (
+    apiKeyHeader &&
+    apiKeyHeader === process.env.APPSETTING_CHATGPT_APP_API_KEY
+  ) {
     req.mcpAuthType = "apiKey";
     return next();
   }
 
-  if (bearerValue && bearerValue === process.env.CHATGPT_APP_API_KEY) {
+  if (
+    bearerValue &&
+    bearerValue === process.env.APPSETTING_CHATGPT_APP_API_KEY
+  ) {
     req.mcpAuthType = "apiKey";
     return next();
   }

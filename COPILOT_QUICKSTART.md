@@ -40,7 +40,7 @@ curl https://taskmeow.ngrok.io/mcp/health
 Your API key is in `.env`:
 
 ```
-CHATGPT_APP_API_KEY="tm_8f3e7a2b9d4c1e6f5a8b7c9d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2"
+APPSETTING_CHATGPT_APP_API_KEY="tm_your_generated_api_key_here"
 ```
 
 ### Step 3: Register Plugin
@@ -62,7 +62,7 @@ CHATGPT_APP_API_KEY="tm_8f3e7a2b9d4c1e6f5a8b7c9d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b
    - Authentication: **API Key**
    - Reference ID: `TASKMEOW_API_KEY`
    - Store in Plugin Vault
-   - API Key: `tm_8f3e7a2b9d4c1e6f5a8b7c9d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2`
+   - API Key: `tm_your_generated_api_key_here`
 
 4. **Assign to Users**
    - Select users or groups

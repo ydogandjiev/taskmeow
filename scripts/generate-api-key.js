@@ -10,6 +10,6 @@ const apiKey = `tm_${crypto.randomBytes(32).toString("hex")}`;
 console.log("Generated API Key:");
 console.log(apiKey);
 console.log("\nAdd this to your .env file:");
-console.log(`CHATGPT_APP_API_KEY="${apiKey}"`);
+console.log(`APPSETTING_CHATGPT_APP_API_KEY="${apiKey}"`);
 console.log("\nKeep this key secure and never commit it to version control!");
 console.log("You'll use this key when configuring your ChatGPT App.\n");

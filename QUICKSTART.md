@@ -17,7 +17,7 @@ npm run generate-api-key
 Copy the generated key and update your `.env`:
 
 ```bash
-CHATGPT_APP_API_KEY="tm_your_generated_key_here"
+APPSETTING_CHATGPT_APP_API_KEY="tm_your_generated_key_here"
 ```
 
 ## Step 2: Build and Deploy

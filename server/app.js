@@ -28,7 +28,9 @@ const app = createMcpExpressApp({
   allowedHosts: [
     "localhost",
     "127.0.0.1",
-    process.env.APPSETTING_HOSTNAME || "taskmeow.azurewebsites.net",
+    "taskmeow.com",
+    "taskmeow.ngrok.io",
+    process.env.APPSETTING_HOSTNAME,
   ],
 });
 // const app = express();

@@ -36,7 +36,7 @@ Successfully implemented a **ChatGPT App** using the Apps SDK with an MCP (Model
 - `server/user-service.js` - Added `getByEmail()` method
 - `server/routes/rest.js` - Added widget authentication middleware
 - `src/components/EmbedWidget.js` - Updated to use new token format
-- `.env` - Replaced OAuth config with `CHATGPT_APP_API_KEY`
+- `.env` - Replaced OAuth config with `APPSETTING_CHATGPT_APP_API_KEY`
 
 **New Files**:
 
@@ -103,7 +103,7 @@ ChatGPT App (Apps SDK)
 
 ```bash
 # Only one variable needed!
-CHATGPT_APP_API_KEY="tm_your_generated_api_key"
+APPSETTING_CHATGPT_APP_API_KEY="tm_your_generated_api_key"
 ```
 
 ### Generate API Key
@@ -202,7 +202,7 @@ See `CHATGPT_APP.md` for comprehensive testing instructions.
 ## Setup Steps
 
 1. **Generate API key**: `npm run generate-api-key`
-2. **Update .env**: Add `CHATGPT_APP_API_KEY`
+2. **Update .env**: Add `APPSETTING_CHATGPT_APP_API_KEY`
 3. **Build**: `npm run build`
 4. **Deploy**: `npm start`
 5. **Create ChatGPT App**: Configure at platform.openai.com/apps

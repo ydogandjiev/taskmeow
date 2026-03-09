@@ -136,7 +136,7 @@ Ensure your TaskMeow server is deployed and accessible via HTTPS.
 Your API key should already be in `.env`:
 
 ```bash
-CHATGPT_APP_API_KEY="tm_8f3e7a2b9d4c1e6f5a8b7c9d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2"
+APPSETTING_CHATGPT_APP_API_KEY="tm_your_generated_api_key_here"
 ```
 
 ### Step 3: Verify Endpoints
@@ -172,7 +172,7 @@ curl https://taskmeow.ngrok.io/mcp/health
    - Select **API Key** authentication
    - Reference ID: `TASKMEOW_API_KEY`
    - Store API key in Plugin Vault
-   - Key: `tm_8f3e7a2b9d4c1e6f5a8b7c9d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2`
+   - Key: `tm_your_generated_api_key_here`
 
 4. **Assign to Users**
 
