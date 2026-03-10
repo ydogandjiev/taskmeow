@@ -11,7 +11,9 @@ import {
 // ─────────────────────────────────────────────
 
 const isMcpApp =
-  window.parent !== window && window.frameElement && !window.frameElement.src;
+  window.parent !== window &&
+  window.frameElement &&
+  (!window.frameElement.src || window.frameElement.src == "about:blank");
 
 let mcpApp = null;
 let tasks = [];
