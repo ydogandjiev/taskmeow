@@ -328,6 +328,30 @@
       .drop-line.visible {
         opacity: 1;
       }
+
+      /* ── Maximize / minimize button ── */
+      .maximize-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--text-muted);
+        padding: 4px;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        transition: color 0.15s, background 0.15s;
+        flex-shrink: 0;
+      }
+
+      .maximize-btn:hover {
+        color: var(--text-primary);
+        background: var(--bg-hover);
+      }
+
+      /* ── Fullscreen mode ── */
+      .widget.fullscreen {
+        max-width: none;
+      }
     </style>
   </head>
   <body>
@@ -350,6 +374,14 @@
           My Tasks
         </span>
         <span class="task-badge" id="task-count">0</span>
+        <button class="maximize-btn" id="maximize-btn" title="Maximize">
+          <svg id="maximize-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3"/>
+            <path d="M21 8V5a2 2 0 0 0-2-2h-3"/>
+            <path d="M3 16v3a2 2 0 0 0 2 2h3"/>
+            <path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
+          </svg>
+        </button>
       </div>
 
       <div id="error-msg" class="error-msg"></div>
