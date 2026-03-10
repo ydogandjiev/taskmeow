@@ -150,16 +150,24 @@ const MINIMIZE_ICON = `
   <path d="M3 16h3a2 2 0 0 1 2 2v3"/>
   <path d="M16 21v-3a2 2 0 0 1 2-2h3"/>`;
 
-function toggleFullscreen() {
-  isFullscreen = !isFullscreen;
-  const widget = document.querySelector(".widget");
+function syncDisplayMode(mode) {
+  isFullscreen = mode === "fullscreen";
   const icon = document.getElementById("maximize-icon");
   const btn = document.getElementById("maximize-btn");
-  if (!widget || !icon || !btn) return;
-
-  widget.classList.toggle("fullscreen", isFullscreen);
+  if (!icon || !btn) return;
   icon.innerHTML = isFullscreen ? MINIMIZE_ICON : MAXIMIZE_ICON;
   btn.title = isFullscreen ? "Minimize" : "Maximize";
+}
+
+async function toggleFullscreen() {
+  if (!isMcpApp || !mcpApp) return;
+  const targetMode = isFullscreen ? "inline" : "fullscreen";
+  try {
+    const result = await mcpApp.requestDisplayMode({ mode: targetMode });
+    syncDisplayMode(result.mode);
+  } catch (err) {
+    console.warn("requestDisplayMode failed:", err);
+  }
 }
 
 function showError(msg) {
@@ -358,6 +366,14 @@ async function init() {
           document.body.style.padding = `${top + 16}px ${right + 16}px ${
             bottom + 16
           }px ${left + 16}px`;
+        }
+        if (ctx.displayMode) syncDisplayMode(ctx.displayMode);
+        if (ctx.availableDisplayModes) {
+          const btn = document.getElementById("maximize-btn");
+          if (btn)
+            btn.style.display = ctx.availableDisplayModes.includes("fullscreen")
+              ? ""
+              : "none";
         }
       };
 
