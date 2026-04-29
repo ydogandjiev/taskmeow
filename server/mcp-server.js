@@ -173,25 +173,30 @@ function createMcpServer({ authenticatedEmail, authType }) {
       console.log(`Getting tasks for user: ${authenticatedEmail}`);
       const user = await getUserByEmail(authenticatedEmail);
       const tasks = await taskService.getForUser(user._id);
+      const mappedTasks = tasks.map((t) => ({
+        id: t._id.toString(),
+        title: t.title,
+        starred: t.starred,
+        order: t.order,
+        date: t.date,
+      }));
       return {
         content: [
           {
             type: "text",
-            text: JSON.stringify({
-              tasks: tasks.map((t) => ({
-                id: t._id.toString(),
-                title: t.title,
-                starred: t.starred,
-                order: t.order,
-                date: t.date,
-              })),
-              count: tasks.length,
-              message: `Found ${tasks.length} task${
-                tasks.length !== 1 ? "s" : ""
-              }`,
-            }),
+            text: `Found ${tasks.length} task${
+              tasks.length !== 1 ? "s" : ""
+            }. Interactive widget is ready to display and manage your tasks.`,
           },
         ],
+        structuredContent: {
+          user: {
+            id: user._id.toString(),
+            email: user.email,
+          },
+          tasks: mappedTasks,
+          count: tasks.length,
+        },
       };
     }
   );
