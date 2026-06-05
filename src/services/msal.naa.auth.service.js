@@ -66,7 +66,7 @@ class MsalNAAAuthService {
       const silentRequest = {
         scopes: ["openid", "profile", "offline_access", "User.Read"],
         extraScopesToConsent: [this.api],
-        loginHint: context.loginHint,
+        loginHint: context.user.loginHint,
       };
       let activeAccount;
       await this.appNext
@@ -95,7 +95,7 @@ class MsalNAAAuthService {
       const silentRequest = {
         scopes: ["openid", "profile", "offline_access", "User.Read"],
         extraScopesToConsent: [this.api],
-        loginHint: context.loginHint,
+        loginHint: context.user.loginHint,
       };
       try {
         // eslint-disable-next-line no-unused-vars

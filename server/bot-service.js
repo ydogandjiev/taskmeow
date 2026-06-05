@@ -2,6 +2,7 @@ import {
   CloudAdapter,
   ConfigurationBotFrameworkAuthentication,
   ConfigurationServiceClientCredentialFactory,
+  TeamsInfo,
 } from "botbuilder";
 
 import { AzureOpenAI } from "openai";
@@ -281,7 +282,7 @@ function getMembers(serviceUrl, threadId) {
         process.env.APPSETTING_AAD_ApplicationId,
         conversationReference,
         async (context) => {
-          const members = await context.adapter.getConversationMembers(context);
+          const members = await TeamsInfo.getMembers(context);
           resolve(members);
         }
       )

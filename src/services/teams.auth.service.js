@@ -94,7 +94,7 @@ class TeamsAuthService {
           : "organizations";
       return this.app
         .acquireTokenSilent({
-          loginHint: context.loginHint,
+          loginHint: context.user.loginHint,
           scopes: [this.api],
           extraQueryParameters: { domain_hint: domainHint },
         })

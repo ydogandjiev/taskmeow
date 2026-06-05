@@ -7,10 +7,12 @@ class UserService {
         .fetch(`/api/user/image`)
         .then((result) => {
           if (result.status !== 200) {
-            return Promise.reject({
-              statusCode: result.status,
-              statusMessage: result.statusText,
-            });
+            return result.json().then((body) =>
+              Promise.reject({
+                statusCode: result.status,
+                statusMessage: body.message,
+              })
+            );
           } else {
             return result.blob();
           }
