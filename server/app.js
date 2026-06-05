@@ -10,7 +10,7 @@ import bearerToken from "express-bearer-token";
 import session from "express-session";
 
 import authService from "./auth-service.js";
-import bot from "./routes/bot.js";
+import bot from "./bot-service.js";
 import rest from "./routes/rest.js";
 import graph from "./routes/graph.js";
 import slack from "./routes/slack.js";
@@ -64,8 +64,8 @@ app.get("/openapi.json", (req, res) => {
   res.sendFile(path.join(__dirname, "copilot-openapi.json"));
 });
 
-// Bot endpoints
-app.use(bot);
+// Bot endpoints (registers /bot/messages via Teams SDK)
+await bot.initBot(app);
 
 // GraphQL endpoint
 app.use("/graphql", authService.authenticateUser, graph);
