@@ -78,7 +78,7 @@ it("can initiate login", (done) => {
   app.getActiveAccount.mockResolvedValue();
 
   microsoftTeams.getContext.mockImplementationOnce((callback) => {
-    callback({ loginHint: "fakeUser" });
+    callback({ user: { loginHint: "fakeUser" } });
   });
 
   microsoftTeams.authentication.authenticate.mockImplementationOnce(
@@ -109,7 +109,7 @@ it("can get token", (done) => {
   app.acquireTokenSilent.mockResolvedValue(mockAuthResponse);
 
   microsoftTeams.getContext.mockImplementation((callback) => {
-    callback({ loginHint: "fakeUser" });
+    callback({ user: { loginHint: "fakeUser" } });
   });
 
   authService.getToken().then((token) => {

@@ -272,6 +272,7 @@ const cloudAdapter = new CloudAdapter(
 function getMembers(serviceUrl, threadId) {
   return new Promise((resolve, reject) => {
     const conversationReference = {
+      channelId: "msteams",
       conversation: { id: threadId },
       serviceUrl,
       bot: { id: process.env.APPSETTING_AAD_ApplicationId },
