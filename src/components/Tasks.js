@@ -33,7 +33,7 @@ class Tasks extends Component {
 
     if (this.props.inTeams) {
       microsoftTeams.app.getContext().then((context) => {
-        const threadId = context.team.internalId || context.chat.id;
+        const threadId = context.team?.internalId || context.chat?.id;
         const fetchTaskPromise = this.props.isGroup
           ? tasksService.get(threadId)
           : tasksService.get();
