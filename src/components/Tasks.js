@@ -33,7 +33,7 @@ class Tasks extends Component {
 
     if (this.props.inTeams) {
       microsoftTeams.app.getContext().then((context) => {
-        const threadId = context.teamId || context.chatId;
+        const threadId = context.team.internalId || context.chat.id;
         const fetchTaskPromise = this.props.isGroup
           ? tasksService.get(threadId)
           : tasksService.get();
@@ -94,11 +94,15 @@ class Tasks extends Component {
   handleKeyDown = (event) => {
     if (event.key === "Enter") {
       const tasks = this.state.tasks;
+      const threadId = this.props.isGroup ? this.state.threadId : undefined;
       tasksService
-        .create({
-          ...this.state.newTask,
-          order: tasks.length > 0 ? tasks[0].order + 100 : 100,
-        })
+        .create(
+          {
+            ...this.state.newTask,
+            order: tasks.length > 0 ? tasks[0].order + 100 : 100,
+          },
+          threadId
+        )
         .then((task) => {
           this.setState((prevState) => {
             return {

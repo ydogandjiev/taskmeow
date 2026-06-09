@@ -36,8 +36,8 @@ async function getImage(req, res) {
     res.end(img);
   } catch (error) {
     console.error(`Error getting user image: ${error}`);
-    res.statusMessage = error.statusMessage || error.response.statusMessage;
-    res.status(error.statusCode).send();
+    const statusMessage = error.statusMessage || error.response?.statusMessage;
+    res.status(error.statusCode).json({ message: statusMessage });
   }
 }
 
