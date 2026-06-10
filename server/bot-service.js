@@ -7,10 +7,16 @@ import {
 
 import { AzureOpenAI } from "openai";
 import { App, ExpressAdapter } from "@microsoft/teams.apps";
+import fs from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import groupService from "./group-service.js";
 import taskService from "./task-service.js";
 import userService from "./user-service.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 if (
   !process.env.APPSETTING_OPENAI_KEY &&
@@ -309,6 +315,42 @@ async function initBot(expressApp) {
   // Error handling
   teamsApp.event("error", async ({ error }) => {
     console.error(`\n [onError] unhandled error:`, error);
+  });
+
+  // Return an MCP UI widget
+  teamsApp.message("/widget", async ({ send }) => {
+    // Read the real widget HTML and resolve script paths to absolute URLs
+    const baseUri = process.env.APPSETTING_AAD_BaseUri || "https://localhost";
+    const domain = new URL(baseUri).hostname;
+    const htmlPath = path.join(__dirname, "build", "embed.html");
+    let widgetHtml = await fs.readFile(htmlPath, "utf-8");
+    widgetHtml = widgetHtml.replace(
+      /src="\/assets\//g,
+      `src="${baseUri}/assets/`
+    );
+
+    const widgetPayload = {
+      type: "widget/mcp-ui",
+      name: "My Tasks",
+      description:
+        "Interactive task management widget showing your current tasks.",
+      domain,
+      widgetHtml,
+    };
+
+    const widgetMarkdown = [
+      "Here are your tasks:",
+      "",
+      "```html-widget",
+      JSON.stringify(widgetPayload),
+      "```",
+    ].join("\n");
+
+    await send({
+      type: "message",
+      text: widgetMarkdown,
+      textFormat: "extendedmarkdown",
+    });
   });
 
   // Reset conversation state
