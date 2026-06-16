@@ -84,7 +84,7 @@ class TeamsAuthService {
 
   getToken() {
     return new Promise((resolve) => {
-      microsoftTeams.getContext((context) => {
+      microsoftTeams.app.getContext((context) => {
         resolve(context);
       });
     }).then((context) => {

@@ -10,8 +10,8 @@ jest.mock("@microsoft/teams-js", () => ({
   },
   app: {
     initialize: jest.fn(),
+    getContext: jest.fn(),
   },
-  getContext: jest.fn(),
 }));
 
 import * as msal from "@azure/msal-browser";
@@ -77,7 +77,7 @@ it("can initiate login", (done) => {
   const app = mockMsalFns;
   app.getActiveAccount.mockResolvedValue();
 
-  microsoftTeams.getContext.mockImplementationOnce((callback) => {
+  microsoftTeams.app.getContext.mockImplementationOnce((callback) => {
     callback({ user: { loginHint: "fakeUser" } });
   });
 
@@ -108,7 +108,7 @@ it("can get token", (done) => {
   };
   app.acquireTokenSilent.mockResolvedValue(mockAuthResponse);
 
-  microsoftTeams.getContext.mockImplementation((callback) => {
+  microsoftTeams.app.getContext.mockImplementation((callback) => {
     callback({ user: { loginHint: "fakeUser" } });
   });
 

@@ -59,7 +59,7 @@ class MsalNAAAuthService {
 
   async login() {
     return new Promise((resolve) => {
-      microsoftTeams.getContext((context) => {
+      microsoftTeams.app.getContext((context) => {
         resolve(context);
       });
     }).then(async (context) => {
@@ -88,7 +88,7 @@ class MsalNAAAuthService {
 
   getUser() {
     return new Promise((resolve) => {
-      microsoftTeams.getContext((context) => {
+      microsoftTeams.app.getContext((context) => {
         resolve(context);
       });
     }).then(async (context) => {
