@@ -83,13 +83,9 @@ class TeamsAuthService {
   }
 
   getToken() {
-    return new Promise((resolve) => {
-      microsoftTeams.app.getContext((context) => {
-        resolve(context);
-      });
-    }).then((context) => {
+    return microsoftTeams.app.getContext().then((context) => {
       const domainHint =
-        context.tid === "9188040d-6c67-4c5b-b112-36a304b66dad"
+        context.user.tenant.id === "9188040d-6c67-4c5b-b112-36a304b66dad"
           ? "consumers"
           : "organizations";
       return this.app

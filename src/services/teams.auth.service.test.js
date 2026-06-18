@@ -77,8 +77,10 @@ it("can initiate login", (done) => {
   const app = mockMsalFns;
   app.getActiveAccount.mockResolvedValue();
 
-  microsoftTeams.app.getContext.mockImplementationOnce((callback) => {
-    callback({ user: { loginHint: "fakeUser" } });
+  microsoftTeams.app.getContext.mockImplementationOnce(() => {
+    return Promise.resolve({
+      user: { loginHint: "fakeUser", tenant: { id: "fakeTenantId" } },
+    });
   });
 
   microsoftTeams.authentication.authenticate.mockImplementationOnce(
@@ -108,8 +110,10 @@ it("can get token", (done) => {
   };
   app.acquireTokenSilent.mockResolvedValue(mockAuthResponse);
 
-  microsoftTeams.app.getContext.mockImplementation((callback) => {
-    callback({ user: { loginHint: "fakeUser" } });
+  microsoftTeams.app.getContext.mockImplementation(() => {
+    return Promise.resolve({
+      user: { loginHint: "fakeUser", tenant: { id: "fakeTenantId" } },
+    });
   });
 
   authService.getToken().then((token) => {

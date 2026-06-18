@@ -57,28 +57,22 @@ class MsalNAAAuthService {
     }
   }
 
-  async login() {
-    return new Promise((resolve) => {
-      microsoftTeams.app.getContext((context) => {
-        resolve(context);
-      });
-    }).then(async (context) => {
+  login() {
+    return microsoftTeams.app.getContext().then((context) => {
       const silentRequest = {
         scopes: ["openid", "profile", "offline_access", "User.Read"],
         extraScopesToConsent: [this.api],
         loginHint: context.user.loginHint,
       };
-      let activeAccount;
-      await this.appNext
+      return this.appNext
         .acquireTokenPopup(silentRequest)
         .then((authResponse) => {
           this.appNext.setActiveAccount(authResponse.account);
-          activeAccount = authResponse.account;
+          return authResponse.account;
         })
         .catch(() => {
           throw new Error("login failed");
         });
-      return Promise.resolve(activeAccount);
     });
   }
 
@@ -87,31 +81,29 @@ class MsalNAAAuthService {
   }
 
   getUser() {
-    return new Promise((resolve) => {
-      microsoftTeams.app.getContext((context) => {
-        resolve(context);
-      });
-    }).then(async (context) => {
+    return microsoftTeams.app.getContext().then((context) => {
       const silentRequest = {
         scopes: ["openid", "profile", "offline_access", "User.Read"],
         extraScopesToConsent: [this.api],
         loginHint: context.user.loginHint,
       };
-      try {
-        // eslint-disable-next-line no-unused-vars
-        var response = await this.appNext.ssoSilent(silentRequest);
-      } catch (err) {
-        console.log("ssoSilent failed");
-      }
-      let activeAccount = this.appNext.getActiveAccount();
-      if (!activeAccount) {
-        const allAccounts = this.appNext.getAllAccounts();
-        if (allAccounts.length === 1) {
-          this.appNext.setActiveAccount(allAccounts[0]);
-          activeAccount = allAccounts[0];
-        }
-      }
-      return Promise.resolve(activeAccount);
+
+      return this.appNext
+        .ssoSilent(silentRequest)
+        .then(() => {
+          let activeAccount = this.appNext.getActiveAccount();
+          if (!activeAccount) {
+            const allAccounts = this.appNext.getAllAccounts();
+            if (allAccounts.length === 1) {
+              this.appNext.setActiveAccount(allAccounts[0]);
+              activeAccount = allAccounts[0];
+            }
+          }
+          return activeAccount;
+        })
+        .catch((error) => {
+          console.log("ssoSilent failed", error);
+        });
     });
   }
 
