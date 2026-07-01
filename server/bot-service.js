@@ -335,7 +335,7 @@ async function initBot(expressApp) {
       description:
         "Interactive task management widget showing your current tasks.",
       domain,
-      widgetHtml,
+      html: widgetHtml,
     };
 
     const widgetMarkdown = [
