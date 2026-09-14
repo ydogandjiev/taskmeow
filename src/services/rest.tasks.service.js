@@ -1,5 +1,41 @@
 import authService from "./auth.service";
 
+// Parses a fetch response body as a stream of SSE `data:` frames and invokes
+// onEvent with the parsed JSON payload of each one.
+function readEventStream(body, onEvent) {
+  const reader = body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  const pump = () =>
+    reader.read().then(({ done, value }) => {
+      if (done) {
+        return;
+      }
+
+      buffer += decoder.decode(value, { stream: true });
+      const messages = buffer.split("\n\n");
+      buffer = messages.pop();
+
+      messages.forEach((message) => {
+        const dataLine = message
+          .split("\n")
+          .find((line) => line.startsWith("data:"));
+        if (dataLine) {
+          try {
+            onEvent(JSON.parse(dataLine.slice(5).trim()));
+          } catch (error) {
+            // Ignore malformed events.
+          }
+        }
+      });
+
+      return pump();
+    });
+
+  return pump();
+}
+
 class RestTasksService {
   get(threadId, options) {
     let route;
@@ -63,6 +99,75 @@ class RestTasksService {
         method: "DELETE",
       })
       .then((result) => result.json());
+  }
+
+  // Subscribes to a live stream of task changes (from any client) via SSE,
+  // instead of having callers poll for updates. `onEvent` is invoked with
+  // `{ type: "created" | "updated" | "deleted", task }` for every change.
+  // `onResync` is invoked whenever the stream (re)connects, so the caller can
+  // refetch the full list to cover anything missed while disconnected.
+  // Returns a function that stops the subscription.
+  subscribe(threadId, onEvent, onResync) {
+    const route = threadId
+      ? `/api/groups/${threadId}/tasks/stream`
+      : "/api/tasks/stream";
+
+    let stopped = false;
+    let controller;
+    let retryDelay = 1000;
+
+    const connect = () => {
+      if (stopped) {
+        return;
+      }
+
+      controller = new AbortController();
+
+      authService
+        .fetch(route, {
+          headers: { Accept: "text/event-stream" },
+          signal: controller.signal,
+        })
+        .then((response) => {
+          if (!response.body || typeof response.body.getReader !== "function") {
+            // Streaming isn't supported in this environment (e.g. an older
+            // browser, or a test runner without ReadableStream support).
+            // Give up instead of retrying forever.
+            stopped = true;
+            return;
+          }
+
+          if (!response.ok) {
+            // Let the retry loop below back off and try again.
+            return;
+          }
+
+          retryDelay = 1000;
+          if (onResync) {
+            onResync();
+          }
+
+          return readEventStream(response.body, onEvent);
+        })
+        .catch(() => {
+          // Connection dropped or was aborted; fall through to retry.
+        })
+        .then(() => {
+          if (!stopped) {
+            setTimeout(connect, retryDelay);
+            retryDelay = Math.min(retryDelay * 2, 30000);
+          }
+        });
+    };
+
+    connect();
+
+    return () => {
+      stopped = true;
+      if (controller) {
+        controller.abort();
+      }
+    };
   }
 }
 

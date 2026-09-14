@@ -15,6 +15,12 @@ const reorder = (list, dragIndex, hoverIndex) => {
   return result;
 };
 
+// How often to poll for changes as a fallback safety net. Only used when
+// live push updates aren't supported by the active tasks service strategy
+// (e.g. the mock/local-storage or Microsoft Graph strategies); the default
+// REST strategy gets pushed updates instead and doesn't need this.
+const FALLBACK_POLL_INTERVAL_MS = 60000;
+
 class Tasks extends Component {
   constructor(props) {
     super(props);
@@ -26,6 +32,13 @@ class Tasks extends Component {
       shareTag: props.shareTag,
       loading: true,
     };
+    // Tracks in-flight local mutations so a background refresh can't
+    // clobber an optimistic update that hasn't been confirmed yet.
+    this.pendingMutations = 0;
+    this.unsubscribe = null;
+    // Tracks whether a drag-and-drop reorder is in progress so remote
+    // updates don't yank the list out from under the user's cursor.
+    this.isDragging = false;
   }
 
   componentDidMount() {
@@ -44,6 +57,7 @@ class Tasks extends Component {
               tasks: tasks.sort((a, b) => a.order - b.order),
               loading: false,
             });
+            this.startLiveUpdates(this.props.isGroup ? threadId : undefined);
           })
           .catch(() => {
             this.setState({
@@ -51,6 +65,7 @@ class Tasks extends Component {
               loading: false,
               tasks: [],
             });
+            this.startLiveUpdates(this.props.isGroup ? threadId : undefined);
           });
       });
     } else {
@@ -60,8 +75,131 @@ class Tasks extends Component {
           loading: false,
           taskId: this.state.taskId,
         });
+        this.startLiveUpdates();
       });
     }
+  }
+
+  componentWillUnmount() {
+    this.stopLiveUpdates();
+  }
+
+  // Starts receiving task changes made by other clients: a push-based
+  // subscription where the active strategy supports it, otherwise falls
+  // back to periodic polling.
+  startLiveUpdates = (threadId) => {
+    this.stopLiveUpdates();
+
+    const unsubscribe = tasksService.subscribe(
+      threadId,
+      this.handleRemoteTaskEvent,
+      this.refreshTasks
+    );
+
+    if (typeof unsubscribe === "function") {
+      this.unsubscribe = unsubscribe;
+    } else {
+      // The active strategy doesn't support push updates (e.g. mock or
+      // Graph); fall back to periodic polling so other clients' changes
+      // still show up eventually.
+      this.pollTimer = setInterval(
+        this.refreshTasks,
+        FALLBACK_POLL_INTERVAL_MS
+      );
+    }
+  };
+
+  stopLiveUpdates = () => {
+    if (typeof this.unsubscribe === "function") {
+      this.unsubscribe();
+      this.unsubscribe = null;
+    }
+    if (this.pollTimer) {
+      clearInterval(this.pollTimer);
+      this.pollTimer = undefined;
+    }
+  };
+
+  // Applies a single task change pushed from the server (created by any
+  // client, including this one) without needing to refetch the whole list.
+  handleRemoteTaskEvent = ({ type, task } = {}) => {
+    if (
+      this.pendingMutations > 0 ||
+      this.isDragging ||
+      this.state.loading ||
+      !task
+    ) {
+      return;
+    }
+
+    this.setState((prevState) => {
+      const withoutTask = prevState.tasks.filter(
+        (item) => item._id !== task._id
+      );
+
+      if (type === "deleted") {
+        return { tasks: withoutTask };
+      }
+
+      const existing = prevState.tasks.find((item) => item._id === task._id);
+      const nextTask = existing
+        ? { ...task, conversationOpen: existing.conversationOpen }
+        : task;
+
+      return {
+        tasks: [...withoutTask, nextTask].sort((a, b) => a.order - b.order),
+      };
+    });
+  };
+
+  // Refetches the full task list and merges it in, preserving local-only
+  // state (like an open Teams conversation indicator) and skipping if a
+  // mutation is still in flight. Used to resync after the push subscription
+  // (re)connects, and as the fallback poll for strategies without push
+  // support.
+  refreshTasks = () => {
+    if (this.pendingMutations > 0 || this.isDragging || this.state.loading) {
+      return;
+    }
+
+    const threadId = this.props.isGroup ? this.state.threadId : undefined;
+    const fetchTaskPromise = threadId
+      ? tasksService.get(threadId)
+      : tasksService.get();
+
+    fetchTaskPromise
+      .then((tasks) => {
+        if (this.pendingMutations > 0 || this.isDragging) {
+          return;
+        }
+
+        this.setState((prevState) => {
+          const localById = new Map(
+            prevState.tasks.map((task) => [task._id, task])
+          );
+          const merged = tasks
+            .map((task) => {
+              const local = localById.get(task._id);
+              return local
+                ? { ...task, conversationOpen: local.conversationOpen }
+                : task;
+            })
+            .sort((a, b) => a.order - b.order);
+
+          return { tasks: merged };
+        });
+      })
+      .catch(() => {
+        // Ignore transient failures; the next resync/poll will retry.
+      });
+  };
+
+  // Wraps a mutation promise so background refreshes can't clobber it.
+  withMutationGuard(promise) {
+    this.pendingMutations += 1;
+    return promise.finally(() => {
+      this.pendingMutations -= 1;
+    });
   }
 
   selectTask = (task) => {
@@ -95,45 +233,69 @@ class Tasks extends Component {
     if (event.key === "Enter") {
       const tasks = this.state.tasks;
       const threadId = this.props.isGroup ? this.state.threadId : undefined;
-      tasksService
-        .create(
+      this.withMutationGuard(
+        tasksService.create(
           {
             ...this.state.newTask,
             order: tasks.length > 0 ? tasks[0].order + 100 : 100,
           },
           threadId
         )
-        .then((task) => {
-          this.setState((prevState) => {
-            return {
-              newTask: { title: "" },
-              tasks: [task, ...prevState.tasks],
-            };
-          });
-        });
-    }
-  };
-
-  handleMoveTask = (dragIndex, hoverIndex) => {
-    const tasks = reorder(this.state.tasks, dragIndex, hoverIndex);
-
-    if (tasks.length > 1) {
-      const index = hoverIndex;
-      const task = tasks[index];
-      if (index === 0) {
-        task.order = tasks[1].order / 2;
-      } else if (index === tasks.length - 1) {
-        task.order = tasks[tasks.length - 2].order + 100;
-      } else {
-        task.order = (tasks[index - 1].order + tasks[index + 1].order) / 2;
-      }
-
-      this.saveUpdate(task, true).then(() => {
-        this.setState({
-          tasks,
+      ).then((task) => {
+        this.setState((prevState) => {
+          return {
+            newTask: { title: "" },
+            tasks: [task, ...prevState.tasks],
+          };
         });
       });
     }
+  };
+
+  // Reorders the list locally while the user is dragging, purely as a
+  // visual preview. The new order isn't persisted (and other clients don't
+  // hear about it) until the drag ends, in handleDropTask.
+  handleMoveTask = (dragIndex, hoverIndex) => {
+    this.setState((prevState) => ({
+      tasks: reorder(prevState.tasks, dragIndex, hoverIndex),
+    }));
+  };
+
+  // Called once, when a drag-and-drop reorder is dropped at a new position.
+  // Computes the final order value from the task's neighbors and persists
+  // just that one update, instead of one per hover event.
+  handleDropTask = (taskId) => {
+    const tasks = this.state.tasks;
+    const index = tasks.findIndex((item) => item._id === taskId);
+
+    if (index === -1 || tasks.length <= 1) {
+      return;
+    }
+
+    let order;
+    if (index === 0) {
+      order = tasks[1].order / 2;
+    } else if (index === tasks.length - 1) {
+      order = tasks[tasks.length - 2].order + 100;
+    } else {
+      order = (tasks[index - 1].order + tasks[index + 1].order) / 2;
+    }
+
+    const task = { ...tasks[index], order };
+
+    this.saveUpdate(task, true).then(() => {
+      this.setState((prevState) => ({
+        tasks: prevState.tasks.map((item) =>
+          item._id === task._id ? task : item
+        ),
+      }));
+    });
+  };
+
+  // Tracks whether a drag-and-drop reorder is currently in progress, so
+  // remote updates can be held off until it's done.
+  handleDragStateChange = (isDragging) => {
+    this.isDragging = isDragging;
   };
 
   handleOpenConversation = (task) => {
@@ -188,7 +350,7 @@ class Tasks extends Component {
   };
 
   onTaskComplete(task) {
-    return tasksService.destroy(task._id).then(() => {
+    return this.withMutationGuard(tasksService.destroy(task._id)).then(() => {
       this.setState({
         tasks: this.state.tasks.filter((item) => item._id !== task._id),
         taskId: undefined,
@@ -206,15 +368,17 @@ class Tasks extends Component {
     const index = this.state.tasks.findIndex((item) => item._id === task._id);
     const updatedList = [...this.state.tasks];
     updatedList[index] = task;
-    return tasksService.update(task, threadId).then(() => {
-      if (!skipStateUpdate) {
-        this.setState({
-          taskId: undefined,
-          shareTag: undefined,
-          tasks: updatedList,
-        });
+    return this.withMutationGuard(tasksService.update(task, threadId)).then(
+      () => {
+        if (!skipStateUpdate) {
+          this.setState({
+            taskId: undefined,
+            shareTag: undefined,
+            tasks: updatedList,
+          });
+        }
       }
-    });
+    );
   }
 
   renderTaskList = () => {
@@ -259,6 +423,10 @@ class Tasks extends Component {
                   conversationOpen={this.state.conversationOpen}
                   onMoveTask={(dragIndex, hoverIndex) =>
                     this.handleMoveTask(dragIndex, hoverIndex)
+                  }
+                  onDropTask={(taskId) => this.handleDropTask(taskId)}
+                  onDragStateChange={(isDragging) =>
+                    this.handleDragStateChange(isDragging)
                   }
                   selectTask={(task) => this.selectTask(task)}
                   onStarredChange={(task, isStarred) =>

@@ -58,8 +58,23 @@ const Task = (props) => {
   });
 
   const [{ isDragging }, drag] = useDrag({
-    item: { id: props.task._id, index: props.index },
+    item: () => {
+      props.onDragStateChange?.(true);
+      return {
+        id: props.task._id,
+        index: props.index,
+        startIndex: props.index,
+      };
+    },
     type: ItemTypes.CARD,
+    end: (item) => {
+      // Always fires, whether the drag was dropped or cancelled, so this is
+      // the one place we can reliably clear the drag-in-progress flag.
+      props.onDragStateChange?.(false);
+      if (item.index !== item.startIndex) {
+        props.onDropTask?.(item.id);
+      }
+    },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),

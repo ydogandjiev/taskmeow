@@ -2,6 +2,7 @@ import Task from "./task-model.js";
 import { ReadPreference } from "mongodb";
 import { v4 as uuidv4 } from "uuid";
 import * as utils from "./utils.js";
+import taskEvents from "./task-events.js";
 
 function get(taskId) {
   return Task.findOne({ _id: taskId });
@@ -29,11 +30,17 @@ function getShareUrl(task) {
 }
 
 function createForUser(userId, title) {
-  return new Task({ title, user: userId }).save();
+  return new Task({ title, user: userId }).save().then((task) => {
+    taskEvents.emitUserTaskChange(userId, "created", task);
+    return task;
+  });
 }
 
 function createForGroup(groupId, title) {
-  return new Task({ title, group: groupId }).save();
+  return new Task({ title, group: groupId }).save().then((task) => {
+    taskEvents.emitGroupTaskChange(groupId, "created", task);
+    return task;
+  });
 }
 
 function updateForUser(userId, taskId, title, order, starred, conversationId) {
@@ -51,7 +58,10 @@ function updateForUser(userId, taskId, title, order, starred, conversationId) {
       if (typeof conversationId !== "undefined") {
         task.conversationId = conversationId;
       }
-      return task.save();
+      return task.save().then((savedTask) => {
+        taskEvents.emitUserTaskChange(userId, "updated", savedTask);
+        return savedTask;
+      });
     } else {
       return Promise.reject("Cannot find task for user.");
     }
@@ -73,7 +83,10 @@ function updateForGroup(groupId, id, title, order, starred, conversationId) {
       if (typeof conversationId !== "undefined") {
         task.conversationId = conversationId;
       }
-      return task.save();
+      return task.save().then((savedTask) => {
+        taskEvents.emitGroupTaskChange(groupId, "updated", savedTask);
+        return savedTask;
+      });
     } else {
       return Promise.reject("Cannot find task for group.");
     }
@@ -81,11 +94,21 @@ function updateForGroup(groupId, id, title, order, starred, conversationId) {
 }
 
 function removeForUser(userId, taskId) {
-  return Task.findOneAndRemove({ _id: taskId, user: userId });
+  return Task.findOneAndRemove({ _id: taskId, user: userId }).then((task) => {
+    if (task) {
+      taskEvents.emitUserTaskChange(userId, "deleted", task);
+    }
+    return task;
+  });
 }
 
 function removeForGroup(groupId, taskId) {
-  return Task.findOneAndRemove({ _id: taskId, group: groupId });
+  return Task.findOneAndRemove({ _id: taskId, group: groupId }).then((task) => {
+    if (task) {
+      taskEvents.emitGroupTaskChange(groupId, "deleted", task);
+    }
+    return task;
+  });
 }
 
 export default {

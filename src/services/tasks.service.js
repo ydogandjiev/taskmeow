@@ -24,6 +24,16 @@ class TasksService {
   update = (...args) => this.tasksService.update(...args);
 
   destroy = (...args) => this.tasksService.destroy(...args);
+
+  // Delegates to the underlying strategy's push-update subscription if it
+  // has one (currently only RestTasksService). Returns an unsubscribe
+  // function, or null if the strategy doesn't support push updates.
+  subscribe = (...args) => {
+    if (typeof this.tasksService.subscribe === "function") {
+      return this.tasksService.subscribe(...args);
+    }
+    return null;
+  };
 }
 
 export default new TasksService();
