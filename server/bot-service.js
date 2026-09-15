@@ -38,11 +38,24 @@ The assistant can manage a list of tasks.
 rules:
 - only add items to a list that the user has asked to have added.
 - if items are being added and removed from a list, call a separate action for each operation.
+- when the user asks to list or show their tasks, always call listItems.
 - use a star emoji to indicate starred items
 - bold starred items`;
 
 // Tool definitions matching the old actions.json
 const tools = [
+  {
+    type: "function",
+    function: {
+      name: "listItems",
+      description: "Lists all items in the user's task list",
+      parameters: {
+        type: "object",
+        properties: {},
+        additionalProperties: false,
+      },
+    },
+  },
   {
     type: "function",
     function: {
@@ -127,6 +140,15 @@ async function handleToolCall(name, args, aadObjectId) {
   }
 
   switch (name) {
+    case "listItems": {
+      const tasks = await taskService.getForUser(user._id);
+      return JSON.stringify(
+        tasks.map((task) => ({
+          title: task.title,
+          starred: task.starred,
+        }))
+      );
+    }
     case "addItems": {
       for (const item of args.items) {
         await taskService.createForUser(user._id, item);
@@ -188,6 +210,7 @@ async function runAI(conversationId, userText, aadObjectId) {
 
   // Inject current tasks into context
   const user = await userService.getUser(aadObjectId);
+  let shouldShowTaskList = false;
   let taskContext;
   if (user) {
     const currentTasks = await taskService.getForUser(user._id);
@@ -219,6 +242,9 @@ async function runAI(conversationId, userText, aadObjectId) {
 
     for (const toolCall of message.tool_calls) {
       const args = JSON.parse(toolCall.function.arguments);
+      if (toolCall.function.name === "listItems" && user) {
+        shouldShowTaskList = true;
+      }
       const result = await handleToolCall(
         toolCall.function.name,
         args,
@@ -254,7 +280,86 @@ async function runAI(conversationId, userText, aadObjectId) {
     history.splice(0, history.length - maxHistory, systemMsg);
   }
 
-  return message.content || "";
+  return {
+    text: message.content || "",
+    tasks: shouldShowTaskList
+      ? await taskService.getForUser(user._id)
+      : undefined,
+  };
+}
+
+function getBaseUrl() {
+  if (process.env.APPSETTING_AAD_BaseUri) {
+    return process.env.APPSETTING_AAD_BaseUri.replace(/\/$/, "");
+  }
+
+  if (process.env.APPSETTING_HOSTNAME) {
+    return `https://${process.env.APPSETTING_HOSTNAME}`;
+  }
+
+  return process.env.REACT_APP_RUN_MODE === "int"
+    ? "https://taskmeow.ngrok.io"
+    : "https://taskmeow.com";
+}
+
+function getTaskListCard(tasks) {
+  const baseUrl = getBaseUrl();
+  const body = [
+    {
+      type: "TextBlock",
+      size: "Medium",
+      weight: "Bolder",
+      text: "Your tasks",
+    },
+  ];
+
+  if (tasks.length === 0) {
+    body.push({
+      type: "TextBlock",
+      text: "You don't have any tasks yet.",
+      wrap: true,
+    });
+  } else {
+    body.push(
+      ...tasks.map((task) => ({
+        type: "TextBlock",
+        text: `${task.starred ? "⭐ " : ""}${task.title}`,
+        weight: task.starred ? "Bolder" : "Default",
+        wrap: true,
+        spacing: "Small",
+      }))
+    );
+  }
+
+  return {
+    contentType: "application/vnd.microsoft.card.adaptive",
+    content: {
+      $schema: "https://adaptivecards.io/schemas/adaptive-card.json",
+      type: "AdaptiveCard",
+      version: "1.5",
+      body,
+      actions: [
+        {
+          type: "Action.Submit",
+          title: "Open tasks",
+          data: {
+            msteams: {
+              type: "invoke",
+              value: {
+                type: "tab/tabInfoAction",
+                tabInfo: {
+                  contentUrl: `${baseUrl}/?inTeamsSSO=true`,
+                  websiteUrl: baseUrl,
+                  name: "My Tasks",
+                  entityId: "myTasks",
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
+  };
 }
 
 // CloudAdapter for getMembers (used by REST routes)
@@ -342,7 +447,14 @@ async function initBot(expressApp) {
     const aadObjectId = activity.from.aadObjectId;
 
     const reply = await runAI(activity.conversation.id, userText, aadObjectId);
-    await send(reply);
+    if (reply.tasks) {
+      await send({
+        type: "message",
+        attachments: [getTaskListCard(reply.tasks)],
+      });
+    } else {
+      await send(reply.text);
+    }
   });
 
   await teamsApp.initialize();
