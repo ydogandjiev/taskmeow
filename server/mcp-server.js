@@ -23,7 +23,10 @@ const ASSETS_DIR = path.resolve(__dirname, "build");
 
 async function readWidgetHtml() {
   const htmlPath = path.join(ASSETS_DIR, "embed.html");
-  return await fs.readFile(htmlPath, "utf-8");
+  const baseUri = process.env.APPSETTING_AAD_BaseUri || "https://localhost";
+  let html = await fs.readFile(htmlPath, "utf-8");
+  html = html.replace(/src="\/assets\//g, `src="${baseUri}/assets/`);
+  return html;
 }
 
 // Resource URIs
