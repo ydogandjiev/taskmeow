@@ -10,6 +10,13 @@ import { App, ExpressAdapter } from "@microsoft/teams.apps";
 
 import groupService from "./group-service.js";
 import taskService from "./task-service.js";
+import {
+  buildTeamsTaskWidgetMessage,
+  CALL_TOOL_INVOKE_NAME,
+  CALL_TOOL_RESPONSE_TYPE,
+  handleTaskWidgetToolCall,
+  parseCallToolRequest,
+} from "./task-widget.js";
 import userService from "./user-service.js";
 
 if (
@@ -282,83 +289,10 @@ async function runAI(conversationId, userText, aadObjectId) {
 
   return {
     text: message.content || "",
+    user: shouldShowTaskList ? user : undefined,
     tasks: shouldShowTaskList
       ? await taskService.getForUser(user._id)
       : undefined,
-  };
-}
-
-function getBaseUrl() {
-  if (process.env.APPSETTING_AAD_BaseUri) {
-    return process.env.APPSETTING_AAD_BaseUri.replace(/\/$/, "");
-  }
-
-  if (process.env.APPSETTING_HOSTNAME) {
-    return `https://${process.env.APPSETTING_HOSTNAME}`;
-  }
-
-  return process.env.REACT_APP_RUN_MODE === "int"
-    ? "https://taskmeow.ngrok.io"
-    : "https://taskmeow.com";
-}
-
-function getTaskListCard(tasks) {
-  const baseUrl = getBaseUrl();
-  const body = [
-    {
-      type: "TextBlock",
-      size: "Medium",
-      weight: "Bolder",
-      text: "Your tasks",
-    },
-  ];
-
-  if (tasks.length === 0) {
-    body.push({
-      type: "TextBlock",
-      text: "You don't have any tasks yet.",
-      wrap: true,
-    });
-  } else {
-    body.push(
-      ...tasks.map((task) => ({
-        type: "TextBlock",
-        text: `${task.starred ? "⭐ " : ""}${task.title}`,
-        weight: task.starred ? "Bolder" : "Default",
-        wrap: true,
-        spacing: "Small",
-      }))
-    );
-  }
-
-  return {
-    contentType: "application/vnd.microsoft.card.adaptive",
-    content: {
-      $schema: "https://adaptivecards.io/schemas/adaptive-card.json",
-      type: "AdaptiveCard",
-      version: "1.5",
-      body,
-      actions: [
-        {
-          type: "Action.Submit",
-          title: "Open tasks",
-          data: {
-            msteams: {
-              type: "invoke",
-              value: {
-                type: "tab/tabInfoAction",
-                tabInfo: {
-                  contentUrl: `${baseUrl}/?inTeamsSSO=true`,
-                  websiteUrl: baseUrl,
-                  name: "My Tasks",
-                  entityId: "myTasks",
-                },
-              },
-            },
-          },
-        },
-      ],
-    },
   };
 }
 
@@ -448,13 +382,30 @@ async function initBot(expressApp) {
 
     const reply = await runAI(activity.conversation.id, userText, aadObjectId);
     if (reply.tasks) {
-      await send({
-        type: "message",
-        attachments: [getTaskListCard(reply.tasks)],
-      });
+      await send(await buildTeamsTaskWidgetMessage(reply.user, reply.tasks));
     } else {
       await send(reply.text);
     }
+  });
+
+  teamsApp.on("invoke", async ({ activity }) => {
+    if (activity.name !== CALL_TOOL_INVOKE_NAME) {
+      return { status: 200 };
+    }
+
+    const user = await userService.getUser(activity.from.aadObjectId);
+    if (!user) {
+      throw new Error(
+        "User not found. Sign in to Taskmeow before managing tasks."
+      );
+    }
+
+    const request = parseCallToolRequest(activity.value);
+    const callToolResult = await handleTaskWidgetToolCall(user, request);
+    return {
+      responseType: CALL_TOOL_RESPONSE_TYPE,
+      callToolResult,
+    };
   });
 
   await teamsApp.initialize();
