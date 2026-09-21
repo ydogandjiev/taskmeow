@@ -8,26 +8,18 @@ import {
 import { z } from "zod";
 import { Router } from "express";
 import passport from "passport";
-import fs from "node:fs/promises";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import taskService from "./task-service.js";
 import userService from "./user-service.js";
+import {
+  TASKS_WIDGET_URI,
+  createTaskToolResult,
+  deleteTaskToolResult,
+  getTasksToolResult,
+  readTaskWidgetHtml,
+  updateTaskToolResult,
+} from "./task-widget.js";
 
 const router = Router();
-
-// Widget HTML loader
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const ASSETS_DIR = path.resolve(__dirname, "build");
-
-async function readWidgetHtml() {
-  const htmlPath = path.join(ASSETS_DIR, "embed.html");
-  return await fs.readFile(htmlPath, "utf-8");
-}
-
-// Resource URIs
-const TASKS_WIDGET_URI = "ui://taskmeow/tasks-widget.html";
 
 function authenticateMCP(req, res, next) {
   const authHeader = req.headers["authorization"];
@@ -128,7 +120,7 @@ function createMcpServer({ authenticatedEmail, authType }) {
     },
     async () => {
       console.log("Loading widget HTML resource for:", authenticatedEmail);
-      const html = await readWidgetHtml();
+      const html = await readTaskWidgetHtml();
       return {
         contents: [
           {
@@ -173,31 +165,7 @@ function createMcpServer({ authenticatedEmail, authType }) {
       console.log(`Getting tasks for user: ${authenticatedEmail}`);
       const user = await getUserByEmail(authenticatedEmail);
       const tasks = await taskService.getForUser(user._id);
-      const mappedTasks = tasks.map((t) => ({
-        id: t._id.toString(),
-        title: t.title,
-        starred: t.starred,
-        order: t.order,
-        date: t.date,
-      }));
-      return {
-        content: [
-          {
-            type: "text",
-            text: `Found ${tasks.length} task${
-              tasks.length !== 1 ? "s" : ""
-            }. Interactive widget is ready to display and manage your tasks.`,
-          },
-        ],
-        structuredContent: {
-          user: {
-            id: user._id.toString(),
-            email: user.email,
-          },
-          tasks: mappedTasks,
-          count: tasks.length,
-        },
-      };
+      return getTasksToolResult(user, tasks);
     }
   );
 
@@ -222,34 +190,8 @@ function createMcpServer({ authenticatedEmail, authType }) {
       _meta: { ui: { resourceUri: TASKS_WIDGET_URI } },
     },
     async ({ title, starred = false }) => {
-      if (!title || title.trim().length === 0) {
-        throw new Error(
-          "Task title is required and must be a non-empty string"
-        );
-      }
       const user = await getUserByEmail(authenticatedEmail);
-      const task = await taskService.createForUser(user._id, title.trim());
-      if (starred) {
-        task.starred = starred;
-        await task.save();
-      }
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify({
-              task: {
-                id: task._id.toString(),
-                title: task.title,
-                starred: task.starred,
-                order: task.order,
-                date: task.date,
-              },
-              message: `Created task: "${task.title}"`,
-            }),
-          },
-        ],
-      };
+      return createTaskToolResult(user, { title, starred });
     }
   );
 
@@ -274,37 +216,8 @@ function createMcpServer({ authenticatedEmail, authType }) {
       _meta: { ui: { resourceUri: TASKS_WIDGET_URI } },
     },
     async ({ taskId, title, starred, order }) => {
-      if (title === undefined && starred === undefined && order === undefined) {
-        throw new Error(
-          "At least one field (title, starred, order) must be provided"
-        );
-      }
       const user = await getUserByEmail(authenticatedEmail);
-      const task = await taskService.updateForUser(
-        user._id,
-        taskId,
-        title,
-        order,
-        starred,
-        undefined
-      );
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify({
-              task: {
-                id: task._id.toString(),
-                title: task.title,
-                starred: task.starred,
-                order: task.order,
-                date: task.date,
-              },
-              message: `Updated task: "${task.title}"`,
-            }),
-          },
-        ],
-      };
+      return updateTaskToolResult(user, { taskId, title, starred, order });
     }
   );
 
@@ -326,19 +239,7 @@ function createMcpServer({ authenticatedEmail, authType }) {
     },
     async ({ taskId }) => {
       const user = await getUserByEmail(authenticatedEmail);
-      const task = await taskService.removeForUser(user._id, taskId);
-      if (!task) throw new Error(`Task not found: ${taskId}`);
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify({
-              task: { id: task._id.toString(), title: task.title },
-              message: `Deleted task: "${task.title}"`,
-            }),
-          },
-        ],
-      };
+      return deleteTaskToolResult(user, { taskId });
     }
   );
 
@@ -361,31 +262,7 @@ function createMcpServer({ authenticatedEmail, authType }) {
     async () => {
       const user = await getUserByEmail(authenticatedEmail);
       const tasks = await taskService.getForUser(user._id);
-
-      return {
-        content: [
-          {
-            type: "text",
-            text: `Found ${tasks.length} task${
-              tasks.length !== 1 ? "s" : ""
-            }. Interactive widget is ready to display and manage your tasks.`,
-          },
-        ],
-        structuredContent: {
-          user: {
-            id: user._id.toString(),
-            email: user.email,
-          },
-          tasks: tasks.map((t) => ({
-            id: t._id.toString(),
-            title: t.title,
-            starred: t.starred,
-            order: t.order,
-            date: t.date,
-          })),
-          count: tasks.length,
-        },
-      };
+      return getTasksToolResult(user, tasks);
     }
   );
 
