@@ -12,8 +12,9 @@ import {
 
 const isMcpApp =
   window.parent !== window &&
-  window.frameElement &&
-  (!window.frameElement.src || window.frameElement.src == "about:blank");
+  (!window.frameElement ||
+    !window.frameElement.src ||
+    window.frameElement.src == "about:blank");
 
 let mcpApp = null;
 let tasks = [];
@@ -167,6 +168,21 @@ async function toggleFullscreen() {
     syncDisplayMode(result.mode);
   } catch (err) {
     console.warn("requestDisplayMode failed:", err);
+  }
+}
+
+async function openStageView(event) {
+  event.preventDefault();
+  const stageViewUrl = document.body.dataset.stageViewUrl;
+  if (!isMcpApp || !mcpApp || !stageViewUrl) return;
+
+  try {
+    const result = await mcpApp.openLink({ url: stageViewUrl });
+    if (result?.isError) {
+      showError("Could not open the collaborative view.");
+    }
+  } catch {
+    showError("Could not open the collaborative view.");
   }
 }
 
@@ -344,6 +360,14 @@ async function init() {
   document
     .getElementById("maximize-btn")
     ?.addEventListener("click", toggleFullscreen);
+
+  const stageViewUrl = document.body.dataset.stageViewUrl;
+  if (stageViewUrl) {
+    document.getElementById("stage-view-footer").style.display = "block";
+    document
+      .getElementById("stage-view-link")
+      .addEventListener("click", openStageView);
+  }
 
   if (isMcpApp) {
     try {

@@ -3,7 +3,6 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import taskService from "./task-service.js";
-import { getTeamsTaskWidgetHtml } from "./teams-task-widget-html.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -54,6 +53,21 @@ function getStageViewUrl() {
 
 export async function readTaskWidgetHtml() {
   return fs.readFile(path.join(ASSETS_DIR, "embed.html"), "utf-8");
+}
+
+async function readTeamsTaskWidgetHtml() {
+  const baseUrl = getBaseUrl();
+  const stageViewUrl = getStageViewUrl()
+    .replaceAll("&", "&amp;")
+    .replaceAll('"', "&quot;");
+  const html = await fs.readFile(
+    path.join(ASSETS_DIR, "teams-widget", "embed.html"),
+    "utf-8"
+  );
+
+  return html
+    .replaceAll('src="/teams-widget/', `src="${baseUrl}/teams-widget/`)
+    .replace("<body>", `<body data-stage-view-url="${stageViewUrl}">`);
 }
 
 function mapTask(task) {
@@ -200,7 +214,8 @@ export async function handleTaskWidgetToolCall(user, request) {
 }
 
 export async function buildTeamsTaskWidgetMessage(user, tasks) {
-  const html = getTeamsTaskWidgetHtml(getStageViewUrl());
+  const baseUrl = getBaseUrl();
+  const html = await readTeamsTaskWidgetHtml();
   const payload = {
     type: "widget/mcp-ui",
     name: "Task Meow",
@@ -212,7 +227,7 @@ export async function buildTeamsTaskWidgetMessage(user, tasks) {
         "https://teams.microsoft.com",
         "https://teams.cloud.microsoft.com",
       ],
-      resourceDomains: ["'self'", "data:"],
+      resourceDomains: ["'self'", "data:", baseUrl],
       frameDomains: [],
       baseUriDomains: [],
     },
