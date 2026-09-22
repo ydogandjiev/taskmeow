@@ -33,11 +33,6 @@ function getStageViewParams(taskContext = {}) {
       "APPSETTING_AAD_ApplicationId is required to create a Stageview link"
     );
   }
-  if (!taskContext.conversationId) {
-    throw new Error(
-      "A Teams conversation ID is required to create a Stageview link"
-    );
-  }
 
   const baseUrl = getBaseUrl();
   const contentPath = taskContext.group ? "/group" : "/";
@@ -48,7 +43,6 @@ function getStageViewParams(taskContext = {}) {
     websiteUrl: `${baseUrl}${contentPath}`,
     name: taskContext.group ? "Our Tasks" : "My Tasks",
     openMode: "popoutWithChat",
-    threadId: taskContext.conversationId,
   };
 
   return stageContext;
