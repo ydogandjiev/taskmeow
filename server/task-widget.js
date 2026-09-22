@@ -67,7 +67,11 @@ async function readTeamsTaskWidgetHtml() {
 
   return html
     .replaceAll('src="/teams-widget/', `src="${baseUrl}/teams-widget/`)
-    .replace("<body>", `<body data-stage-view-url="${stageViewUrl}">`);
+    .replace("<body>", `<body data-stage-view-url="${stageViewUrl}">`)
+    .replace(
+      'class="stage-view-footer" id="stage-view-footer"',
+      'class="stage-view-footer" id="stage-view-footer" style="display: block"'
+    );
 }
 
 function mapTask(task) {
@@ -216,6 +220,8 @@ export async function handleTaskWidgetToolCall(user, request) {
 export async function buildTeamsTaskWidgetMessage(user, tasks) {
   const baseUrl = getBaseUrl();
   const html = await readTeamsTaskWidgetHtml();
+  const toolOutput = getTasksToolResult(user, tasks);
+  toolOutput.structuredContent.stageViewUrl = getStageViewUrl();
   const payload = {
     type: "widget/mcp-ui",
     name: "Task Meow",
@@ -232,7 +238,7 @@ export async function buildTeamsTaskWidgetMessage(user, tasks) {
       baseUriDomains: [],
     },
     toolInput: {},
-    toolOutput: getTasksToolResult(user, tasks),
+    toolOutput,
     permissions: {},
   };
 

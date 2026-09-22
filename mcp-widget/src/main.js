@@ -19,6 +19,8 @@ const isMcpApp =
 let mcpApp = null;
 let tasks = [];
 let dragSrcIndex = null;
+let stageViewUrl = null;
+const STAGE_VIEW_LOG_PREFIX = "[TaskMeow Stageview]";
 
 // ─────────────────────────────────────────────
 // MCP API calls
@@ -171,19 +173,60 @@ async function toggleFullscreen() {
   }
 }
 
-async function openStageView(event) {
-  event.preventDefault();
-  const stageViewUrl = document.body.dataset.stageViewUrl;
-  if (!isMcpApp || !mcpApp || !stageViewUrl) return;
+async function openStageView() {
+  console.info(`${STAGE_VIEW_LOG_PREFIX} Link clicked`, {
+    hasStageViewUrl: Boolean(stageViewUrl),
+    isMcpApp,
+    isConnected: Boolean(mcpApp),
+  });
+
+  if (!stageViewUrl) {
+    console.error(`${STAGE_VIEW_LOG_PREFIX} Missing Stageview URL`);
+    showError("The collaborative view URL is missing.");
+    return;
+  }
+  if (!isMcpApp || !mcpApp) {
+    console.warn(`${STAGE_VIEW_LOG_PREFIX} MCP App is not connected`, {
+      isMcpApp,
+      isConnected: Boolean(mcpApp),
+    });
+    showError("The collaborative view is not ready yet.");
+    return;
+  }
 
   try {
+    console.info(`${STAGE_VIEW_LOG_PREFIX} Calling mcpApp.openLink()`, {
+      url: stageViewUrl,
+      hostCapabilities: mcpApp.getHostCapabilities(),
+    });
     const result = await mcpApp.openLink({ url: stageViewUrl });
+    console.info(`${STAGE_VIEW_LOG_PREFIX} openLink result`, result);
     if (result?.isError) {
+      console.error(
+        `${STAGE_VIEW_LOG_PREFIX} Host reported an openLink error`,
+        result
+      );
       showError("Could not open the collaborative view.");
     }
-  } catch {
+  } catch (error) {
+    console.error(`${STAGE_VIEW_LOG_PREFIX} openLink threw`, error);
     showError("Could not open the collaborative view.");
   }
+}
+
+function configureStageView(url) {
+  if (!url) {
+    console.info(
+      `${STAGE_VIEW_LOG_PREFIX} Footer disabled because no URL was provided`
+    );
+    return;
+  }
+
+  stageViewUrl = url;
+  document.getElementById("stage-view-footer").style.display = "block";
+  console.info(`${STAGE_VIEW_LOG_PREFIX} Footer configured`, {
+    url: stageViewUrl,
+  });
 }
 
 function showError(msg) {
@@ -361,13 +404,10 @@ async function init() {
     .getElementById("maximize-btn")
     ?.addEventListener("click", toggleFullscreen);
 
-  const stageViewUrl = document.body.dataset.stageViewUrl;
-  if (stageViewUrl) {
-    document.getElementById("stage-view-footer").style.display = "block";
-    document
-      .getElementById("stage-view-link")
-      .addEventListener("click", openStageView);
-  }
+  document
+    .getElementById("stage-view-link")
+    .addEventListener("click", openStageView);
+  configureStageView(document.body.dataset.stageViewUrl);
 
   if (isMcpApp) {
     try {
@@ -376,7 +416,9 @@ async function init() {
       // Register ontoolresult BEFORE connecting
       const initDataPromise = new Promise((resolve) => {
         mcpApp.ontoolresult = (result) => {
-          resolve(result.structuredContent || {});
+          const structuredContent = result.structuredContent || {};
+          configureStageView(structuredContent.stageViewUrl);
+          resolve(structuredContent);
         };
       });
 
@@ -406,6 +448,10 @@ async function init() {
       await mcpApp.connect(
         new PostMessageTransport(window.parent, window.parent)
       );
+      console.info(`${STAGE_VIEW_LOG_PREFIX} MCP App connected`, {
+        hostCapabilities: mcpApp.getHostCapabilities(),
+        hostContext: mcpApp.getHostContext(),
+      });
 
       const timeout = new Promise((_, reject) =>
         setTimeout(() => reject(new Error("MCP init timeout")), 5000)

@@ -350,7 +350,13 @@
       }
 
       .stage-view-link {
+        appearance: none;
+        padding: 0;
+        border: 0;
+        background: transparent;
         color: var(--accent);
+        cursor: pointer;
+        font-family: inherit;
         font-size: 13px;
         font-weight: 600;
         text-decoration: none;
@@ -437,9 +443,9 @@
       </div>
 
       <div class="stage-view-footer" id="stage-view-footer">
-        <a class="stage-view-link" id="stage-view-link" href="#">
+        <button class="stage-view-link" id="stage-view-link" type="button">
           Open full screen with chat ↗
-        </a>
+        </button>
       </div>
     </div>
 
