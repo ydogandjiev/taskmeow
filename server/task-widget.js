@@ -26,28 +26,40 @@ function getBaseUrl() {
     : "https://taskmeow.com";
 }
 
-function getStageViewUrl() {
+function getStageViewParams(taskContext = {}) {
   const appId = process.env.APPSETTING_AAD_ApplicationId;
   if (!appId) {
     throw new Error(
       "APPSETTING_AAD_ApplicationId is required to create a Stageview link"
     );
   }
+  if (!taskContext.conversationId) {
+    throw new Error(
+      "A Teams conversation ID is required to create a Stageview link"
+    );
+  }
 
   const baseUrl = getBaseUrl();
-  const context = encodeURIComponent(
-    JSON.stringify({
-      appId,
-      entityId: "myTasks",
-      contentUrl: `${baseUrl}/?inTeamsSSO=true`,
-      websiteUrl: baseUrl,
-      name: "My Tasks",
-      openMode: "popoutWithChat",
-    })
-  );
+  const contentPath = taskContext.group ? "/group" : "/";
+  const stageContext = {
+    appId,
+    entityId: taskContext.group ? "groupTasks" : "myTasks",
+    contentUrl: `${baseUrl}${contentPath}?inTeamsSSO=true`,
+    websiteUrl: `${baseUrl}${contentPath}`,
+    name: taskContext.group ? "Our Tasks" : "My Tasks",
+    openMode: "popoutWithChat",
+    threadId: taskContext.conversationId,
+  };
+
+  return stageContext;
+}
+
+function getStageViewUrl(taskContext = {}) {
+  const stageContext = getStageViewParams(taskContext);
+  const context = encodeURIComponent(JSON.stringify(stageContext));
 
   return `https://teams.microsoft.com/l/stage/${encodeURIComponent(
-    appId
+    stageContext.appId
   )}/0?context=${context}`;
 }
 
@@ -55,23 +67,27 @@ export async function readTaskWidgetHtml() {
   return fs.readFile(path.join(ASSETS_DIR, "embed.html"), "utf-8");
 }
 
-async function readTeamsTaskWidgetHtml() {
+async function readTeamsTaskWidgetHtml(taskContext) {
   const baseUrl = getBaseUrl();
-  const stageViewUrl = getStageViewUrl()
-    .replaceAll("&", "&amp;")
-    .replaceAll('"', "&quot;");
+  const widgetTitle = taskContext.isChannel ? "Our Tasks" : "My Tasks";
   const html = await fs.readFile(
     path.join(ASSETS_DIR, "teams-widget", "embed.html"),
     "utf-8"
   );
+  const stageViewUrl = getStageViewUrl(taskContext)
+    .replaceAll("&", "&amp;")
+    .replaceAll('"', "&quot;");
 
-  return html
+  const renderedHtml = html
     .replaceAll('src="/teams-widget/', `src="${baseUrl}/teams-widget/`)
+    .replace("          My Tasks", `          ${widgetTitle}`)
     .replace("<body>", `<body data-stage-view-url="${stageViewUrl}">`)
     .replace(
       'class="stage-view-footer" id="stage-view-footer"',
       'class="stage-view-footer" id="stage-view-footer" style="display: block"'
     );
+
+  return renderedHtml;
 }
 
 function mapTask(task) {
@@ -105,12 +121,53 @@ export function getTasksToolResult(user, tasks) {
   };
 }
 
-export async function createTaskToolResult(user, { title, starred = false }) {
+function getTasks(taskContext) {
+  return taskContext.group
+    ? taskService.getForGroup(taskContext.group._id)
+    : taskService.getForUser(taskContext.user._id);
+}
+
+function createTask(taskContext, title) {
+  return taskContext.group
+    ? taskService.createForGroup(taskContext.group._id, title)
+    : taskService.createForUser(taskContext.user._id, title);
+}
+
+function updateTask(taskContext, taskId, title, order, starred) {
+  return taskContext.group
+    ? taskService.updateForGroup(
+        taskContext.group._id,
+        taskId,
+        title,
+        order,
+        starred,
+        undefined
+      )
+    : taskService.updateForUser(
+        taskContext.user._id,
+        taskId,
+        title,
+        order,
+        starred,
+        undefined
+      );
+}
+
+function deleteTask(taskContext, taskId) {
+  return taskContext.group
+    ? taskService.removeForGroup(taskContext.group._id, taskId)
+    : taskService.removeForUser(taskContext.user._id, taskId);
+}
+
+export async function createTaskToolResult(
+  taskContext,
+  { title, starred = false }
+) {
   if (typeof title !== "string" || title.trim().length === 0) {
     throw new Error("Task title is required and must be a non-empty string");
   }
 
-  const task = await taskService.createForUser(user._id, title.trim());
+  const task = await createTask(taskContext, title.trim());
   if (starred) {
     task.starred = true;
     await task.save();
@@ -130,7 +187,7 @@ export async function createTaskToolResult(user, { title, starred = false }) {
 }
 
 export async function updateTaskToolResult(
-  user,
+  taskContext,
   { taskId, title, starred, order }
 ) {
   if (typeof taskId !== "string" || taskId.length === 0) {
@@ -142,14 +199,7 @@ export async function updateTaskToolResult(
     );
   }
 
-  const task = await taskService.updateForUser(
-    user._id,
-    taskId,
-    title,
-    order,
-    starred,
-    undefined
-  );
+  const task = await updateTask(taskContext, taskId, title, order, starred);
 
   return {
     content: [
@@ -164,12 +214,12 @@ export async function updateTaskToolResult(
   };
 }
 
-export async function deleteTaskToolResult(user, { taskId }) {
+export async function deleteTaskToolResult(taskContext, { taskId }) {
   if (typeof taskId !== "string" || taskId.length === 0) {
     throw new Error("Task ID is required");
   }
 
-  const task = await taskService.removeForUser(user._id, taskId);
+  const task = await deleteTask(taskContext, taskId);
   if (!task) {
     throw new Error(`Task not found: ${taskId}`);
   }
@@ -199,33 +249,34 @@ export function parseCallToolRequest(value) {
   return typeof value === "object" ? value : null;
 }
 
-export async function handleTaskWidgetToolCall(user, request) {
+export async function handleTaskWidgetToolCall(taskContext, request) {
   const args = request?.arguments || {};
 
   switch (request?.name) {
     case "get_tasks":
     case "show_tasks_widget":
-      return getTasksToolResult(user, await taskService.getForUser(user._id));
+      return getTasksToolResult(taskContext.user, await getTasks(taskContext));
     case "create_task":
-      return createTaskToolResult(user, args);
+      return createTaskToolResult(taskContext, args);
     case "update_task":
-      return updateTaskToolResult(user, args);
+      return updateTaskToolResult(taskContext, args);
     case "delete_task":
-      return deleteTaskToolResult(user, args);
+      return deleteTaskToolResult(taskContext, args);
     default:
       throw new Error(`Unknown task widget tool: ${request?.name || "none"}`);
   }
 }
 
-export async function buildTeamsTaskWidgetMessage(user, tasks) {
+export async function buildTeamsTaskWidgetMessage(taskContext, tasks) {
   const baseUrl = getBaseUrl();
-  const html = await readTeamsTaskWidgetHtml();
-  const toolOutput = getTasksToolResult(user, tasks);
-  toolOutput.structuredContent.stageViewUrl = getStageViewUrl();
+  const widgetTitle = taskContext.isChannel ? "Our Tasks" : "My Tasks";
+  const html = await readTeamsTaskWidgetHtml(taskContext);
+  const toolOutput = getTasksToolResult(taskContext.user, tasks);
+  toolOutput.structuredContent.stageViewUrl = getStageViewUrl(taskContext);
   const payload = {
     type: "widget/mcp-ui",
-    name: "Task Meow",
-    description: "View and manage your Taskmeow tasks.",
+    name: widgetTitle,
+    description: `View and manage ${widgetTitle.toLowerCase()}.`,
     html,
     domain: "https://teams.cloud.microsoft.com",
     securityPolicy: {
@@ -242,7 +293,7 @@ export async function buildTeamsTaskWidgetMessage(user, tasks) {
     permissions: {},
   };
 
-  return {
+  const message = {
     type: "message",
     textFormat: "extendedmarkdown",
     text: [
@@ -253,4 +304,6 @@ export async function buildTeamsTaskWidgetMessage(user, tasks) {
       "```",
     ].join("\n"),
   };
+
+  return message;
 }

@@ -140,15 +140,67 @@ const tools = [
 ];
 
 // Tool handlers keyed by function name
-async function handleToolCall(name, args, aadObjectId) {
-  const user = await userService.getUser(aadObjectId);
+function getTasks(taskContext) {
+  return taskContext.group
+    ? taskService.getForGroup(taskContext.group._id)
+    : taskService.getForUser(taskContext.user._id);
+}
+
+function createTask(taskContext, title) {
+  return taskContext.group
+    ? taskService.createForGroup(taskContext.group._id, title)
+    : taskService.createForUser(taskContext.user._id, title);
+}
+
+function updateTask(taskContext, taskId, title, order, starred) {
+  return taskContext.group
+    ? taskService.updateForGroup(
+        taskContext.group._id,
+        taskId,
+        title,
+        order,
+        starred
+      )
+    : taskService.updateForUser(
+        taskContext.user._id,
+        taskId,
+        title,
+        order,
+        starred
+      );
+}
+
+function removeTask(taskContext, taskId) {
+  return taskContext.group
+    ? taskService.removeForGroup(taskContext.group._id, taskId)
+    : taskService.removeForUser(taskContext.user._id, taskId);
+}
+
+async function resolveTaskContext(activity) {
+  const user = await userService.getUser(activity.from.aadObjectId);
   if (!user) {
-    return "error: user not found. The user must sign in to the app first before managing tasks.";
+    throw new Error(
+      "User not found. Sign in to Taskmeow before managing tasks."
+    );
   }
 
+  const teamId = activity.channelData?.team?.id;
+  const group = teamId
+    ? await groupService.create(teamId, activity.serviceUrl)
+    : undefined;
+
+  return {
+    user,
+    group,
+    isChannel: Boolean(teamId),
+    conversationId: activity.conversation.id,
+  };
+}
+
+async function handleToolCall(name, args, taskContext) {
   switch (name) {
     case "listItems": {
-      const tasks = await taskService.getForUser(user._id);
+      const tasks = await getTasks(taskContext);
       return JSON.stringify(
         tasks.map((task) => ({
           title: task.title,
@@ -158,24 +210,24 @@ async function handleToolCall(name, args, aadObjectId) {
     }
     case "addItems": {
       for (const item of args.items) {
-        await taskService.createForUser(user._id, item);
+        await createTask(taskContext, item);
       }
       return "items added. think about your next action";
     }
     case "removeItems": {
-      const tasks = await taskService.getForUser(user._id);
+      const tasks = await getTasks(taskContext);
       for (const item of args.items) {
         const task = tasks.find((t) => t.title === item);
-        if (task) await taskService.removeForUser(user._id, task._id);
+        if (task) await removeTask(taskContext, task._id);
       }
       return "items removed. think about your next action";
     }
     case "renameItem": {
-      const tasks = await taskService.getForUser(user._id);
+      const tasks = await getTasks(taskContext);
       const task = tasks.find((t) => t.title === args.oldName);
       if (task) {
-        await taskService.updateForUser(
-          user._id,
+        await updateTask(
+          taskContext,
           task._id,
           args.newName,
           task.order,
@@ -185,13 +237,13 @@ async function handleToolCall(name, args, aadObjectId) {
       return "items renamed. think about your next action";
     }
     case "starItems": {
-      const tasks = await taskService.getForUser(user._id);
+      const tasks = await getTasks(taskContext);
       for (const item of args.items) {
         const task = tasks.find((t) => t.title === item);
         if (task) {
           task.starred = true;
-          await taskService.updateForUser(
-            user._id,
+          await updateTask(
+            taskContext,
             task._id,
             task.title,
             task.order,
@@ -206,7 +258,7 @@ async function handleToolCall(name, args, aadObjectId) {
   }
 }
 
-async function runAI(conversationId, userText, aadObjectId) {
+async function runAI(conversationId, userText, taskContext) {
   // Get or create conversation history
   if (!conversationHistories.has(conversationId)) {
     conversationHistories.set(conversationId, [
@@ -216,15 +268,9 @@ async function runAI(conversationId, userText, aadObjectId) {
   const history = conversationHistories.get(conversationId);
 
   // Inject current tasks into context
-  const user = await userService.getUser(aadObjectId);
   let shouldShowTaskList = false;
-  let taskContext;
-  if (user) {
-    const currentTasks = await taskService.getForUser(user._id);
-    taskContext = `\nCurrent tasks:\n${JSON.stringify(currentTasks)}`;
-  } else {
-    taskContext = "\nCurrent tasks:\n[]";
-  }
+  const currentTasks = await getTasks(taskContext);
+  const currentTaskPrompt = `\nCurrent tasks:\n${JSON.stringify(currentTasks)}`;
 
   history.push({ role: "user", content: userText });
 
@@ -233,7 +279,7 @@ async function runAI(conversationId, userText, aadObjectId) {
     model: "gpt-4o",
     messages: [
       ...history.slice(0, 1),
-      { role: "system", content: taskContext },
+      { role: "system", content: currentTaskPrompt },
       ...history.slice(1),
     ],
     tools,
@@ -249,13 +295,13 @@ async function runAI(conversationId, userText, aadObjectId) {
 
     for (const toolCall of message.tool_calls) {
       const args = JSON.parse(toolCall.function.arguments);
-      if (toolCall.function.name === "listItems" && user) {
+      if (toolCall.function.name === "listItems") {
         shouldShowTaskList = true;
       }
       const result = await handleToolCall(
         toolCall.function.name,
         args,
-        aadObjectId
+        taskContext
       );
       history.push({
         role: "tool",
@@ -268,7 +314,7 @@ async function runAI(conversationId, userText, aadObjectId) {
       model: "gpt-4o",
       messages: [
         ...history.slice(0, 1),
-        { role: "system", content: taskContext },
+        { role: "system", content: currentTaskPrompt },
         ...history.slice(1),
       ],
       tools,
@@ -289,10 +335,8 @@ async function runAI(conversationId, userText, aadObjectId) {
 
   return {
     text: message.content || "",
-    user: shouldShowTaskList ? user : undefined,
-    tasks: shouldShowTaskList
-      ? await taskService.getForUser(user._id)
-      : undefined,
+    taskContext: shouldShowTaskList ? taskContext : undefined,
+    tasks: shouldShowTaskList ? await getTasks(taskContext) : undefined,
   };
 }
 
@@ -368,7 +412,7 @@ async function initBot(expressApp) {
   teamsApp.on("install.add", async ({ activity, send }) => {
     const threadId = activity.channelData?.team?.id || activity.conversation.id;
     const serviceUrl = activity.serviceUrl;
-    groupService.create(threadId, serviceUrl);
+    await groupService.create(threadId, serviceUrl);
 
     await send("Meowcome to a world of getting things done!");
   });
@@ -378,11 +422,12 @@ async function initBot(expressApp) {
     await send({ type: "typing" });
 
     const userText = activity.text || "";
-    const aadObjectId = activity.from.aadObjectId;
-
-    const reply = await runAI(activity.conversation.id, userText, aadObjectId);
+    const taskContext = await resolveTaskContext(activity);
+    const reply = await runAI(activity.conversation.id, userText, taskContext);
     if (reply.tasks) {
-      await send(await buildTeamsTaskWidgetMessage(reply.user, reply.tasks));
+      await send(
+        await buildTeamsTaskWidgetMessage(reply.taskContext, reply.tasks)
+      );
     } else {
       await send(reply.text);
     }
@@ -393,15 +438,9 @@ async function initBot(expressApp) {
       return { status: 200 };
     }
 
-    const user = await userService.getUser(activity.from.aadObjectId);
-    if (!user) {
-      throw new Error(
-        "User not found. Sign in to Taskmeow before managing tasks."
-      );
-    }
-
+    const taskContext = await resolveTaskContext(activity);
     const request = parseCallToolRequest(activity.value);
-    const callToolResult = await handleTaskWidgetToolCall(user, request);
+    const callToolResult = await handleTaskWidgetToolCall(taskContext, request);
     return {
       responseType: CALL_TOOL_RESPONSE_TYPE,
       callToolResult,

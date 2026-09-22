@@ -6,7 +6,11 @@ function get(threadId) {
 }
 
 function create(threadId, serviceUrl) {
-  return new Group({ threadId, serviceUrl }).save();
+  return Group.findOneAndUpdate(
+    { threadId },
+    { $set: { serviceUrl } },
+    { new: true, upsert: true, setDefaultsOnInsert: true }
+  ).exec();
 }
 
 function remove(threadId) {
