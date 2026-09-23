@@ -63,7 +63,7 @@ export async function readTaskWidgetHtml() {
 
 async function readTeamsTaskWidgetHtml(taskContext) {
   const baseUrl = getBaseUrl();
-  const widgetTitle = taskContext.isChannel ? "Our Tasks" : "My Tasks";
+  const widgetTitle = taskContext.group ? "Our Tasks" : "My Tasks";
   const html = await fs.readFile(
     path.join(ASSETS_DIR, "teams-widget", "embed.html"),
     "utf-8"
@@ -263,7 +263,7 @@ export async function handleTaskWidgetToolCall(taskContext, request) {
 
 export async function buildTeamsTaskWidgetMessage(taskContext, tasks) {
   const baseUrl = getBaseUrl();
-  const widgetTitle = taskContext.isChannel ? "Our Tasks" : "My Tasks";
+  const widgetTitle = taskContext.group ? "Our Tasks" : "My Tasks";
   const html = await readTeamsTaskWidgetHtml(taskContext);
   const toolOutput = getTasksToolResult(taskContext.user, tasks);
   toolOutput.structuredContent.stageViewUrl = getStageViewUrl(taskContext);

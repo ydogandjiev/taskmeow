@@ -8,6 +8,7 @@ import {
 import { AzureOpenAI } from "openai";
 import { App, ExpressAdapter } from "@microsoft/teams.apps";
 
+import { getSharedThreadId } from "./conversation-context.js";
 import groupService from "./group-service.js";
 import taskService from "./task-service.js";
 import {
@@ -184,15 +185,14 @@ async function resolveTaskContext(activity) {
     );
   }
 
-  const teamId = activity.channelData?.team?.id;
-  const group = teamId
-    ? await groupService.create(teamId, activity.serviceUrl)
+  const sharedThreadId = getSharedThreadId(activity);
+  const group = sharedThreadId
+    ? await groupService.create(sharedThreadId, activity.serviceUrl)
     : undefined;
 
   return {
     user,
     group,
-    isChannel: Boolean(teamId),
     conversationId: activity.conversation.id,
   };
 }
@@ -410,9 +410,10 @@ async function initBot(expressApp) {
 
   // Welcome message on bot install
   teamsApp.on("install.add", async ({ activity, send }) => {
-    const threadId = activity.channelData?.team?.id || activity.conversation.id;
-    const serviceUrl = activity.serviceUrl;
-    await groupService.create(threadId, serviceUrl);
+    const sharedThreadId = getSharedThreadId(activity);
+    if (sharedThreadId) {
+      await groupService.create(sharedThreadId, activity.serviceUrl);
+    }
 
     await send("Meowcome to a world of getting things done!");
   });
