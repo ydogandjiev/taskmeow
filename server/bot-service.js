@@ -10,6 +10,7 @@ import { App, ExpressAdapter } from "@microsoft/teams.apps";
 
 import { getSharedThreadId } from "./conversation-context.js";
 import groupService from "./group-service.js";
+import { findTaskByTitle } from "./task-matching.js";
 import taskService from "./task-service.js";
 import {
   buildTeamsTaskWidgetMessage,
@@ -217,14 +218,14 @@ async function handleToolCall(name, args, taskContext) {
     case "removeItems": {
       const tasks = await getTasks(taskContext);
       for (const item of args.items) {
-        const task = tasks.find((t) => t.title === item);
+        const task = findTaskByTitle(tasks, item);
         if (task) await removeTask(taskContext, task._id);
       }
       return "items removed. think about your next action";
     }
     case "renameItem": {
       const tasks = await getTasks(taskContext);
-      const task = tasks.find((t) => t.title === args.oldName);
+      const task = findTaskByTitle(tasks, args.oldName);
       if (task) {
         await updateTask(
           taskContext,
@@ -239,7 +240,7 @@ async function handleToolCall(name, args, taskContext) {
     case "starItems": {
       const tasks = await getTasks(taskContext);
       for (const item of args.items) {
-        const task = tasks.find((t) => t.title === item);
+        const task = findTaskByTitle(tasks, item);
         if (task) {
           task.starred = true;
           await updateTask(
