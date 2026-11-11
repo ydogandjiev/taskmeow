@@ -71,6 +71,7 @@
     "vite-plugin-singlefile": "^2.3.0"
   },
   "scripts": {
+    "install-msit": "node scripts/install-msit.js",
     "start": "concurrently \"react-scripts start\" \"nodemon server/server.js\"",
     "client": "react-scripts start",
     "server": "nodemon server/server.js",

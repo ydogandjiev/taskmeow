@@ -17,6 +17,17 @@ cd taskmeow
 yarn install
 ```
 
+On a Microsoft-managed device, install both client and server dependencies
+through the Microsoft package proxy instead:
+
+```bash
+yarn install-msit
+```
+
+This command temporarily redirects the lockfile URLs to the proxy and restores
+the original lockfiles afterward, including when installation fails or is
+interrupted. It does not change your global registry configuration.
+
 ## Running The App
 
 The template can be run in development, or in production. For development, use the following workflow.
