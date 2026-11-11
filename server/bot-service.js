@@ -12,6 +12,7 @@ import { getSharedThreadId } from "./conversation-context.js";
 import groupService from "./group-service.js";
 import { findTaskByTitle } from "./task-matching.js";
 import taskService from "./task-service.js";
+import { handleTaskLinkQuery } from "./task-links.js";
 import {
   buildTeamsTaskWidgetMessage,
   CALL_TOOL_INVOKE_NAME,
@@ -435,9 +436,18 @@ async function initBot(expressApp) {
     }
   });
 
-  teamsApp.on("invoke", async ({ activity }) => {
+  teamsApp.on("message.ext.query-link", async ({ activity }) =>
+    handleTaskLinkQuery(activity, {
+      getTask: taskService.get,
+      getUser: userService.getUser,
+      getGroup: groupService.get,
+      getMembers,
+    })
+  );
+
+  teamsApp.on("invoke", async ({ activity, next }) => {
     if (activity.name !== CALL_TOOL_INVOKE_NAME) {
-      return { status: 200 };
+      return next();
     }
 
     const taskContext = await resolveTaskContext(activity);

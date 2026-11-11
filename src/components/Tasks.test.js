@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import Tasks from "./Tasks";
+import { render, waitFor } from "@testing-library/react";
 
 // Initialize Office Fabric icons for use throughout app
 import { initializeIcons } from "office-ui-fabric-react";
@@ -35,4 +36,16 @@ it("renders tasks", () => {
 
   const title = div.getElementsByClassName("App-header-title")[0];
   expect(title.innerHTML).toEqual("My Tasks");
+});
+
+it("opens the group list from a copied link outside Teams", async () => {
+  authService.getUser.mockResolvedValue({ name: "mockName" });
+  userService.getImage.mockResolvedValue("mockImage");
+  tasksService.get.mockClear();
+  tasksService.get.mockResolvedValue([]);
+  const { unmount } = render(<Tasks isGroup={true} threadId="team-id" />);
+  await waitFor(() => {
+    expect(tasksService.get).toHaveBeenCalledWith("team-id");
+  });
+  unmount();
 });

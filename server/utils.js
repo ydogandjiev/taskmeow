@@ -9,8 +9,15 @@ const verificationCodeValidityInMilliseconds = 10 * 60 * 1000; // 10 minutes
 // Regexp to look for verification code in message
 const verificationCodeRegExp = /\b\d{6}\b/;
 
-const isInt = process.env.REACT_APP_RUN_MODE === "int";
-const baseUrl = isInt ? "https://taskmeow.ngrok.io" : "https://taskmeow.com";
+const hostname = process.env.APPSETTING_AAD_BaseUri
+  ? new URL(process.env.APPSETTING_AAD_BaseUri).hostname
+  : process.env.APPSETTING_HOSTNAME;
+const isInt =
+  hostname === "taskmeow.ngrok.io" ||
+  (hostname !== "taskmeow.com" && process.env.REACT_APP_RUN_MODE === "int");
+export const baseUrl = isInt
+  ? "https://taskmeow.ngrok.io"
+  : "https://taskmeow.com";
 if (isInt) {
   console.warn("***Int Mode is for local development only!!!***");
   console.warn(
@@ -237,7 +244,7 @@ function getAdaptiveCardForTask(task, isGroup, shareTag) {
   return adaptiveCardJson;
 }
 
-function getTaskCardWithPreview(task, groupPath) {
+function getTaskCardWithPreview(task, url) {
   if (task) {
     return {
       contentType: "application/vnd.microsoft.card.adaptive",
@@ -251,41 +258,21 @@ function getTaskCardWithPreview(task, groupPath) {
             size: "Medium",
             weight: "Bolder",
             text: task.title || "Unknown",
-          },
-          {
-            type: "TextBlock",
-            text: "Description",
             wrap: true,
           },
           {
-            type: "ActionSet",
-            actions: [
-              {
-                type: "Action.Submit",
-                title: "View",
-                data: {
-                  msteams: {
-                    type: "invoke",
-                    value: {
-                      type: "tab/tabInfoAction",
-                      tabInfo: {
-                        contentUrl: `${baseUrl}${groupPath}?task=${task.id}&inTeamsSSO=true`,
-                        websiteUrl: `${baseUrl}?task=${task.id}`,
-                        name: "Tasks",
-                        entityId: "entityId",
-                      },
-                    },
-                  },
-                },
-              },
-            ],
+            type: "TextBlock",
+            text: task.starred ? "Important task" : "Task",
+            wrap: true,
           },
         ],
+        actions: [{ type: "Action.OpenUrl", title: "Open task", url }],
       },
       preview: {
         contentType: "application/vnd.microsoft.card.thumbnail",
         content: {
           title: task.title,
+          text: task.starred ? "Task Meow - Important task" : "Task Meow",
         },
       },
     };
@@ -392,7 +379,10 @@ function getSSOResponse() {
 }
 
 function buildShareUrl(taskId, shareTag) {
-  return `${baseUrl}/group/?task=${taskId}&inTeamsSSO=true&shareTag=${shareTag}`;
+  const url = new URL("/", baseUrl);
+  url.searchParams.set("task", taskId);
+  url.searchParams.set("shareTag", shareTag);
+  return url.toString();
 }
 
 export default {

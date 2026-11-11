@@ -30,6 +30,7 @@ class Tasks extends Component {
       tasks: [],
       taskId: props.taskId,
       shareTag: props.shareTag,
+      threadId: props.threadId,
       loading: true,
     };
     // Tracks in-flight local mutations so a background refresh can't
@@ -46,7 +47,8 @@ class Tasks extends Component {
 
     if (this.props.inTeams) {
       microsoftTeams.app.getContext().then((context) => {
-        const threadId = context.team?.internalId || context.chat?.id;
+        const threadId =
+          this.props.threadId || context.team?.internalId || context.chat?.id;
         const fetchTaskPromise = this.props.isGroup
           ? tasksService.get(threadId)
           : tasksService.get();
@@ -69,13 +71,14 @@ class Tasks extends Component {
           });
       });
     } else {
-      tasksService.get().then((tasks) => {
+      const threadId = this.props.isGroup ? this.props.threadId : undefined;
+      tasksService.get(threadId).then((tasks) => {
         this.setState({
           tasks: tasks.sort((a, b) => a.order - b.order),
           loading: false,
           taskId: this.state.taskId,
         });
-        this.startLiveUpdates();
+        this.startLiveUpdates(threadId);
       });
     }
   }
@@ -453,6 +456,7 @@ class Tasks extends Component {
             isGroupRoute={this.props.isGroup}
             key={taskId}
             taskId={taskId}
+            threadId={this.state.threadId}
             shareTag={shareTag}
             taskList={this.state.tasks}
             isListLoading={this.state.loading}
