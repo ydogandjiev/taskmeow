@@ -1,11 +1,24 @@
 /* eslint-disable jest/expect-expect */
-import test from "node:test";
+import test, { before, after } from "node:test";
 import assert from "node:assert/strict";
 
 import { handleTaskLinkQuery } from "./task-links.js";
 import utils, { baseUrl } from "./utils.js";
 
 const taskId = "507f1f77bcf86cd799439011";
+const appId = "36b1586d-b1da-45d2-9b32-899c3757b6f8";
+const originalAppId = process.env.APPSETTING_AAD_ApplicationId;
+before(() => {
+  process.env.APPSETTING_AAD_ApplicationId = appId;
+});
+after(() => {
+  if (originalAppId === undefined) {
+    delete process.env.APPSETTING_AAD_ApplicationId;
+  } else {
+    process.env.APPSETTING_AAD_ApplicationId = originalAppId;
+  }
+});
+
 const task = {
   _id: taskId,
   user: "owner-id",
@@ -31,7 +44,16 @@ function services(overrides = {}) {
   };
 }
 
-test("builds a shared-task Adaptive Card with a thumbnail and working link", async () => {
+function getStageContext(result) {
+  const url = new URL(
+    result.composeExtension.attachments[0].content.actions[0].url
+  );
+  assert.equal(url.origin, "https://teams.microsoft.com");
+  assert.equal(url.pathname, `/l/stage/${appId}/0`);
+  return JSON.parse(url.searchParams.get("context"));
+}
+
+test("opens a shared task in Teams stage view from the card and thumbnail", async () => {
   const url = utils.buildShareUrl(taskId, task.shareTag);
   const result = await handleTaskLinkQuery(
     { ...activityFor("/"), value: { url } },
@@ -46,12 +68,38 @@ test("builds a shared-task Adaptive Card with a thumbnail and working link", asy
     attachment.contentType,
     "application/vnd.microsoft.card.adaptive"
   );
+  assert.equal(attachment.content.body[0].text, `\u2b50 ${task.title}`);
+  assert.equal(attachment.preview.content.title, `\u2b50 ${task.title}`);
+  assert.equal(attachment.preview.content.text, "Task Meow");
+  assert.equal(attachment.content.actions[0].type, "Action.OpenUrl");
+  assert.deepEqual(getStageContext(result), {
+    appId,
+    entityId: taskId,
+    contentUrl: `${url}&inTeamsSSO=true`,
+    websiteUrl: url,
+    name: "Task",
+    openMode: "popoutWithChat",
+  });
+  assert.deepEqual(
+    attachment.content.selectAction,
+    attachment.content.actions[0]
+  );
+  assert.deepEqual(attachment.preview.content.tap, {
+    type: "openUrl",
+    value: attachment.content.actions[0].url,
+  });
+});
+
+test("unstarred tasks have no importance icon or importance text", async () => {
+  const result = await handleTaskLinkQuery(
+    activityFor(`/?task=${taskId}`),
+    services({ getTask: async () => ({ ...task, starred: false }) })
+  );
+  const [attachment] = result.composeExtension.attachments;
+  assert.equal(attachment.content.body.length, 1);
   assert.equal(attachment.content.body[0].text, task.title);
-  assert.equal(attachment.content.body[1].text, "Important task");
   assert.equal(attachment.preview.content.title, task.title);
-  assert.deepEqual(attachment.content.actions, [
-    { type: "Action.OpenUrl", title: "Open task", url },
-  ]);
+  assert.equal(attachment.preview.content.text, "Task Meow");
 });
 
 test("only the owner can preview a private task without a valid share tag", async () => {
@@ -65,7 +113,7 @@ test("only the owner can preview a private task without a valid share tag", asyn
     const allowed = await handleTaskLinkQuery(activity, services());
     assert.equal(allowed.composeExtension.attachments.length, 1);
     assert.equal(
-      allowed.composeExtension.attachments[0].content.actions[0].url,
+      getStageContext(allowed).websiteUrl,
       `${baseUrl}/?task=${taskId}`
     );
   }
@@ -85,10 +133,13 @@ test("group links retain thread context and require membership", async () => {
     },
   });
   const result = await handleTaskLinkQuery(activity, groupServices);
-  assert.equal(
-    result.composeExtension.attachments[0].content.actions[0].url,
-    activity.value.url
-  );
+  const stageContext = getStageContext(result);
+  assert.equal(stageContext.websiteUrl, activity.value.url);
+  const contentUrl = new URL(stageContext.contentUrl);
+  assert.equal(contentUrl.pathname, "/group");
+  assert.equal(contentUrl.searchParams.get("task"), taskId);
+  assert.equal(contentUrl.searchParams.get("threadId"), "team-id");
+  assert.equal(contentUrl.searchParams.get("inTeamsSSO"), "true");
   const denied = await handleTaskLinkQuery(activity, {
     ...groupServices,
     getMembers: async () => [{ objectId: "someone-else" }],
@@ -146,7 +197,7 @@ test("legacy group links use the invoking Teams conversation", async () => {
     services({ getTask: async () => ({ ...task, group: "group-id" }) })
   );
   assert.equal(
-    result.composeExtension.attachments[0].content.actions[0].url,
+    getStageContext(result).websiteUrl,
     `${baseUrl}/group?task=${taskId}&threadId=team-id`
   );
 });

@@ -1,4 +1,5 @@
 import randomNumber from "random-number-csprng";
+import { buildStageViewUrl } from "./stage-view.js";
 
 // How many digits the verification code should be
 const verificationCodeLength = 6;
@@ -246,6 +247,22 @@ function getAdaptiveCardForTask(task, isGroup, shareTag) {
 
 function getTaskCardWithPreview(task, url) {
   if (task) {
+    const title = `${task.starred ? "\u2b50 " : ""}${task.title || "Unknown"}`;
+    const contentUrl = new URL(url);
+    contentUrl.searchParams.set("inTeamsSSO", "true");
+    const stageViewUrl = buildStageViewUrl({
+      appId: process.env.APPSETTING_AAD_ApplicationId,
+      entityId: task._id.toString(),
+      contentUrl: contentUrl.toString(),
+      websiteUrl: url,
+      name: "Task",
+      openMode: "popoutWithChat",
+    });
+    const openTaskAction = {
+      type: "Action.OpenUrl",
+      title: "Open task",
+      url: stageViewUrl,
+    };
     return {
       contentType: "application/vnd.microsoft.card.adaptive",
       content: {
@@ -257,22 +274,19 @@ function getTaskCardWithPreview(task, url) {
             type: "TextBlock",
             size: "Medium",
             weight: "Bolder",
-            text: task.title || "Unknown",
-            wrap: true,
-          },
-          {
-            type: "TextBlock",
-            text: task.starred ? "Important task" : "Task",
+            text: title,
             wrap: true,
           },
         ],
-        actions: [{ type: "Action.OpenUrl", title: "Open task", url }],
+        selectAction: openTaskAction,
+        actions: [openTaskAction],
       },
       preview: {
         contentType: "application/vnd.microsoft.card.thumbnail",
         content: {
-          title: task.title,
-          text: task.starred ? "Task Meow - Important task" : "Task Meow",
+          title,
+          text: "Task Meow",
+          tap: { type: "openUrl", value: stageViewUrl },
         },
       },
     };
