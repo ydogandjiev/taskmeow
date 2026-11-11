@@ -40,6 +40,7 @@ class App extends Component {
         !!params.get("inTeamsMSAL"),
       taskId: params.get("task"),
       shareTag: params.get("shareTag"),
+      threadId: params.get("threadId"),
     };
   }
 
@@ -94,7 +95,8 @@ class App extends Component {
   };
 
   render() {
-    const { inTeams, taskId, shareTag, user, loading, error } = this.state;
+    const { inTeams, taskId, shareTag, threadId, user, loading, error } =
+      this.state;
     return (
       <div className="App" style={{ backgroundImage: `url(${background})` }}>
         {inTeams && <Debug />}
@@ -127,6 +129,7 @@ class App extends Component {
                   element={
                     <Tasks
                       isGroup={true}
+                      threadId={threadId}
                       inTeams={inTeams}
                       taskId={taskId}
                       shareTag={shareTag}

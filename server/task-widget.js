@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import taskService from "./task-service.js";
+import { buildStageViewUrl } from "./stage-view.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,12 +29,6 @@ function getBaseUrl() {
 
 function getStageViewParams(taskContext = {}) {
   const appId = process.env.APPSETTING_AAD_ApplicationId;
-  if (!appId) {
-    throw new Error(
-      "APPSETTING_AAD_ApplicationId is required to create a Stageview link"
-    );
-  }
-
   const baseUrl = getBaseUrl();
   const contentPath = taskContext.group ? "/group" : "/";
   const stageContext = {
@@ -49,12 +44,7 @@ function getStageViewParams(taskContext = {}) {
 }
 
 function getStageViewUrl(taskContext = {}) {
-  const stageContext = getStageViewParams(taskContext);
-  const context = encodeURIComponent(JSON.stringify(stageContext));
-
-  return `https://teams.microsoft.com/l/stage/${encodeURIComponent(
-    stageContext.appId
-  )}/0?context=${context}`;
+  return buildStageViewUrl(getStageViewParams(taskContext));
 }
 
 export async function readTaskWidgetHtml() {

@@ -14,7 +14,7 @@ import { ConsentConsumer } from "./ConsentContext";
 import UserTile from "./UserTile";
 import tasksService from "../services/tasks.service";
 import * as microsoftTeams from "@microsoft/teams-js";
-import { baseUrl } from "./utils";
+import { getBaseUrl } from "./utils";
 
 const groupShareMessage =
   "Group tasks cannot be shared outside this channel or chat.";
@@ -25,6 +25,7 @@ const TaskPane = (props) => {
     history,
     isGroupRoute,
     taskId,
+    threadId,
     shareTag,
     inTeams,
     taskList,
@@ -40,6 +41,8 @@ const TaskPane = (props) => {
   const [activeTask, setActiveTask] = useState(undefined);
   const [isListItem, setIsListItem] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [copying, setCopying] = useState(false);
+  const [copyMessage, setCopyMessage] = useState("");
   const [shareMessage, setShareMessage] = useState(
     isGroupRoute ? groupShareMessage : ""
   );
@@ -130,48 +133,57 @@ const TaskPane = (props) => {
     }
   };
 
-  const share = () => {
+  const getTaskLink = async () => {
+    const baseUrl = getBaseUrl();
     if (isGroupRoute && isListItem) {
-      const url = `${baseUrl}/group?task=${activeTask._id}`;
-      microsoftTeams.sharing
-        .shareWebContent({
-          content: [
-            {
-              type: "URL",
-              url,
-              preview: true,
-            },
-          ],
-        })
-        .catch((err) => {
-          console.error(err.message);
-        });
-    } else if (activeTask.user) {
-      setShareMessage("");
-      tasksService
-        .getShareUrl(activeTask._id)
-        .then((url) => {
-          if (url) {
-            microsoftTeams.sharing
-              .shareWebContent({
-                content: [
-                  {
-                    type: "URL",
-                    url,
-                    preview: true,
-                  },
-                ],
-              })
-              .catch((err) => {
-                setShareMessage(err.message);
-              });
-          } else {
-            setShareMessage(privateShareErrorMessage);
-          }
-        })
-        .catch((err) => {
-          setShareMessage(err.message);
-        });
+      if (!threadId) {
+        throw new Error("The channel or chat for this task is unavailable.");
+      }
+      const url = new URL("/group", baseUrl);
+      url.searchParams.set("task", activeTask._id);
+      url.searchParams.set("threadId", threadId);
+      return url.toString();
+    }
+    if (!isListItem && shareTag) {
+      const url = new URL("/", baseUrl);
+      url.searchParams.set("task", activeTask._id);
+      url.searchParams.set("shareTag", shareTag);
+      return url.toString();
+    }
+    const url = await tasksService.getShareUrl(activeTask._id);
+    if (typeof url !== "string" || !url) {
+      throw new Error(privateShareErrorMessage);
+    }
+    const shareUrl = new URL(url);
+    return `${baseUrl}${shareUrl.pathname}${shareUrl.search}${shareUrl.hash}`;
+  };
+
+  const copyLink = async () => {
+    setCopying(true);
+    setCopyMessage("");
+    try {
+      if (!navigator.clipboard?.writeText) {
+        throw new Error("Copying links is not supported in this browser.");
+      }
+      const url = await getTaskLink();
+      await navigator.clipboard.writeText(url);
+      setCopyMessage("Link copied.");
+    } catch (error) {
+      setCopyMessage(error.message || "Unable to copy the task link.");
+    } finally {
+      setCopying(false);
+    }
+  };
+
+  const share = async () => {
+    setShareMessage("");
+    try {
+      const url = await getTaskLink();
+      await microsoftTeams.sharing.shareWebContent({
+        content: [{ type: "URL", url, preview: true }],
+      });
+    } catch (error) {
+      setShareMessage(error.message || "Unable to share the task.");
     }
   };
 
@@ -260,6 +272,15 @@ const TaskPane = (props) => {
                   </Link>
                 </div>
               )}
+              <div className="task-field">
+                <DefaultButton
+                  onClick={copyLink}
+                  text="Copy link"
+                  iconProps={{ iconName: "Link" }}
+                  disabled={copying}
+                />
+                <p role="status">{copyMessage}</p>
+              </div>
               {inTeams && (
                 <div className="task-field">
                   <DefaultButton

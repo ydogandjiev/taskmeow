@@ -1,7 +1,7 @@
 import Task from "./task-model.js";
 import { ReadPreference } from "mongodb";
 import { v4 as uuidv4 } from "uuid";
-import * as utils from "./utils.js";
+import utils from "./utils.js";
 import taskEvents from "./task-events.js";
 
 function get(taskId) {

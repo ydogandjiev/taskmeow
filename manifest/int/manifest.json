@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.5/MicrosoftTeams.schema.json",
   "manifestVersion": "1.5",
-  "version": "1.0",
+  "version": "1.1.0",
   "id": "ab93102c-869b-4d34-a921-a31d3e7f76ef",
   "packageName": "io.ngrok.taskmeow",
   "developer": {
@@ -47,6 +47,18 @@
     {
       "botId": "ab93102c-869b-4d34-a921-a31d3e7f76ef",
       "scopes": ["personal", "team", "groupchat"]
+    }
+  ],
+  "composeExtensions": [
+    {
+      "botId": "ab93102c-869b-4d34-a921-a31d3e7f76ef",
+      "commands": [],
+      "messageHandlers": [
+        {
+          "type": "link",
+          "value": { "domains": ["taskmeow.ngrok.io"] }
+        }
+      ]
     }
   ],
   "permissions": ["messageTeamMembers", "identity"],
