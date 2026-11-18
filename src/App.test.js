@@ -1,7 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
+import { render, screen } from "@testing-library/react";
 import App from "./App";
+
+jest.mock("./components/Config", () => {
+  return function MockConfig() {
+    return <h1>Tab setup</h1>;
+  };
+});
 
 import authService from "./services/auth.service";
 jest.mock("./services/auth.service");
@@ -14,6 +21,23 @@ jest.mock("./services/user.service");
 
 beforeEach(() => {
   jest.resetModules();
+  jest.clearAllMocks();
+  jsdom.reconfigure({ url: "https://taskmeow.com/" });
+});
+
+it("shows tab configuration without waiting for the main app sign-in flow", () => {
+  jsdom.reconfigure({ url: "https://taskmeow.com/config/?inTeamsSSO=true" });
+  render(
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  );
+
+  expect(
+    screen.getByRole("heading", { name: "Tab setup" })
+  ).toBeInTheDocument();
+  expect(authService.tryInitializeMSAL).not.toHaveBeenCalled();
+  expect(authService.getUser).not.toHaveBeenCalled();
 });
 
 it("renders logged out view", async () => {

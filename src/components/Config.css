@@ -1,0 +1,210 @@
+.Config-page {
+  --config-background: #f8f7fb;
+  --config-surface: #ffffff;
+  --config-text: #242135;
+  --config-muted: #666174;
+  --config-accent: #d9433b;
+  --config-tint: #fff0ec;
+  --config-border: #eae6ef;
+  --config-success: #217550;
+  display: grid;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+  overflow: auto;
+  color: var(--config-text);
+  background: var(--config-background) url("../background.png") repeat;
+}
+
+.Config-page[data-theme="dark"] {
+  --config-background: #1b1a20;
+  --config-surface: #25232c;
+  --config-text: #f6f3fb;
+  --config-muted: #bab4c9;
+  --config-accent: #ff9a8f;
+  --config-tint: #3b292d;
+  --config-border: #403b4b;
+  --config-success: #70d7a4;
+  color-scheme: dark;
+}
+
+.Config-card {
+  width: min(100%, 400px);
+  margin: auto;
+  padding: 24px;
+  box-sizing: border-box;
+  border: 1px solid var(--config-border);
+  border-radius: 24px;
+  background: var(--config-surface);
+  box-shadow: 0 24px 80px #2421350d;
+}
+
+.Config-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.Config-brand-mark {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  color: var(--config-accent);
+  background: var(--config-tint);
+}
+
+.Config-brand-caption {
+  margin-left: auto;
+  color: var(--config-muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.Config-stage {
+  margin-top: 28px;
+}
+
+.Config-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 260px;
+  text-align: center;
+  animation: config-reveal 420ms ease-out both;
+}
+
+.Config-orbit,
+.Config-avatar,
+.Config-error-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 20px;
+  border-radius: 50%;
+  background: var(--config-tint);
+}
+
+.Config-orbit,
+.Config-error-icon {
+  color: var(--config-accent);
+  font-size: 28px;
+}
+
+.Config-orbit::after {
+  position: absolute;
+  inset: -5px;
+  border: 2px solid var(--config-border);
+  border-top-color: var(--config-accent);
+  border-right-color: var(--config-accent);
+  border-radius: 50%;
+  content: "";
+  animation: config-orbit 1.5s linear infinite;
+}
+
+.Config-avatar .ms-Persona-initials {
+  width: 100%;
+  height: 100%;
+  padding-top: 0;
+}
+
+.Config-check {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 3px solid var(--config-surface);
+  border-radius: 50%;
+  color: var(--config-surface);
+  background: var(--config-success);
+  font-size: 12px;
+}
+
+.Config-eyebrow {
+  margin: 0 0 10px;
+  color: var(--config-accent);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
+
+.Config-view h1 {
+  max-width: 100%;
+  margin: 0;
+  font-size: clamp(22px, 5vw, 28px);
+  font-weight: 650;
+  line-height: 1.25;
+  letter-spacing: -0.8px;
+  overflow-wrap: anywhere;
+}
+
+.Config-description {
+  margin: 12px 0 20px;
+  color: var(--config-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.Config-footnote,
+.Config-save-hint {
+  margin: auto 0 0;
+  padding-top: 16px;
+  color: var(--config-muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.Config-save-hint {
+  border-top: 1px solid var(--config-border);
+}
+
+.Config-save-hint strong {
+  color: var(--config-text);
+}
+
+@keyframes config-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes config-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Config-view,
+  .Config-orbit::after {
+    animation: none;
+  }
+}
+
+.Config-page[data-theme="contrast"] {
+  --config-background: Canvas;
+  --config-surface: Canvas;
+  --config-text: CanvasText;
+  --config-muted: CanvasText;
+  --config-accent: Highlight;
+  --config-tint: Canvas;
+  --config-border: CanvasText;
+  --config-success: Highlight;
+  background-image: none;
+}

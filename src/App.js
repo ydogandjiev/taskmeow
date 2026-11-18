@@ -25,7 +25,7 @@ initializeIcons(
   "https://res.cdn.office.net/files/fabric-cdn-prod_20240129.001/assets/icons/"
 );
 
-class App extends Component {
+class MainApp extends Component {
   constructor(props) {
     super(props);
 
@@ -137,7 +137,6 @@ class App extends Component {
                   }
                 />
                 <Route path="/profile" element={<Profile />} />
-                <Route path="/config" element={<Config />} />
                 <Route path="/remove" element={<Remove />} />
                 <Route
                   path="/"
@@ -201,6 +200,17 @@ class App extends Component {
           </div>
         )}
       </div>
+    );
+  }
+}
+
+class App extends Component {
+  render() {
+    return (
+      <Routes>
+        <Route path="/config" element={<Config />} />
+        <Route path="*" element={<MainApp />} />
+      </Routes>
     );
   }
 }
