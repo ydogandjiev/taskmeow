@@ -13,6 +13,7 @@ import groupService from "./group-service.js";
 import { findTaskByTitle } from "./task-matching.js";
 import taskService from "./task-service.js";
 import { handleTaskLinkQuery } from "./task-links.js";
+import { handleTaskSearchQuery } from "./task-search.js";
 import {
   buildTeamsTaskWidgetMessage,
   CALL_TOOL_INVOKE_NAME,
@@ -435,6 +436,16 @@ async function initBot(expressApp) {
       await send(reply.text);
     }
   });
+
+  teamsApp.on("message.ext.query", async ({ activity }) =>
+    handleTaskSearchQuery(activity, {
+      getUser: userService.getUser,
+      getGroup: groupService.get,
+      getMembers,
+      getForUser: taskService.getForUser,
+      getForGroup: taskService.getForGroup,
+    })
+  );
 
   teamsApp.on("message.ext.query-link", async ({ activity }) =>
     handleTaskLinkQuery(activity, {

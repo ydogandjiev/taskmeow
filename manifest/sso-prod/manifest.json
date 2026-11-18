@@ -1,7 +1,7 @@
 ﻿{
   "$schema": "https://raw.githubusercontent.com/OfficeDev/microsoft-teams-app-schema/preview/DevPreview/MicrosoftTeams.schema.json",
   "manifestVersion": "devPreview",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "id": "36b1586d-b1da-45d2-9b32-899c3757b6f8",
   "packageName": "com.taskmeow",
   "developer": {
@@ -48,7 +48,7 @@
   "bots": [
     {
       "botId": "36b1586d-b1da-45d2-9b32-899c3757b6f8",
-      "scopes": ["personal"]
+      "scopes": ["personal", "team", "groupchat"]
     }
   ],
   "composeExtensions": [
@@ -59,9 +59,10 @@
         {
           "id": "searchQuery",
           "context": ["compose", "commandBox"],
-          "description": "Test command to run query",
+          "description": "Search tasks in this conversation",
           "title": "Search",
           "type": "query",
+          "initialRun": true,
           "parameters": [
             {
               "name": "searchQuery",
