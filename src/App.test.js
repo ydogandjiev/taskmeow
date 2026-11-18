@@ -10,6 +10,12 @@ jest.mock("./components/Config", () => {
   };
 });
 
+jest.mock("./components/Remove", () => {
+  return function MockRemove() {
+    return <h1>Tab removal</h1>;
+  };
+});
+
 import authService from "./services/auth.service";
 jest.mock("./services/auth.service");
 
@@ -25,17 +31,20 @@ beforeEach(() => {
   jsdom.reconfigure({ url: "https://taskmeow.com/" });
 });
 
-it("shows tab configuration without waiting for the main app sign-in flow", () => {
-  jsdom.reconfigure({ url: "https://taskmeow.com/config/?inTeamsSSO=true" });
+it.each([
+  ["config", "Tab setup"],
+  ["remove", "Tab removal"],
+])("shows %s without waiting for the main app sign-in flow", (path, title) => {
+  jsdom.reconfigure({
+    url: `https://taskmeow.com/${path}/?inTeamsSSO=true`,
+  });
   render(
     <BrowserRouter>
       <App />
     </BrowserRouter>
   );
 
-  expect(
-    screen.getByRole("heading", { name: "Tab setup" })
-  ).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: title })).toBeInTheDocument();
   expect(authService.tryInitializeMSAL).not.toHaveBeenCalled();
   expect(authService.getUser).not.toHaveBeenCalled();
 });

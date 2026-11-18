@@ -137,7 +137,6 @@ class MainApp extends Component {
                   }
                 />
                 <Route path="/profile" element={<Profile />} />
-                <Route path="/remove" element={<Remove />} />
                 <Route
                   path="/"
                   element={
@@ -209,6 +208,7 @@ class App extends Component {
     return (
       <Routes>
         <Route path="/config" element={<Config />} />
+        <Route path="/remove" element={<Remove />} />
         <Route path="*" element={<MainApp />} />
       </Routes>
     );

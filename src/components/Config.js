@@ -41,7 +41,11 @@ class Config extends Component {
       if (!this.active) return;
 
       microsoftTeams.pages.config.setValidityState(false);
-      microsoftTeams.pages.config.registerOnSaveHandler(this.save);
+      if (this.props.isRemoval) {
+        microsoftTeams.pages.config.registerOnRemoveHandler(this.remove);
+      } else {
+        microsoftTeams.pages.config.registerOnSaveHandler(this.save);
+      }
       const context = await microsoftTeams.app.getContext();
       if (!this.active) return;
       this.setState({ theme: context.app.theme });
@@ -69,7 +73,7 @@ class Config extends Component {
       });
       this.loadUserImage();
     } catch (error) {
-      console.warn("Error signing in to configure the tab:", error);
+      console.warn("Error signing in to manage the tab:", error);
       if (this.active) this.setState({ status: "error" });
     }
   };
@@ -111,7 +115,18 @@ class Config extends Component {
     }
   };
 
+  remove = (removeEvent) => {
+    if (!this.active || this.state.status !== "ready") {
+      removeEvent.notifyFailure(
+        "Hold your paws! Please finish signing in before removing this tab."
+      );
+      return;
+    }
+    removeEvent.notifySuccess();
+  };
+
   render() {
+    const { isRemoval } = this.props;
     const { status, theme, user, userImage } = this.state;
     const name =
       user &&
@@ -165,14 +180,30 @@ class Config extends Component {
                       <Icon iconName="CheckMark" />
                     </span>
                   </div>
-                  <p className="Config-eyebrow">Purrfect. You&apos;re in.</p>
-                  <h1 id="config-heading">Meowcome{name ? `, ${name}` : ""}</h1>
+                  <p className="Config-eyebrow">
+                    {isRemoval ? "Taking a catnap?" : "Purrfect. You're in."}
+                  </p>
+                  <h1 id="config-heading">
+                    {isRemoval ? "Meow for now" : "Meowcome"}
+                    {name ? `, ${name}` : ""}
+                  </h1>
                   <p className="Config-description">
-                    Let&apos;s get those to-dos under claw.
+                    {isRemoval
+                      ? "This tab can go. Your tasks are staying put."
+                      : "Let's get those to-dos under claw."}
                   </p>
                   <p className="Config-save-hint">
-                    Select <strong>Save</strong> below to give your shared tasks
-                    a home in this conversation.
+                    {isRemoval ? (
+                      <>
+                        Select <strong>Remove</strong> below to remove this tab.
+                        We&apos;ll keep your spot warm.
+                      </>
+                    ) : (
+                      <>
+                        Select <strong>Save</strong> below to give your shared
+                        tasks a home in this conversation.
+                      </>
+                    )}
                   </p>
                 </>
               )}
